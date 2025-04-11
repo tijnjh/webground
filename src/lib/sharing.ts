@@ -29,15 +29,15 @@ export function share({
   title: string;
   code: Code;
 }) {
-  const encoded: Record<"html" | "css" | "js", string> = { ...code };
-  for (const [key, val] of Object.entries(code)) {
-    encoded[key as "html" | "css" | "js"] = encode(val);
-  }
+  const origin = new URL(location.href).origin;
 
-  const currentURL = new URL(location.href).host;
-  const newUrl = encoded
-    ? `${currentURL}?h=${encoded.html}&c=${encoded.css}&j=${encoded.js}`
-    : currentURL;
+  const params = new URLSearchParams();
+
+  if (code.html) params.set("h", encode(code.html));
+  if (code.css) params.set("c", encode(code.css));
+  if (code.js) params.set("j", encode(code.js));
+
+  let newUrl = `${origin}?${params.toString()}`;
 
   if (newUrl.length > 2048) {
     toast.error(
