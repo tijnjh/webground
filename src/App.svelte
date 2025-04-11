@@ -24,6 +24,8 @@
 
   let previewSrc = $state("/start.html");
 
+  let title = $state("Unnamed document");
+
   const code = $state({
     html: "",
     css: "",
@@ -178,27 +180,38 @@
                           openShareMenu = false;
                           share({
                             mode: "full",
-                            title: "placeholder",
+                            title: "Shared code",
                             code: code,
                           });
                         }}
                         class="share-btn w-full bg-gray-100 dark:text-white btn dark:bg-white/5"
-                        data-share-as="full"
                       >
                         Full URL
                       </button>
                       <button
                         title="[document title](full url)"
-                        onclick={() => (openShareMenu = false)}
+                        onclick={() => {
+                          openShareMenu = false;
+                          share({
+                            mode: "markdown",
+                            title: "Shared code",
+                            code: code,
+                          });
+                        }}
                         class="share-btn w-full bg-gray-100 dark:text-white btn dark:bg-white/5"
-                        data-share-as="markdown"
                       >
                         Markdown
                       </button>
                       <button
-                        onclick={() => (openShareMenu = false)}
+                        onclick={() => {
+                          openShareMenu = false;
+                          share({
+                            mode: "html",
+                            title: "Shared code",
+                            code: code,
+                          });
+                        }}
                         class="share-btn w-full bg-gray-100 dark:text-white btn dark:bg-white/5"
-                        data-share-as="html"
                       >
                         HTML
                       </button>
@@ -235,12 +248,22 @@
         </div>
       </div>
       <div
-        id="tabs"
-        class="*:border-zinc-700 *:font-mono *:hover:underline border-y border-zinc-700 *:border-r *:text-white flex *:w-24 *:rounded-none! bg-[#1e1e1e]"
+        class="flex justify-between font-mono border-y text-white border-zinc-700 bg-[#1e1e1e]"
       >
-        {@render langButton("html")}
-        {@render langButton("css")}
-        {@render langButton("js")}
+        <div
+          id="tabs"
+          class="*:border-zinc-700 *:hover:underline *:border-r flex *:w-24 *:rounded-none!"
+        >
+          {@render langButton("html")}
+          {@render langButton("css")}
+          {@render langButton("js")}
+        </div>
+        <input
+          type="text"
+          bind:value={title}
+          placeholder="Document title"
+          class="text-right px-2 outline-0 hidden"
+        />
       </div>
 
       <div
@@ -248,15 +271,27 @@
         class:brightness-50={showMobilePreview}
       >
         <div style="z-index: {currentTab === 'html' ? '100' : '0'}">
-          <CodeEditor bind:value={code.html} language="html" />
+          <CodeEditor
+            bind:value={code.html}
+            language="html"
+            readOnly={isShared}
+          />
         </div>
 
         <div style="z-index: {currentTab === 'css' ? '100' : '0'}">
-          <CodeEditor bind:value={code.css} language="css" />
+          <CodeEditor
+            bind:value={code.css}
+            language="css"
+            readOnly={isShared}
+          />
         </div>
 
         <div style="z-index: {currentTab === 'js' ? '100' : '0'}">
-          <CodeEditor bind:value={code.js} language="javascript" />
+          <CodeEditor
+            bind:value={code.js}
+            language="javascript"
+            readOnly={isShared}
+          />
         </div>
       </div>
     </div>

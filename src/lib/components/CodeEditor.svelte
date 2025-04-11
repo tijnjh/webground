@@ -1,3 +1,4 @@
+<!-- mostly from https://github.com/ala-garbaa-pro/svelte-5-monaco-editor-two-way-binding -->
 <script lang="ts">
   import loader from "@monaco-editor/loader";
   import { emmetHTML } from "emmet-monaco-es";
@@ -13,12 +14,14 @@
     value: string;
     language?: string;
     theme?: string;
+    readOnly?: boolean;
   }
 
   let {
     value = $bindable(),
     language = "html",
     theme = "vs-dark",
+    readOnly = false,
   }: Props = $props();
 
   onMount(() => {
@@ -45,6 +48,7 @@
         fontSize: 13,
         minimap: { enabled: false },
         tabSize: 2,
+        readOnly,
       });
 
       editor.onDidChangeModelContent((e) => {

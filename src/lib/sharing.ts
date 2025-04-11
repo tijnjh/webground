@@ -34,7 +34,7 @@ export function share({
     encoded[key as "html" | "css" | "js"] = encode(val);
   }
 
-  const currentURL = window.location.href.split("?")[0];
+  const currentURL = new URL(location.href).host;
   const newUrl = encoded
     ? `${currentURL}?h=${encoded.html}&c=${encoded.css}&j=${encoded.js}`
     : currentURL;
