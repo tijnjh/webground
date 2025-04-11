@@ -59,7 +59,7 @@
 
   if (!isShared) {
     if (localStorage.code) {
-      for (const [key, val] of Object.entries(localStorage.code))
+      for (const [key, val] of Object.entries(JSON.parse(localStorage.code)))
         code[key as keyof Code] = val as string;
     }
   }
