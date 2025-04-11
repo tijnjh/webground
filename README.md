@@ -1,6 +1,6 @@
 # WebGround
 
-### Anonymous code sharing
+## An open source CodePen alternative
 
 ### Features
 
@@ -11,4 +11,4 @@
 Use it at https://webground.tijn.dev
 
 
-derived from my other project; https://github.com/tijnjh/jnscode
+Derived from my other project; https://github.com/tijnjh/jnscode
