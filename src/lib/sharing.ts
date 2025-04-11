@@ -39,13 +39,6 @@ export function share({
 
   let newUrl = `${origin}?${params.toString()}`;
 
-  if (newUrl.length > 2048) {
-    toast.error(
-      `Code too long! max length: 2048, your length: ${newUrl.length}`
-    );
-    return;
-  }
-
   try {
     switch (mode) {
       case "full":
@@ -62,6 +55,14 @@ export function share({
         break;
       default:
         break;
+    }
+
+    if (newUrl.length > 2048) {
+      setTimeout(() => {
+        toast.warning(
+          `URL is longer than 2048 characters, which might cause issues in certain browsers`
+        );
+      }, 200);
     }
   } catch (err) {
     const msg = "Failed to copy to clipboard " + err;

@@ -1,14 +1,16 @@
 <script lang="ts">
-  import { Toaster } from "svelte-sonner";
+  import { toast, Toaster } from "svelte-sonner";
   import CodeEditor from "./lib/components/CodeEditor.svelte";
   import Dialog from "./lib/components/Dialog.svelte";
-  import { Pane, Splitpanes } from "svelte-splitpanes";
+  import { PaneGroup, Pane, PaneResizer } from "paneforge";
   import { clearCode, template } from "./lib/helpers";
   import { checkParams, share } from "./lib/sharing";
   import {
-    MenuIcon,
+    EllipsisIcon,
+    GithubIcon,
+    LinkIcon,
     PencilIcon,
-    PlayCircleIcon,
+    PlayIcon,
     ShareIcon,
     Trash2Icon,
   } from "@lucide/svelte";
@@ -33,6 +35,10 @@
   });
 
   function renderPreview() {
+    if (Object.values(code).every((value) => value.trim() === "")) {
+      previewSrc = "/start.html";
+      return;
+    }
     const url = URL.createObjectURL(
       new Blob([template(code)], { type: "text/html" })
     );
@@ -74,34 +80,49 @@
   }}
 />
 
-<Splitpanes>
-  <Pane snapSize={10}>
+<PaneGroup direction="horizontal">
+  <Pane defaultSize={50} class="h-svh">
     <div
       id="outer-editor"
-      class="width-screen h-svh relative grid grid-rows-[min-content_min-content_1fr] overflow-hidden bg-[#1e1e1e]"
+      class="width-screen h-full relative grid grid-rows-[min-content_1fr] overflow-hidden bg-[#1e1e1e]"
     >
       <div class="flex items-center justify-between gap-2 p-4">
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-2">
             <div>
               <button
-                class="p-0 text-white bg-amber-500 dark:bg-amber-900 btn"
+                class="p-0 text-white bg-amber-600 btn"
                 aria-label="Toggle menu"
                 onclick={() => (openMenu = !openMenu)}
                 disabled={openMenu}
               >
-                <MenuIcon size={16} />
-                Menu
+                <EllipsisIcon size={16} />
+                <span class="sr-only">Menu</span>
               </button>
 
               <Dialog bind:open={openMenu}>
+                <ul class="grid grid-cols-1 gap-2">
+                  <h1>WebGround</h1>
+                  <li>
+                    <span class="block">
+                      <a
+                        href="https://github.com/tijnjh/webground"
+                        class="w-full text-blue-500 bg-blue-100 btn"
+                      >
+                        <GithubIcon size={16} />
+                        View source
+                      </a>
+                    </span>
+                  </li>
+                </ul>
                 {#if !isShared}
+                  <div class="w-full h-px my-4 bg-black/10"></div>
                   <ul>
                     <li class="w-full">
                       <div class="w-full">
                         <button
                           id="open-clear-btn"
-                          class="w-full text-red-500 bg-red-100 btn dark:bg-red-500/10"
+                          class="w-full text-red-500 bg-red-100 btn"
                           onclick={() => (openClearMenu = !openClearMenu)}
                           disabled={openClearMenu}
                         >
@@ -120,7 +141,7 @@
                               openClearMenu = false;
                               clearCode(code);
                             }}
-                            class="w-full text-red-500 bg-red-100 btn dark:bg-red-500/10"
+                            class="w-full text-red-500 bg-red-100 btn"
                           >
                             Confirm
                           </button>
@@ -128,35 +149,13 @@
                       </div>
                     </li>
                   </ul>
-                  <div
-                    class="w-full h-px my-4 bg-black/10 dark:bg-white/10"
-                  ></div>
                 {/if}
-
-                <ul class="grid grid-cols-1 gap-2">
-                  <li>
-                    <span class="block"
-                      >WebGround by
-                      <a
-                        class="text-amber-500 dark:text-ambre-900 hover:underline"
-                        href="https://tijn.dev">Tijn</a
-                      >
-                      -
-                      <a
-                        href="https://github.com/tijnjh/webground"
-                        class="text-amber-500 hover:underline"
-                      >
-                        View on GitHub
-                      </a>
-                    </span>
-                  </li>
-                </ul>
               </Dialog>
             </div>
 
             <div class="w-full">
               <button
-                class="text-blue-500 bg-blue-100 btn dark:bg-blue-500/15"
+                class="btn bg-sky-800 text-white"
                 onclick={() => (openShareMenu = !openShareMenu)}
                 disabled={openShareMenu}
               >
@@ -166,63 +165,40 @@
               <Dialog bind:open={openShareMenu}>
                 <ul class="grid items-center w-full grid-cols-1">
                   <li class="flex justify-between">
-                    <p>Link options</p>
-                    <p class="opacity-40">(Click to copy)</p>
+                    <p>Link sharing options</p>
                   </li>
 
-                  <div
-                    class="w-full h-px my-4 bg-black/10 dark:bg-white/10"
-                  ></div>
+                  <div class="w-full h-px my-4 bg-black/10"></div>
 
-                  <li class="mb-4">
+                  <li>
                     <div class="grid gap-2">
-                      <button
-                        title="Will be long"
-                        onclick={() => {
-                          openShareMenu = false;
-                          share({
-                            mode: "full",
-                            title: "Shared code",
-                            code: code,
-                          });
-                        }}
-                        class="share-btn w-full bg-gray-100 dark:text-white btn dark:bg-white/5"
-                      >
-                        Full URL
-                      </button>
-                      <button
-                        title="[document title](full url)"
-                        onclick={() => {
-                          openShareMenu = false;
-                          share({
-                            mode: "markdown",
-                            title: "Shared code",
-                            code: code,
-                          });
-                        }}
-                        class="share-btn w-full bg-gray-100 dark:text-white btn dark:bg-white/5"
-                      >
-                        Markdown
-                      </button>
-                      <button
-                        onclick={() => {
-                          openShareMenu = false;
-                          share({
-                            mode: "html",
-                            title: "Shared code",
-                            code: code,
-                          });
-                        }}
-                        class="share-btn w-full bg-gray-100 dark:text-white btn dark:bg-white/5"
-                      >
-                        HTML
-                      </button>
+                      {@render shareButton("full", "Full URL")}
+                      {@render shareButton("markdown", "Markdown")}
+                      {@render shareButton("html", "HTML")}
                     </div>
                   </li>
                 </ul>
               </Dialog>
             </div>
           </div>
+        </div>
+
+        <div
+          class="flex border relative border-zinc-700 p-1 rounded-xl isolate overflow-clip"
+        >
+          <span
+            class="w-24 absolute top-1 left-1 bg-zinc-700 rounded-lg -z-10 bottom-1 transition-[left]"
+            style="left: {currentTab === 'html'
+              ? '.25rem'
+              : currentTab === 'css'
+                ? '6.25rem'
+                : currentTab === 'js'
+                  ? '12.25rem'
+                  : 0}"
+          ></span>
+          {@render langButton("html", "#ff5733")}
+          {@render langButton("css", "rebeccapurple")}
+          {@render langButton("js", "#f7df1e")}
         </div>
 
         <div class="flex items-center gap-2">
@@ -233,7 +209,7 @@
                 location.href = location.href.split("?")[0];
               }}
               id="edit-code-btn"
-              class="text-blue-500 bg-blue-100 btn dark:bg-blue-500/15"
+              class="text-blue-500 bg-blue-100 btn"
             >
               <PencilIcon size={16} />
               Edit
@@ -241,31 +217,13 @@
           {/if}
 
           <button
-            class="run-btn hidden text-white bg-green-500 md:flex btn dark:bg-green-900"
+            class="run-btn hidden text-white bg-green-600 md:flex btn"
             onclick={renderPreview}
           >
-            <PlayCircleIcon size={16} />
+            <PlayIcon size={16} />
             Run
           </button>
         </div>
-      </div>
-      <div
-        class="flex justify-between font-mono border-y text-white border-zinc-700 bg-[#1e1e1e]"
-      >
-        <div
-          id="tabs"
-          class="*:border-zinc-700 *:hover:underline *:border-r flex *:w-24 *:rounded-none!"
-        >
-          {@render langButton("html")}
-          {@render langButton("css")}
-          {@render langButton("js")}
-        </div>
-        <input
-          type="text"
-          bind:value={title}
-          placeholder="Document title"
-          class="text-right px-2 outline-0 hidden"
-        />
       </div>
 
       <div
@@ -298,7 +256,12 @@
       </div>
     </div>
   </Pane>
-  <Pane snapSize={10}>
+
+  <PaneResizer class="grid bg-zinc-800 place-items-center w-4">
+    <span class="h-12 rounded-full w-1 bg-zinc-600"></span>
+  </PaneResizer>
+
+  <Pane defaultSize={50}>
     <div
       id="outer-preview"
       style="transform: {window.innerWidth < 1024
@@ -319,58 +282,38 @@
       </iframe>
     </div>
   </Pane>
-  <div class="fixed flex gap-2 dark:text-gray-200 left-4 bottom-4">
-    <button
-      style="opacity: 1 !important"
-      onclick={() => (showMobilePreview = !showMobilePreview)}
-      class="z-50 text-white bg-black btn dark:bg-white dark:text-black md:hidden!"
-      aria-label="Show mobile preview"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        style={`transform: rotateX(${showMobilePreview ? "180deg" : "0"})`}
-        viewBox="0 0 16 16"
-        fill="currentColor"
-        class="transition-transform duration-300 size-6"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M11.78 9.78a.75.75 0 0 1-1.06 0L8 7.06 5.28 9.78a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06Z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    </button>
-    <button
-      onclick={renderPreview}
-      style="opacity: 1 !important"
-      class="run-btn z-50 text-white bg-green-500 btn dark:bg-green-900 md:hidden!"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 16 16"
-        fill="currentColor"
-        class="size-4"
-      >
-        <path
-          d="M3 3.732a1.5 1.5 0 0 1 2.305-1.265l6.706 4.267a1.5 1.5 0 0 1 0 2.531l-6.706 4.268A1.5 1.5 0 0 1 3 12.267V3.732Z"
-        />
-      </svg>
-      Run
-    </button>
-  </div>
-</Splitpanes>
-<Toaster />
+</PaneGroup>
 
-{#snippet langButton(lang: string)}
+<Toaster richColors />
+
+{#snippet shareButton(mode: "full" | "markdown" | "html", label: string)}
+  <button
+    onclick={() => {
+      openShareMenu = false;
+      share({
+        mode: mode,
+        title: "Shared code",
+        code: code,
+      });
+    }}
+    class="share-btn w-full bg-gray-100 btn"
+  >
+    <LinkIcon size={16} />
+    {label}
+  </button>
+{/snippet}
+
+{#snippet langButton(lang: string, color: string)}
   <button
     onclick={() => {
       currentTab = lang;
       window.location.hash = "#" + lang;
     }}
-    class="btn {currentTab === lang && 'bg-zinc-700'}"
-    class:bg-zinc-700={currentTab === lang}
+    class="font-medium uppercase w-24 justify-center rounded-lg py-1.5 cursor-pointer flex items-center gap-2"
     data-lang={lang}
   >
+    <span class="size-2.5 rounded-full" style="background-color: {color}"
+    ></span>
     {lang}
   </button>
 {/snippet}
