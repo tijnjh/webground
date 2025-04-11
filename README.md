@@ -1,4 +1,4 @@
-# jnscode
+# WebGround
 
 ### Anonymous code sharing
 
@@ -8,4 +8,4 @@
 - [Emmet](https://code.visualstudio.com/docs/editor/emmet) support
 - Fast code sharing without an account
 
-Use it at https://code.tijn.dev
+Use it at https://webground.tijn.dev

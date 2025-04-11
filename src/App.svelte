@@ -136,14 +136,14 @@
                 <ul class="grid grid-cols-1 gap-2">
                   <li>
                     <span class="block"
-                      >Jnscode by
+                      >WebGround by
                       <a
                         class="text-amber-500 dark:text-ambre-900 hover:underline"
                         href="https://tijn.dev">Tijn</a
                       >
                       -
                       <a
-                        href="https://github.com/tijnjh/jnscode"
+                        href="https://github.com/tijnjh/webground"
                         class="text-amber-500 hover:underline"
                       >
                         View on GitHub
