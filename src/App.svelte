@@ -58,8 +58,10 @@
   const isShared = checkParams(window.location.href, code);
 
   if (!isShared) {
-    for (const [key, val] of Object.entries(JSON.parse(localStorage.code)))
-      code[key as keyof Code] = val as string;
+    if (localStorage.code) {
+      for (const [key, val] of Object.entries(localStorage.code))
+        code[key as keyof Code] = val as string;
+    }
   }
 </script>
 
