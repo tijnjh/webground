@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { toast, Toaster } from "svelte-sonner";
+  import { Toaster } from "svelte-sonner";
   import CodeEditor from "./lib/components/CodeEditor.svelte";
   import Dialog from "./lib/components/Dialog.svelte";
   import { PaneGroup, Pane, PaneResizer } from "paneforge";
@@ -25,8 +25,6 @@
   let showMobilePreview = $state(false);
 
   let previewSrc = $state("/start.html");
-
-  let title = $state("Unnamed document");
 
   const code = $state({
     html: "",
