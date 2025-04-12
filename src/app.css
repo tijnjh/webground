@@ -5,5 +5,5 @@
 }
 
 body {
-  @apply dark:text-white touch-manipulation overflow-hidden dark:bg-[#24292F];
+  @apply text-white touch-manipulation overflow-hidden;
 }
