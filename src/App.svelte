@@ -278,7 +278,7 @@
 {#snippet preview(mobile: boolean = false)}
   <div
     id="outer-preview"
-    class={mobile ? "top-0 fixed inset-x-0 bottom-12 z-50" : "h-full"}
+    class={mobile ? "top-[68px] fixed inset-x-0 bottom-12 z-50" : "h-full"}
   >
     <iframe
       title="preview"
