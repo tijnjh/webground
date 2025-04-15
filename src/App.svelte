@@ -95,13 +95,16 @@
   </PaneGroup>
 {:else}
   <!-- mobile layout -->
-  <div class="h-svh grid grid-rows-[1fr_2.5rem]">
-    {@render editor()}
+  <div class="h-svh grid grid-rows-[1fr_3rem]">
+    {@render editor(true)}
 
-    <div class="grid place-items-center bg-[#1e1e1e] border-t border-zinc-700">
+    <div
+      class="flex justify-between items-center px-2 bg-[#1e1e1e] border-t border-zinc-700"
+    >
+      {@render langSwitcher()}
       <label>
-        <input type="checkbox" bind:checked={showMobilePreview} switch />
-        show preview
+        <input type="checkbox" bind:checked={showMobilePreview} />
+        Toggle preview
       </label>
     </div>
   </div>
@@ -113,7 +116,7 @@
 
 <Toaster richColors />
 
-{#snippet editor()}
+{#snippet editor(mobile: boolean = false)}
   <div
     id="outer-editor"
     class="width-screen @container h-full relative grid grid-rows-[min-content_1fr] overflow-hidden bg-[#1e1e1e]"
@@ -215,23 +218,9 @@
         </div>
       </div>
 
-      <div
-        class="flex border relative border-zinc-700 p-1 rounded-xl isolate overflow-clip"
-      >
-        <span
-          class="w-24 absolute top-1 left-1 bg-zinc-700 rounded-lg -z-10 bottom-1 transition-[left]"
-          style="left: {currentTab === 'html'
-            ? '.25rem'
-            : currentTab === 'css'
-              ? '6.25rem'
-              : currentTab === 'js'
-                ? '12.25rem'
-                : 0}"
-        ></span>
-        {@render langButton("html", "#ff5733")}
-        {@render langButton("css", "rebeccapurple")}
-        {@render langButton("js", "#f7df1e")}
-      </div>
+      {#if !mobile}
+        {@render langSwitcher()}
+      {/if}
 
       <div class="flex items-center gap-2">
         {#if isShared}
@@ -287,7 +276,7 @@
 {#snippet preview(mobile: boolean = false)}
   <div
     id="outer-preview"
-    class={mobile ? "top-0 fixed inset-x-0 bottom-10 z-50" : "h-full"}
+    class={mobile ? "top-0 fixed inset-x-0 bottom-12 z-50" : "h-full"}
   >
     <iframe
       title="preview"
@@ -331,4 +320,24 @@
     </span>
     {lang}
   </button>
+{/snippet}
+
+{#snippet langSwitcher()}
+  <div
+    class="flex border relative border-zinc-700 p-1 rounded-xl isolate overflow-clip"
+  >
+    <span
+      class="w-24 absolute top-1 left-1 bg-zinc-700 rounded-lg -z-10 bottom-1 transition-[left]"
+      style="left: {currentTab === 'html'
+        ? '.25rem'
+        : currentTab === 'css'
+          ? '6.25rem'
+          : currentTab === 'js'
+            ? '12.25rem'
+            : 0}"
+    ></span>
+    {@render langButton("html", "#ff5733")}
+    {@render langButton("css", "rebeccapurple")}
+    {@render langButton("js", "#f7df1e")}
+  </div>
 {/snippet}
