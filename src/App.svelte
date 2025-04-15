@@ -99,13 +99,15 @@
     {@render editor(true)}
 
     <div
-      class="flex justify-between items-center px-2 bg-[#1e1e1e] border-t border-zinc-700"
+      class="flex justify-between items-center pr-2 bg-[#1e1e1e] border-t border-zinc-700"
     >
-      {@render langSwitcher()}
-      <label>
-        <input type="checkbox" bind:checked={showMobilePreview} />
-        Toggle preview
-      </label>
+      {@render langSwitcher(true)}
+      <button
+        onclick={() => (showMobilePreview = !showMobilePreview)}
+        class="btn bg-white text-black"
+      >
+        Preview
+      </button>
     </div>
   </div>
 
@@ -119,7 +121,7 @@
 {#snippet editor(mobile: boolean = false)}
   <div
     id="outer-editor"
-    class="width-screen @container h-full relative grid grid-rows-[min-content_1fr] overflow-hidden bg-[#1e1e1e]"
+    class="width-screen h-full relative grid grid-rows-[min-content_1fr] overflow-hidden bg-[#1e1e1e]"
   >
     <div class="flex items-center justify-between gap-2 p-4">
       <div class="flex items-center gap-3">
@@ -195,7 +197,7 @@
               disabled={openShareMenu}
             >
               <ShareIcon size={16} />
-              <span class="@xl:block hidden">Share</span>
+              Share
             </button>
             <Dialog bind:open={openShareMenu}>
               <ul class="grid items-center w-full grid-cols-1">
@@ -233,7 +235,7 @@
             class="text-blue-500 bg-blue-100 btn"
           >
             <PencilIcon size={16} />
-            <span class="@xl:block hidden">Edit</span>
+            Edit
           </button>
         {/if}
 
@@ -242,7 +244,7 @@
           onclick={renderPreview}
         >
           <PlayIcon size={16} />
-          <span class="@xl:block hidden">Run</span>
+          Run
         </button>
       </div>
     </div>
@@ -322,9 +324,10 @@
   </button>
 {/snippet}
 
-{#snippet langSwitcher()}
+{#snippet langSwitcher(mobile: boolean = false)}
   <div
-    class="flex border relative border-zinc-700 p-1 rounded-xl isolate overflow-clip"
+    class="flex relative border-zinc-700 p-1 rounded-xl isolate overflow-clip
+     {!mobile && 'border'}"
   >
     <span
       class="w-24 absolute top-1 left-1 bg-zinc-700 rounded-lg -z-10 bottom-1 transition-[left]"
