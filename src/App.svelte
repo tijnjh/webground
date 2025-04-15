@@ -78,211 +78,228 @@
   }}
 />
 
-<PaneGroup direction="horizontal">
-  <Pane defaultSize={50} class="h-svh">
-    <div
-      id="outer-editor"
-      class="width-screen h-full relative grid grid-rows-[min-content_1fr] overflow-hidden bg-[#1e1e1e]"
-    >
-      <div class="flex items-center justify-between gap-2 p-4">
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-2">
-            <div>
-              <button
-                class="p-0 text-white bg-amber-600 btn"
-                aria-label="Toggle menu"
-                onclick={() => (openMenu = !openMenu)}
-                disabled={openMenu}
-              >
-                <EllipsisIcon size={16} />
-                <span class="sr-only">Menu</span>
-              </button>
+{#if window.matchMedia("(min-width: 768px)").matches}
+  <!-- desktop layout -->
+  <PaneGroup direction="horizontal">
+    <Pane defaultSize={50} class="h-svh">
+      {@render editor()}
+    </Pane>
 
-              <Dialog bind:open={openMenu}>
-                <ul class="grid grid-cols-1 gap-2">
-                  <h1>WebGround</h1>
-                  <li>
-                    <span class="block">
-                      <a
-                        href="https://github.com/tijnjh/webground"
-                        class="w-full text-blue-500 bg-blue-100 btn"
+    <PaneResizer class="grid bg-zinc-800 place-items-center w-4">
+      <span class="h-12 rounded-full w-1 bg-zinc-600"></span>
+    </PaneResizer>
+
+    <Pane defaultSize={50}>
+      {@render preview()}
+    </Pane>
+  </PaneGroup>
+{:else}
+  <!-- mobile layout -->
+  <div class="h-svh grid grid-rows-[1fr_2.5rem]">
+    {@render editor()}
+
+    <div class="grid place-items-center bg-[#1e1e1e] border-t border-zinc-700">
+      <label>
+        <input type="checkbox" bind:checked={showMobilePreview} switch />
+        show preview
+      </label>
+    </div>
+  </div>
+
+  {#if showMobilePreview}
+    {@render preview(true)}
+  {/if}
+{/if}
+
+<Toaster richColors />
+
+{#snippet editor()}
+  <div
+    id="outer-editor"
+    class="width-screen @container h-full relative grid grid-rows-[min-content_1fr] overflow-hidden bg-[#1e1e1e]"
+  >
+    <div class="flex items-center justify-between gap-2 p-4">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <div>
+            <button
+              class="p-0 text-white bg-amber-600 btn"
+              aria-label="Toggle menu"
+              onclick={() => (openMenu = !openMenu)}
+              disabled={openMenu}
+            >
+              <EllipsisIcon size={16} />
+              <span class="sr-only">Menu</span>
+            </button>
+
+            <Dialog bind:open={openMenu}>
+              <ul class="grid grid-cols-1 gap-2">
+                <h1>WebGround</h1>
+                <li>
+                  <span class="block">
+                    <a
+                      href="https://github.com/tijnjh/webground"
+                      class="w-full text-blue-500 bg-blue-100 btn"
+                    >
+                      <GithubIcon size={16} />
+                      View source
+                    </a>
+                  </span>
+                </li>
+              </ul>
+              {#if !isShared}
+                <div class="w-full h-px my-4 bg-black/10"></div>
+                <ul>
+                  <li class="w-full">
+                    <div class="w-full">
+                      <button
+                        id="open-clear-btn"
+                        class="w-full text-red-500 bg-red-100 btn"
+                        onclick={() => (openClearMenu = !openClearMenu)}
+                        disabled={openClearMenu}
                       >
-                        <GithubIcon size={16} />
-                        View source
-                      </a>
-                    </span>
-                  </li>
-                </ul>
-                {#if !isShared}
-                  <div class="w-full h-px my-4 bg-black/10"></div>
-                  <ul>
-                    <li class="w-full">
-                      <div class="w-full">
+                        <Trash2Icon size={16} />
+                        Clear all code
+                      </button>
+
+                      <Dialog bind:open={openClearMenu}>
+                        <p class="mb-2">
+                          Are you sure you want to your clear your code?
+                        </p>
                         <button
-                          id="open-clear-btn"
+                          id="clear-btn"
+                          onclick={() => {
+                            openMenu = false;
+                            openClearMenu = false;
+                            clearCode(code);
+                          }}
                           class="w-full text-red-500 bg-red-100 btn"
-                          onclick={() => (openClearMenu = !openClearMenu)}
-                          disabled={openClearMenu}
                         >
-                          <Trash2Icon size={16} />
-                          Clear all code
+                          Confirm
                         </button>
-
-                        <Dialog bind:open={openClearMenu}>
-                          <p class="mb-2">
-                            Are you sure you want to your clear your code?
-                          </p>
-                          <button
-                            id="clear-btn"
-                            onclick={() => {
-                              openMenu = false;
-                              openClearMenu = false;
-                              clearCode(code);
-                            }}
-                            class="w-full text-red-500 bg-red-100 btn"
-                          >
-                            Confirm
-                          </button>
-                        </Dialog>
-                      </div>
-                    </li>
-                  </ul>
-                {/if}
-              </Dialog>
-            </div>
-
-            <div class="w-full">
-              <button
-                class="btn bg-sky-800 text-white"
-                onclick={() => (openShareMenu = !openShareMenu)}
-                disabled={openShareMenu}
-              >
-                <ShareIcon size={16} />
-                Share
-              </button>
-              <Dialog bind:open={openShareMenu}>
-                <ul class="grid items-center w-full grid-cols-1">
-                  <li class="flex justify-between">
-                    <p>Link sharing options</p>
-                  </li>
-
-                  <div class="w-full h-px my-4 bg-black/10"></div>
-
-                  <li>
-                    <div class="grid gap-2">
-                      {@render shareButton("full", "Full URL")}
-                      {@render shareButton("markdown", "Markdown")}
-                      {@render shareButton("html", "HTML")}
+                      </Dialog>
                     </div>
                   </li>
                 </ul>
-              </Dialog>
-            </div>
+              {/if}
+            </Dialog>
           </div>
-        </div>
 
-        <div
-          class="flex border relative border-zinc-700 p-1 rounded-xl isolate overflow-clip"
-        >
-          <span
-            class="w-24 absolute top-1 left-1 bg-zinc-700 rounded-lg -z-10 bottom-1 transition-[left]"
-            style="left: {currentTab === 'html'
-              ? '.25rem'
-              : currentTab === 'css'
-                ? '6.25rem'
-                : currentTab === 'js'
-                  ? '12.25rem'
-                  : 0}"
-          ></span>
-          {@render langButton("html", "#ff5733")}
-          {@render langButton("css", "rebeccapurple")}
-          {@render langButton("js", "#f7df1e")}
-        </div>
-
-        <div class="flex items-center gap-2">
-          {#if isShared}
+          <div class="w-full">
             <button
-              onclick={() => {
-                localStorage.code = JSON.stringify(code);
-                location.href = location.href.split("?")[0];
-              }}
-              id="edit-code-btn"
-              class="text-blue-500 bg-blue-100 btn"
+              class="btn bg-sky-800 text-white"
+              onclick={() => (openShareMenu = !openShareMenu)}
+              disabled={openShareMenu}
             >
-              <PencilIcon size={16} />
-              Edit
+              <ShareIcon size={16} />
+              <span class="@xl:block hidden">Share</span>
             </button>
-          {/if}
+            <Dialog bind:open={openShareMenu}>
+              <ul class="grid items-center w-full grid-cols-1">
+                <li class="flex justify-between">
+                  <p>Link sharing options</p>
+                </li>
 
-          <button
-            class="run-btn hidden text-white bg-green-600 md:flex btn"
-            onclick={renderPreview}
-          >
-            <PlayIcon size={16} />
-            Run
-          </button>
+                <div class="w-full h-px my-4 bg-black/10"></div>
+
+                <li>
+                  <div class="grid gap-2">
+                    {@render shareButton("full", "Full URL")}
+                    {@render shareButton("markdown", "Markdown")}
+                    {@render shareButton("html", "HTML")}
+                  </div>
+                </li>
+              </ul>
+            </Dialog>
+          </div>
         </div>
       </div>
 
       <div
-        class="isolate relative *:absolute *:inset-0 *:h-full *:transition-[filter] *:duration-500"
-        class:brightness-50={showMobilePreview}
+        class="flex border relative border-zinc-700 p-1 rounded-xl isolate overflow-clip"
       >
-        <div style="z-index: {currentTab === 'html' ? '100' : '0'}">
-          <CodeEditor
-            bind:value={code.html}
-            language="html"
-            readOnly={isShared}
-          />
-        </div>
+        <span
+          class="w-24 absolute top-1 left-1 bg-zinc-700 rounded-lg -z-10 bottom-1 transition-[left]"
+          style="left: {currentTab === 'html'
+            ? '.25rem'
+            : currentTab === 'css'
+              ? '6.25rem'
+              : currentTab === 'js'
+                ? '12.25rem'
+                : 0}"
+        ></span>
+        {@render langButton("html", "#ff5733")}
+        {@render langButton("css", "rebeccapurple")}
+        {@render langButton("js", "#f7df1e")}
+      </div>
 
-        <div style="z-index: {currentTab === 'css' ? '100' : '0'}">
-          <CodeEditor
-            bind:value={code.css}
-            language="css"
-            readOnly={isShared}
-          />
-        </div>
+      <div class="flex items-center gap-2">
+        {#if isShared}
+          <button
+            onclick={() => {
+              localStorage.code = JSON.stringify(code);
+              location.href = location.href.split("?")[0];
+            }}
+            id="edit-code-btn"
+            class="text-blue-500 bg-blue-100 btn"
+          >
+            <PencilIcon size={16} />
+            <span class="@xl:block hidden">Edit</span>
+          </button>
+        {/if}
 
-        <div style="z-index: {currentTab === 'js' ? '100' : '0'}">
-          <CodeEditor
-            bind:value={code.js}
-            language="javascript"
-            readOnly={isShared}
-          />
-        </div>
+        <button
+          class="run-btn hidden text-white bg-green-600 md:flex btn"
+          onclick={renderPreview}
+        >
+          <PlayIcon size={16} />
+          <span class="@xl:block hidden">Run</span>
+        </button>
       </div>
     </div>
-  </Pane>
 
-  <PaneResizer class="grid bg-zinc-800 place-items-center w-4">
-    <span class="h-12 rounded-full w-1 bg-zinc-600"></span>
-  </PaneResizer>
-
-  <Pane defaultSize={50}>
     <div
-      id="outer-preview"
-      style="transform: {window.innerWidth < 1024
-        ? showMobilePreview
-          ? 'translatey(0)'
-          : 'translatey(100%)'
-        : ''}"
-      class="fixed top-0 flex-grow w-full overflow-hidden transition-transform duration-300 translate-y-full h-dvh md:relative md:top-0 md:h-dvh md:translate-y-0"
+      class="isolate relative *:absolute *:inset-0 *:h-full *:transition-[filter] *:duration-500"
     >
-      <iframe
-        title="preview"
-        class="w-full h-full bg-white border-0"
-        id="preview"
-        referrerpolicy="no-referrer"
-        sandbox="allow-modals allow-downloads allow-scripts allow-forms"
-        src={previewSrc}
-      >
-      </iframe>
-    </div>
-  </Pane>
-</PaneGroup>
+      <div style="z-index: {currentTab === 'html' ? '100' : '0'}">
+        <CodeEditor
+          bind:value={code.html}
+          language="html"
+          readOnly={isShared}
+        />
+      </div>
 
-<Toaster richColors />
+      <div style="z-index: {currentTab === 'css' ? '100' : '0'}">
+        <CodeEditor bind:value={code.css} language="css" readOnly={isShared} />
+      </div>
+
+      <div style="z-index: {currentTab === 'js' ? '100' : '0'}">
+        <CodeEditor
+          bind:value={code.js}
+          language="javascript"
+          readOnly={isShared}
+        />
+      </div>
+    </div>
+  </div>
+{/snippet}
+
+{#snippet preview(mobile: boolean = false)}
+  <div
+    id="outer-preview"
+    class={mobile ? "top-0 fixed inset-x-0 bottom-10 z-50" : "h-full"}
+  >
+    <iframe
+      title="preview"
+      class="size-full bg-white border-0"
+      id="preview"
+      referrerpolicy="no-referrer"
+      sandbox="allow-modals allow-downloads allow-scripts allow-forms"
+      src={previewSrc}
+    >
+    </iframe>
+  </div>
+{/snippet}
 
 {#snippet shareButton(mode: "full" | "markdown" | "html", label: string)}
   <button
@@ -307,11 +324,11 @@
       currentTab = lang;
       window.location.hash = "#" + lang;
     }}
-    class="font-medium uppercase w-24 justify-center rounded-lg py-1.5 cursor-pointer flex items-center gap-2"
+    class="font-medium uppercase w-24 text-sm justify-center rounded-lg py-1.5 cursor-pointer flex items-center gap-2"
     data-lang={lang}
   >
-    <span class="size-2.5 rounded-full" style="background-color: {color}"
-    ></span>
+    <span class="size-2.5 rounded-full" style="background-color: {color}">
+    </span>
     {lang}
   </button>
 {/snippet}
