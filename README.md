@@ -22,4 +22,4 @@
 Use it at https://webground.tijn.dev
 
 
-Derived from my other project; https://github.com/tijnjh/jnscode
+Derived from my other project; https://tijn.dev/jnscode
