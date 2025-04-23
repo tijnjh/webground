@@ -1,6 +1,5 @@
 import { deflateSync, inflateSync, strFromU8, strToU8 } from "fflate";
 import type { Code } from "./types";
-import { toast } from "svelte-sonner";
 
 export const template = ({
   css,
