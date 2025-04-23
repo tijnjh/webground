@@ -1,5 +1,6 @@
 import { deflateSync, inflateSync, strFromU8, strToU8 } from "fflate";
 import type { Code } from "./types";
+import { toast } from "svelte-sonner";
 
 export const template = ({
   css,
@@ -26,23 +27,35 @@ export const template = ({
 
 export function encode(str: string) {
   let encoded;
-  encoded = str;
-  encoded = strToU8(str);
-  encoded = deflateSync(encoded);
-  encoded = btoa(String.fromCharCode.apply(null, [...encoded]));
-  encoded = encoded.replace(/=/g, "").replace(/\+/g, "~").replace(/\//g, "_");
+
+  try {
+    encoded = str;
+    encoded = strToU8(str);
+    encoded = deflateSync(encoded);
+    encoded = btoa(String.fromCharCode.apply(null, [...encoded]));
+    encoded = encoded.replace(/=/g, "").replace(/\+/g, "~").replace(/\//g, "_");
+  } catch (err) {
+    throw new Error(`Failed to encode: ${err}`);
+  }
+
   return encoded;
 }
 
 export function decode(str: string) {
   let decoded;
-  decoded = str;
-  decoded = padBase64(decoded);
-  decoded = decoded.replace(/\~/g, "+").replace(/_/g, "/");
-  decoded = atob(decoded);
-  decoded = Uint8Array.from(decoded, (c) => c.charCodeAt(0));
-  decoded = inflateSync(decoded);
-  decoded = strFromU8(decoded);
+
+  try {
+    decoded = str;
+    decoded = padBase64(decoded);
+    decoded = decoded.replace(/\~/g, "+").replace(/_/g, "/");
+    decoded = atob(decoded);
+    decoded = Uint8Array.from(decoded, (c) => c.charCodeAt(0));
+    decoded = inflateSync(decoded);
+    decoded = strFromU8(decoded);
+  } catch (err) {
+    throw new Error(`Failed to encode: ${err}`);
+  }
+
   return decoded;
 }
 

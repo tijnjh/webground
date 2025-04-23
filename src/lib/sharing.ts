@@ -1,23 +1,25 @@
 import { toast } from "svelte-sonner";
 import { decode, encode } from "./helpers";
 import type { Code } from "./types";
+import { tryCatch } from "tsuite";
 
 export function checkParams(url: string, code: Code) {
-  const params = new URL(url).searchParams;
+  const { h, c, j } = Object.fromEntries(new URL(url).searchParams);
 
-  const html = params.get("h");
-  const css = params.get("c");
-  const js = params.get("j");
+  const [decoded, decodingErr] = tryCatch(() => ({
+    html: h ? decode(h) : "",
+    css: c ? decode(c) : "",
+    js: j ? decode(j) : "",
+  }));
 
-  code.html = html ? decode(html) : "";
-  code.css = css ? decode(css) : "";
-  code.js = js ? decode(js) : "";
-
-  if (html || css || js) {
-    return true;
-  } else {
-    return false;
+  if (decodingErr || !decoded) {
+    toast.error(`Failed to decode: ${decodingErr}`);
+    return;
   }
+
+  Object.assign(code, decoded);
+
+  return !!(h || c || j);
 }
 
 export function share({
@@ -33,13 +35,24 @@ export function share({
 
   const params = new URLSearchParams();
 
-  if (code.html) params.set("h", encode(code.html));
-  if (code.css) params.set("c", encode(code.css));
-  if (code.js) params.set("j", encode(code.js));
+  const [encoded, encodingErr] = tryCatch(() => ({
+    html: encode(code.html),
+    css: encode(code.css),
+    js: encode(code.js),
+  }));
+
+  if (encodingErr || !encoded) {
+    toast.error(`Failed to encode: ${encodingErr}`);
+    return;
+  }
+
+  if (code.html) params.set("h", encoded.html);
+  if (code.css) params.set("c", encoded.css);
+  if (code.js) params.set("j", encoded.js);
 
   let newUrl = `${origin}?${params.toString()}`;
 
-  try {
+  const [, copyErr] = tryCatch(() => {
     switch (mode) {
       case "full":
         navigator.clipboard.writeText(newUrl);
@@ -64,8 +77,10 @@ export function share({
         );
       }, 200);
     }
-  } catch (err) {
-    const msg = "Failed to copy to clipboard " + err;
+  });
+
+  if (copyErr) {
+    const msg = `Failed to copy to clipboard: ${copyErr}`;
     toast.error(msg);
     throw new Error(msg);
   }
