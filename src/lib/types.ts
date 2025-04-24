@@ -1,1 +1,5 @@
-export type Code = Record<"html" | "css" | "js", string>;
+export interface Code {
+  html: string;
+  css: string;
+  js: string;
+}
