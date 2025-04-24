@@ -98,12 +98,12 @@
 {:else}
   <!-- mobile layout -->
   <div class="h-svh grid grid-rows-[1fr_3rem]">
-    {@render editor(true)}
+    {@render editor({ mobile: true })}
 
     <div
       class="flex justify-between items-center pr-2 bg-[#1e1e1e] border-t border-zinc-700"
     >
-      {@render langSwitcher(true)}
+      {@render langSwitcher({ mobile: true })}
       <button
         onclick={() => (showMobilePreview = !showMobilePreview)}
         class="btn bg-white text-black"
@@ -114,13 +114,13 @@
   </div>
 
   {#if showMobilePreview}
-    {@render preview(true)}
+    {@render preview({ mobile: true })}
   {/if}
 {/if}
 
 <Toaster richColors />
 
-{#snippet editor(mobile: boolean = false)}
+{#snippet editor({ mobile = false }: { mobile?: boolean } = {})}
   <div
     id="outer-editor"
     class="width-screen h-full relative grid grid-rows-[min-content_1fr] overflow-hidden bg-[#1e1e1e]"
@@ -294,7 +294,7 @@
   </div>
 {/snippet}
 
-{#snippet preview(mobile: boolean = false)}
+{#snippet preview({ mobile = false }: { mobile?: boolean } = {})}
   <div
     id="outer-preview"
     class={mobile ? "top-[68px] fixed inset-x-0 bottom-12 z-50" : "h-full"}
@@ -343,7 +343,7 @@
   </button>
 {/snippet}
 
-{#snippet langSwitcher(mobile: boolean = false)}
+{#snippet langSwitcher({ mobile = false }: { mobile?: boolean } = {})}
   <div
     class="flex relative border-zinc-700 p-1 rounded-xl isolate overflow-clip
      {!mobile && 'border'}"
