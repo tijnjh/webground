@@ -18,9 +18,9 @@
 
   import type { Code } from "./lib/types";
 
-  let openMenu = $state(false);
-  let openClearMenu = $state(false);
-  let openShareMenu = $state(false);
+  let isMenuOpen = $state(false);
+  let isClearMenuOpen = $state(false);
+  let isShareMenuOpen = $state(false);
   let currentTab = $state("html");
   let showMobilePreview = $state(false);
 
@@ -132,14 +132,14 @@
             <button
               class="p-0 text-white bg-amber-600 btn"
               aria-label="Toggle menu"
-              onclick={() => (openMenu = !openMenu)}
-              disabled={openMenu}
+              onclick={() => (isMenuOpen = !isMenuOpen)}
+              disabled={isMenuOpen}
             >
               <EllipsisIcon size={16} />
               <span class="sr-only">Menu</span>
             </button>
 
-            <Dialog bind:open={openMenu}>
+            <Dialog bind:open={isMenuOpen}>
               <ul class="grid grid-cols-1 gap-2">
                 <h1>WebGround</h1>
                 <li>
@@ -162,22 +162,22 @@
                       <button
                         id="open-clear-btn"
                         class="w-full text-red-500 bg-red-100 btn"
-                        onclick={() => (openClearMenu = !openClearMenu)}
-                        disabled={openClearMenu}
+                        onclick={() => (isClearMenuOpen = !isClearMenuOpen)}
+                        disabled={isClearMenuOpen}
                       >
                         <Trash2Icon size={16} />
                         Clear all code
                       </button>
 
-                      <Dialog bind:open={openClearMenu}>
+                      <Dialog bind:open={isClearMenuOpen}>
                         <p class="mb-2">
                           Are you sure you want to your clear your code?
                         </p>
                         <button
                           id="clear-btn"
                           onclick={() => {
-                            openMenu = false;
-                            openClearMenu = false;
+                            isMenuOpen = false;
+                            isClearMenuOpen = false;
                             clearCode(code);
                           }}
                           class="w-full text-red-500 bg-red-100 btn"
@@ -195,13 +195,13 @@
           <div class="w-full">
             <button
               class="btn bg-sky-800 text-white"
-              onclick={() => (openShareMenu = !openShareMenu)}
-              disabled={openShareMenu}
+              onclick={() => (isShareMenuOpen = !isShareMenuOpen)}
+              disabled={isShareMenuOpen}
             >
               <ShareIcon size={16} />
               Share
             </button>
-            <Dialog bind:open={openShareMenu}>
+            <Dialog bind:open={isShareMenuOpen}>
               <ul class="grid items-center w-full grid-cols-1">
                 <li class="flex justify-between">
                   <p>Link sharing options</p>
@@ -314,7 +314,7 @@
 {#snippet shareButton(mode: "full" | "markdown" | "html", label: string)}
   <button
     onclick={() => {
-      openShareMenu = false;
+      isShareMenuOpen = false;
       share({
         mode: mode,
         title: title || "Shared code",
