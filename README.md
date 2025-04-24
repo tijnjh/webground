@@ -4,14 +4,12 @@
   <p>Open source CodePen alternative</p>
 </div>
 
-
 ### Current features
 
 - Clean interface
 - VSCode's Monaco editor
 - [Emmet](https://code.visualstudio.com/docs/editor/emmet) support
 - Fast code sharing without an account
-
 
 ### Planned features
 
@@ -20,6 +18,5 @@
 - Maybe pre-processors
 
 Use it at https://webground.tijn.dev
-
 
 Derived from my other project; https://tijn.dev/jnscode

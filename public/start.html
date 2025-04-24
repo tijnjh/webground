@@ -1,77 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
+      body {
+        background: #f6f6f6;
+        font-family: "-apple-system-font", system-ui;
+        cursor: default;
+        display: -webkit-box;
+        text-align: center;
+        -webkit-box-align: center;
+        -webkit-box-pack: center;
+        height: 100vh;
+        height: 100svh;
+        -webkit-user-select: none;
+      }
+
+      .content-container {
+        min-width: 320px;
+        max-width: 580px;
+        margin: 0 auto;
+        position: relative;
+        width: 50%;
+      }
+
+      .title {
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 34px;
+        margin: 0 auto;
+      }
+
+      .message {
+        font-size: 13px;
+        line-height: 18px;
+        padding: 0 24px;
+      }
+
+      .text-container {
+        color: #858585;
+        position: relative;
+        width: 100%;
+        word-wrap: break-word;
+      }
+
+      @media (prefers-color-scheme: dark) {
         body {
-            background: #f6f6f6;
-            font-family: '-apple-system-font', system-ui;
-            cursor: default;
-            display: -webkit-box;
-            text-align: center;
-            -webkit-box-align: center;
-            -webkit-box-pack: center;
-            height: 100vh;
-            height: 100svh;
-            -webkit-user-select: none
-        }
-
-        .content-container {
-            min-width: 320px;
-            max-width: 580px;
-            margin: 0 auto;
-            position: relative;
-            width: 50%
-        }
-
-        .title {
-            font-size: 28px;
-            font-weight: 700;
-            line-height: 34px;
-            margin: 0 auto
+          background: #1e1e1e;
         }
 
         .message {
-            font-size: 13px;
-            line-height: 18px;
-            padding: 0 24px
+          color: #6e6e6e;
         }
-
-        .text-container {
-            color: #858585;
-            position: relative;
-            width: 100%;
-            word-wrap: break-word
-        }
-
-        @media (prefers-color-scheme:dark) {
-            body {
-                background: #1e1e1e
-            }
-
-            .message {
-                color: #6e6e6e
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="content-container">
-        <div class="container">
-            <div class="text-container">
-                <p class="title">Code you run will show up here</p>
-            </div>
-            <div class="text-container">
-                <p class="message">You can preview your markup by hitting CTRL/CMD + S, or by pressing the Run
-                    button.</p>
-            </div>
+      <div class="container">
+        <div class="text-container">
+          <p class="title">Code you run will show up here</p>
         </div>
+        <div class="text-container">
+          <p class="message">
+            You can preview your markup by hitting CTRL/CMD + S, or by pressing
+            the Run button.
+          </p>
+        </div>
+      </div>
     </div>
-
-</body>
-
+  </body>
 </html>
