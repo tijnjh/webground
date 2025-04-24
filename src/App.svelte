@@ -6,6 +6,7 @@
   import { clearCode, template } from "./lib/helpers";
   import { checkParams, share } from "./lib/sharing";
   import {
+    ChevronUpIcon,
     EllipsisIcon,
     GithubIcon,
     LinkIcon,
@@ -27,6 +28,10 @@
   let previewSrc = $state("/start.html");
 
   let title = $state("");
+
+  const checkMediaQuery = () => window.matchMedia("(min-width: 768px)").matches;
+
+  let isMobile: boolean = $state(checkMediaQuery());
 
   const code = $state({
     html: "",
@@ -78,9 +83,12 @@
       renderPreview();
     }
   }}
+  onresize={() => {
+    isMobile = checkMediaQuery();
+  }}
 />
 
-{#if window.matchMedia("(min-width: 768px)").matches}
+{#if isMobile}
   <!-- desktop layout -->
   <PaneGroup direction="horizontal">
     <Pane defaultSize={50} class="h-svh">
@@ -108,6 +116,12 @@
         onclick={() => (showMobilePreview = !showMobilePreview)}
         class="btn bg-white text-black"
       >
+        <div
+          class="transition-transform"
+          class:rotate-x-180={showMobilePreview}
+        >
+          <ChevronUpIcon />
+        </div>
         Preview
       </button>
     </div>
