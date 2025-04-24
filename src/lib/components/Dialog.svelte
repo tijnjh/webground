@@ -2,14 +2,17 @@
   import type { Snippet } from "svelte";
   import { fly } from "svelte/transition";
 
-  type Props = { children: Snippet; open: boolean };
+  interface Props {
+    children: Snippet;
+    open: boolean;
+  }
+
   let { children, open = $bindable() }: Props = $props();
 
   let dialog: HTMLDivElement | null = $state(null);
 
   function handleDocumentClick(event: MouseEvent) {
-    if (!dialog) return;
-    if (!open) return;
+    if (!dialog || !open) return;
     if (!dialog.contains(event.target as Node)) {
       open = false;
     }

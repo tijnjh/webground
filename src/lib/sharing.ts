@@ -1,7 +1,8 @@
 import { toast } from "svelte-sonner";
 import { decode, encode } from "./helpers";
-import type { Code } from "./types";
 import { tryCatch } from "tsuite";
+
+import type { Code } from "./types";
 
 export function checkParams(url: string, code: Code) {
   const { h, c, j } = Object.fromEntries(new URL(url).searchParams);
