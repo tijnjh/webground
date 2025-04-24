@@ -120,7 +120,7 @@
 
 <Toaster richColors />
 
-{#snippet editor({ mobile }: { mobile: boolean } = { mobile: false })}
+{#snippet editor({ mobile } = { mobile: false })}
   <div
     id="outer-editor"
     class="width-screen h-full relative grid grid-rows-[min-content_1fr] overflow-hidden bg-[#1e1e1e]"
@@ -294,7 +294,7 @@
   </div>
 {/snippet}
 
-{#snippet preview({ mobile }: { mobile: boolean } = { mobile: false })}
+{#snippet preview({ mobile } = { mobile: false })}
   <div
     id="outer-preview"
     class={mobile ? "top-[68px] fixed inset-x-0 bottom-12 z-50" : "h-full"}
@@ -343,7 +343,7 @@
   </button>
 {/snippet}
 
-{#snippet langSwitcher({ mobile }: { mobile: boolean } = { mobile: false })}
+{#snippet langSwitcher({ mobile } = { mobile: false })}
   <div
     class="flex relative border-zinc-700 p-1 rounded-xl isolate overflow-clip
      {!mobile && 'border'}"
