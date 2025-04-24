@@ -26,6 +26,8 @@
 
   let previewSrc = $state("/start.html");
 
+  let title = $state("");
+
   const code = $state({
     html: "",
     css: "",
@@ -210,6 +212,23 @@
                 <li>
                   <div class="grid gap-2">
                     {@render shareButton("full", "Full URL")}
+                  </div>
+                </li>
+
+                <div class="w-full h-px my-4 bg-black/10"></div>
+
+                <label class="flex items-center gap-4 mb-4">
+                  <span>Title</span>
+                  <input
+                    type="text"
+                    placeholder="Shared code"
+                    class="grow text-right outline-none"
+                    bind:value={title}
+                  />
+                </label>
+
+                <li>
+                  <div class="grid gap-2">
                     {@render shareButton("markdown", "Markdown")}
                     {@render shareButton("html", "HTML")}
                   </div>
@@ -298,7 +317,7 @@
       openShareMenu = false;
       share({
         mode: mode,
-        title: "Shared code",
+        title: title || "Shared code",
         code: code,
       });
     }}
