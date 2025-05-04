@@ -38,7 +38,7 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "tijn-webground-85"
-          entrypoint: "mod.ts"
+          entrypoint: "src/main.ts"
           root: "dist"
           
           
