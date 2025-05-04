@@ -1,5 +1,5 @@
 import { deflateSync, inflateSync, strFromU8, strToU8 } from "fflate";
-import type { Code } from "./types";
+import type { Code } from "./types.ts";
 
 export const template = ({
   css,
@@ -59,17 +59,16 @@ export function decode(str: string) {
 }
 
 export function padBase64(input: string) {
-  var segmentLength = 4;
-  var stringLength = input.length;
-  var diff = stringLength % segmentLength;
+  const segmentLength = 4;
+  const stringLength = input.length;
+  const diff = stringLength % segmentLength;
 
   if (!diff) {
     return input;
   }
 
-  var padLength = segmentLength - diff;
-  var paddedStringLength = stringLength + padLength;
-  var buffer = input;
+  let padLength = segmentLength - diff;
+  let buffer = input;
 
   while (padLength--) {
     buffer += "=";
@@ -78,7 +77,7 @@ export function padBase64(input: string) {
 }
 
 export function clearCode(code: Code) {
-  for (const [key, val] of Object.entries(code)) {
+  for (const key of Object.keys(code)) {
     code[key as keyof Code] = "";
   }
 }

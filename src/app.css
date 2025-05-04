@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 .btn {
-  @apply flex items-center justify-center gap-1.5 px-3 font-medium rounded-md h-9 cursor-pointer focus-visible:outline-none hover:opacity-75 focus-visible:ring disabled:pointer-events-none disabled:opacity-50 text-sm active:translate-y-px;
+  @apply flex items-center justify-center gap-1.5 px-3 font-medium rounded-md
+    h-9 cursor-pointer focus-visible:outline-none hover:opacity-75
+    focus-visible:ring disabled:pointer-events-none disabled:opacity-50 text-sm
+    active:translate-y-px;
 }
 
 body {

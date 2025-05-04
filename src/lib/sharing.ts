@@ -1,8 +1,8 @@
 import { toast } from "svelte-sonner";
-import { decode, encode } from "./helpers";
+import { decode, encode } from "./helpers.ts";
 import { tryCatch } from "tsuite";
 
-import type { Code } from "./types";
+import type { Code } from "./types.ts";
 
 export function checkParams(url: string, code: Code) {
   const { h, c, j } = Object.fromEntries(new URL(url).searchParams);
@@ -51,7 +51,7 @@ export function share({
   if (code.css) params.set("c", encoded.css);
   if (code.js) params.set("j", encoded.js);
 
-  let newUrl = `${origin}?${params.toString()}`;
+  const newUrl = `${origin}?${params.toString()}`;
 
   const [, copyErr] = tryCatch(() => {
     switch (mode) {
@@ -74,7 +74,7 @@ export function share({
     if (newUrl.length > 2048) {
       setTimeout(() => {
         toast.warning(
-          `URL is longer than 2048 characters, which might cause issues in certain browsers`,
+          `URL is longer than 2048 characters, which might cause issues in certain browsers`
         );
       }, 200);
     }

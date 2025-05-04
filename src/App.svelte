@@ -2,7 +2,7 @@
   import { Toaster } from "svelte-sonner";
   import CodeEditor from "./lib/components/CodeEditor.svelte";
   import Dialog from "./lib/components/Dialog.svelte";
-  import { PaneGroup, Pane, PaneResizer } from "paneforge";
+  import { Pane, PaneGroup, PaneResizer } from "paneforge";
   import { clearCode, template } from "./lib/helpers";
   import { checkParams, share } from "./lib/sharing";
   import {
@@ -29,7 +29,8 @@
 
   let title = $state("");
 
-  const checkMediaQuery = () => window.matchMedia("(min-width: 768px)").matches;
+  const checkMediaQuery = () =>
+    window.matchMedia("(min-width: 768px)").matches;
 
   let isMobile: boolean = $state(checkMediaQuery());
 
@@ -45,7 +46,7 @@
       return;
     }
     const url = URL.createObjectURL(
-      new Blob([template(code)], { type: "text/html" })
+      new Blob([template(code)], { type: "text/html" }),
     );
 
     previewSrc = url;
@@ -70,8 +71,11 @@
 
   if (!isShared) {
     if (localStorage.code) {
-      for (const [key, val] of Object.entries(JSON.parse(localStorage.code)))
+      for (
+        const [key, val] of Object.entries(JSON.parse(localStorage.code))
+      ) {
         code[key as keyof Code] = val as string;
+      }
     }
   }
 </script>
@@ -108,9 +112,7 @@
   <div class="h-svh grid grid-rows-[1fr_3rem]">
     {@render editor({ mobile: true })}
 
-    <div
-      class="flex justify-between items-center pr-2 bg-[#1e1e1e] border-t border-zinc-700"
-    >
+    <div class="flex justify-between items-center pr-2 bg-[#1e1e1e] border-t border-zinc-700">
       {@render langSwitcher({ mobile: true })}
       <button
         onclick={() => (showMobilePreview = !showMobilePreview)}
@@ -176,7 +178,8 @@
                       <button
                         id="open-clear-btn"
                         class="w-full text-red-500 bg-red-100 btn"
-                        onclick={() => (isClearMenuOpen = !isClearMenuOpen)}
+                        onclick={() => (isClearMenuOpen =
+                        !isClearMenuOpen)}
                         disabled={isClearMenuOpen}
                       >
                         <Trash2Icon size={16} />
@@ -282,10 +285,8 @@
       </div>
     </div>
 
-    <div
-      class="isolate relative *:absolute *:inset-0 *:h-full *:transition-[filter] *:duration-500"
-    >
-      <div style="z-index: {currentTab === 'html' ? '100' : '0'}">
+    <div class="isolate relative *:absolute *:inset-0 *:h-full *:transition-[filter] *:duration-500">
+      <div style={`z-index: ${currentTab === "html" ? "100" : "0"}`}>
         <CodeEditor
           bind:value={code.html}
           language="html"
@@ -293,11 +294,11 @@
         />
       </div>
 
-      <div style="z-index: {currentTab === 'css' ? '100' : '0'}">
+      <div style={`z-index: ${currentTab === "css" ? "100" : "0"}`}>
         <CodeEditor bind:value={code.css} language="css" readOnly={isShared} />
       </div>
 
-      <div style="z-index: {currentTab === 'js' ? '100' : '0'}">
+      <div style={`z-index: ${currentTab === "js" ? "100" : "0"}`}>
         <CodeEditor
           bind:value={code.js}
           language="javascript"
@@ -337,8 +338,7 @@
     }}
     class="share-btn w-full bg-gray-100 btn"
   >
-    <LinkIcon size={16} />
-    {label}
+    <LinkIcon size={16} /> {label}
   </button>
 {/snippet}
 
@@ -351,7 +351,7 @@
     class="font-medium uppercase w-24 text-sm justify-center rounded-lg py-1.5 cursor-pointer flex items-center gap-2"
     data-lang={lang}
   >
-    <span class="size-2.5 rounded-full" style="background-color: {color}">
+    <span class="size-2.5 rounded-full" style={`background-color: ${color}`}>
     </span>
     {lang}
   </button>
@@ -359,18 +359,20 @@
 
 {#snippet langSwitcher({ mobile } = { mobile: false })}
   <div
-    class="flex relative border-zinc-700 p-1 rounded-xl isolate overflow-clip
-     {!mobile && 'border'}"
+    class={`flex relative border-zinc-700 p-1 rounded-xl isolate overflow-clip
+     ${!mobile && "border"}`}
   >
     <span
       class="w-24 absolute top-1 left-1 bg-zinc-700 rounded-lg -z-10 bottom-1 transition-[left]"
-      style="left: {currentTab === 'html'
-        ? '.25rem'
-        : currentTab === 'css'
-          ? '6.25rem'
-          : currentTab === 'js'
-            ? '12.25rem'
-            : 0}"
+      style={`left: ${
+        currentTab === "html"
+          ? ".25rem"
+          : currentTab === "css"
+          ? "6.25rem"
+          : currentTab === "js"
+          ? "12.25rem"
+          : 0
+      }`}
     ></span>
     {@render langButton("html", "#ff5733")}
     {@render langButton("css", "rebeccapurple")}
