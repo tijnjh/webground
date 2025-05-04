@@ -3,4 +3,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 
 export default {
   plugins: [tailwindcss(), svelte()],
+  build: {
+    outDir: "dist",
+  },
 };
