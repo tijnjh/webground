@@ -3,6 +3,7 @@ import { decode, encode } from "./helpers";
 import { tryCatch } from "tsuite";
 
 import type { Code } from "./types";
+import { haptic } from "ios-haptics";
 
 export function checkParams(url: string, code: Code) {
   const { h, c, j } = Object.fromEntries(new URL(url).searchParams);
@@ -14,6 +15,7 @@ export function checkParams(url: string, code: Code) {
   }));
 
   if (decodingErr || !decoded) {
+    haptic.error();
     toast.error(`Failed to decode: ${decodingErr}`);
     return;
   }
@@ -43,6 +45,7 @@ export function share({
   }));
 
   if (encodingErr || !encoded) {
+    haptic.error();
     toast.error(`Failed to encode: ${encodingErr}`);
     return;
   }
@@ -57,14 +60,17 @@ export function share({
     switch (mode) {
       case "full":
         navigator.clipboard.writeText(newUrl);
+        haptic.confirm();
         toast.success("Copied full link to clipboard");
         break;
       case "markdown":
         navigator.clipboard.writeText(`[${title}](${newUrl})`);
+        haptic.confirm();
         toast.success("Copied markdown to clipboard");
         break;
       case "html":
         navigator.clipboard.writeText(`<a href="${newUrl}">${title}</a>`);
+        haptic.confirm();
         toast.success("Copied HTML to clipboard");
         break;
       default:
@@ -76,12 +82,14 @@ export function share({
         toast.warning(
           `URL is longer than 2048 characters, which might cause issues in certain browsers`,
         );
+        haptic.error();
       }, 200);
     }
   });
 
   if (copyErr) {
     const msg = `Failed to copy to clipboard: ${copyErr}`;
+    haptic.error();
     toast.error(msg);
     throw new Error(msg);
   }

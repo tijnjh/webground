@@ -18,6 +18,7 @@
   import { onMount } from "svelte";
 
   import type { Code } from "./lib/types";
+  import { haptic } from "ios-haptics";
 
   let isMenuOpen = $state(false);
   let isClearMenuOpen = $state(false);
@@ -74,6 +75,30 @@
         code[key as keyof Code] = val as string;
     }
   }
+
+  function addHapticListeners() {
+    const elts = Array.from(document.getElementsByClassName("btn"));
+    for (const elt of elts) {
+      elt.removeEventListener("click", haptic); // prevent duplicates
+      elt.addEventListener("click", haptic);
+    }
+  }
+
+  onMount(() => {
+    addHapticListeners();
+
+    // Observe DOM changes to re-attach listeners
+    const observer = new MutationObserver(() => {
+      addHapticListeners();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => observer.disconnect();
+  });
 </script>
 
 <svelte:window
