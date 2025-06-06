@@ -1,96 +1,46 @@
-import { toast } from "svelte-sonner";
-import { decode, encode } from "./helpers";
-import { tryCatch } from "tsuite";
+import { encode } from "./codec";
+import { Code } from "./types";
 
-import type { Code } from "./types";
-import { haptic } from "ios-haptics";
-
-export function checkParams(url: string, code: Code) {
-  const { h, c, j } = Object.fromEntries(new URL(url).searchParams);
-
-  const [decoded, decodingErr] = tryCatch(() => ({
-    html: h ? decode(h) : "",
-    css: c ? decode(c) : "",
-    js: j ? decode(j) : "",
-  }));
-
-  if (decodingErr || !decoded) {
-    haptic.error();
-    toast.error(`Failed to decode: ${decodingErr}`);
-    return;
-  }
-
-  Object.assign(code, decoded);
-
-  return !!(h || c || j);
-}
-
-export function share({
-  mode,
-  title,
-  code,
-}: {
-  mode: "full" | "markdown" | "html";
-  title: string;
-  code: Code;
-}) {
-  const origin = new URL(location.href).origin;
-
-  const params = new URLSearchParams();
-
-  const [encoded, encodingErr] = tryCatch(() => ({
+export function copyLink(
+  code: Code,
+  mode: "full" | "markdown" | "html",
+  title: string,
+) {
+  const encoded = {
     html: encode(code.html),
     css: encode(code.css),
     js: encode(code.js),
-  }));
+  };
 
-  if (encodingErr || !encoded) {
-    haptic.error();
-    toast.error(`Failed to encode: ${encodingErr}`);
-    return;
-  }
+  const params = new URLSearchParams();
 
   if (code.html) params.set("h", encoded.html);
   if (code.css) params.set("c", encoded.css);
   if (code.js) params.set("j", encoded.js);
 
-  let newUrl = `${origin}?${params.toString()}`;
+  const newUrl = `${origin}?${params.toString()}`;
 
-  const [, copyErr] = tryCatch(() => {
-    switch (mode) {
-      case "full":
-        navigator.clipboard.writeText(newUrl);
-        haptic.confirm();
-        toast.success("Copied full link to clipboard");
-        break;
-      case "markdown":
-        navigator.clipboard.writeText(`[${title}](${newUrl})`);
-        haptic.confirm();
-        toast.success("Copied markdown to clipboard");
-        break;
-      case "html":
-        navigator.clipboard.writeText(`<a href="${newUrl}">${title}</a>`);
-        haptic.confirm();
-        toast.success("Copied HTML to clipboard");
-        break;
-      default:
-        break;
-    }
+  switch (mode) {
+    case "full":
+      navigator.clipboard.writeText(newUrl);
+      break;
+    case "markdown":
+      navigator.clipboard.writeText(`[${title}](${newUrl})`);
+      break;
+    case "html":
+      navigator.clipboard.writeText(
+        `<a href="${newUrl}">${title}</a>`,
+      );
+      break;
+    default:
+      throw new Error(
+        `Copy link type "${mode}" is not supported.`,
+      );
+  }
 
-    if (newUrl.length > 2048) {
-      setTimeout(() => {
-        toast.warning(
-          `URL is longer than 2048 characters, which might cause issues in certain browsers`,
-        );
-        haptic.error();
-      }, 200);
-    }
-  });
-
-  if (copyErr) {
-    const msg = `Failed to copy to clipboard: ${copyErr}`;
-    haptic.error();
-    toast.error(msg);
-    throw new Error(msg);
+  if (newUrl.length > 2048) {
+    throw new Error(
+      "URL is longer than 2048 characters, which might cause issues in certain browsers",
+    );
   }
 }

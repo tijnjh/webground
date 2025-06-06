@@ -4,12 +4,12 @@
   import { emmetHTML } from "emmet-monaco-es";
   import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
   import { onDestroy, onMount } from "svelte";
+  import Spinner from "./Spinner.svelte";
 
   let editor: Monaco.editor.IStandaloneCodeEditor;
   let monaco: typeof Monaco;
   let editorContainer: HTMLElement;
 
-  // Define props with Svelte 5 syntax
   interface Props {
     value: string;
     language?: string;
@@ -24,18 +24,16 @@
     readOnly = false,
   }: Props = $props();
 
+  let isLoading = $state(false);
+
   onMount(() => {
     (async () => {
-      // Remove the next two lines to load the monaco editor from a CDN
-      // see https://www.npmjs.com/package/@monaco-editor/loader#config
-      const monacoEditor = await import("monaco-editor");
-      loader.config({ monaco: monacoEditor.default });
-
+      isLoading = true;
       monaco = await loader.init();
+      isLoading = false;
 
       emmetHTML(monaco);
 
-      // Your monaco instance is ready, let's display some code!
       editor = monaco.editor.create(editorContainer, {
         value,
         language,
@@ -52,12 +50,7 @@
       });
 
       editor.onDidChangeModelContent((e) => {
-        if (e.isFlush) {
-          // true if setValue call
-          //console.log('setValue call');
-          /* editor.setValue(value); */
-        } else {
-          // console.log('user input');
+        if (!e.isFlush) {
           const updatedValue = editor?.getValue() ?? " ";
           value = updatedValue;
         }
@@ -68,9 +61,7 @@
   $effect(() => {
     if (value) {
       if (editor) {
-        // check if the editor is focused
         if (editor.hasWidgetFocus()) {
-          // let the user edit with no interference
         } else {
           if (editor?.getValue() ?? " " !== value) {
             editor?.setValue(value);
@@ -89,7 +80,13 @@
   });
 </script>
 
-<div class="container" bind:this={editorContainer}></div>
+<div class="container" bind:this={editorContainer}>
+  {#if isLoading}
+    <div class="place-items-center grid size-full">
+      <Spinner />
+    </div>
+  {/if}
+</div>
 
 <style>
   .container {

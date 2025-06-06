@@ -39,7 +39,7 @@
   <div
     bind:this={dialog}
     transition:fly={{ y: 10, duration: 200 }}
-    class="z-[100] fixed left-4 right-4 z-50 rounded-md mt-2 border border-gray-100 shadow bg-white p-4 text-sm font-medium text-black md:left-auto md:right-auto md:w-72"
+    class="right-4 md:right-auto left-4 md:left-auto z-[100] fixed bg-white shadow mt-2 p-4 border border-gray-100 rounded-md md:w-72 font-medium text-black text-sm"
   >
     {@render children()}
   </div>

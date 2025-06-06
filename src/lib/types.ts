@@ -3,3 +3,5 @@ export interface Code {
   css: string;
   js: string;
 }
+
+export type LangUnion = "html" | "css" | "js";

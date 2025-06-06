@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
 .btn {
-  @apply flex items-center justify-center gap-1.5 px-3 font-medium rounded-md h-9 cursor-pointer focus-visible:outline-none hover:opacity-75 focus-visible:ring disabled:pointer-events-none disabled:opacity-50 text-sm active:translate-y-px;
+  @apply flex justify-center items-center gap-1.5 hover:opacity-75
+    disabled:opacity-50 px-3 rounded-md focus-visible:outline-none
+    focus-visible:ring h-9 font-medium text-sm active:translate-y-px
+    cursor-pointer disabled:pointer-events-none select-none;
 }
 
 body {
-  @apply text-white touch-manipulation overflow-hidden;
+  @apply overflow-hidden text-white touch-manipulation;
 }
