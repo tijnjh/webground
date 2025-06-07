@@ -1,6 +1,5 @@
 <script lang="ts">
   import { haptic } from "ios-haptics";
-  import { useIsMobile, useIsShared } from "../hooks.svelte";
   import {
     EllipsisIcon,
     GithubIcon,
@@ -11,7 +10,7 @@
     Trash2Icon,
   } from "@lucide/svelte";
   import Dialog from "./Dialog.svelte";
-  import { clearCode } from "../helpers";
+  import { clearCode, isMobile, isShared } from "../helpers";
   import type { Code, LangUnion } from "../types";
   import Monaco from "./Monaco.svelte";
   import { updatePreview } from "./Preview.svelte";
@@ -32,9 +31,6 @@
   let isClearMenuOpen = $state(false);
   let isShareMenuOpen = $state(false);
   let title = $state("");
-
-  let isMobile = $state(useIsMobile());
-  const isShared = useIsShared(window.location.href);
 </script>
 
 <div
@@ -154,10 +150,7 @@
 
               <li>
                 <div class="gap-2 grid">
-                  {@render shareButton(
-                      "markdown",
-                      "Markdown",
-                    )}
+                  {@render shareButton("markdown", "Markdown")}
                   {@render shareButton("html", "HTML")}
                 </div>
               </li>
@@ -201,11 +194,7 @@
 
   <div class="isolate *:absolute relative *:inset-0 *:h-full *:transition-[filter] *:duration-500">
     <div style={`z-index: ${currentTab === "html" ? "100" : "0"}`}>
-      <Monaco
-        bind:value={code.html}
-        language="html"
-        readOnly={isShared}
-      />
+      <Monaco bind:value={code.html} language="html" readOnly={isShared} />
     </div>
 
     <div style={`z-index: ${currentTab === "css" ? "100" : "0"}`}>
@@ -213,11 +202,7 @@
     </div>
 
     <div style={`z-index: ${currentTab === "js" ? "100" : "0"}`}>
-      <Monaco
-        bind:value={code.js}
-        language="javascript"
-        readOnly={isShared}
-      />
+      <Monaco bind:value={code.js} language="javascript" readOnly={isShared} />
     </div>
   </div>
 </div>

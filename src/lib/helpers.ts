@@ -28,3 +28,12 @@ export function clearCode(code: Code) {
     code[key as keyof Code] = "";
   }
 }
+
+const mediaQuery = matchMedia("(max-width: 768px)");
+export const isMobile = mediaQuery.matches;
+
+const params = new URL(location.href).searchParams;
+const h = params.get("h");
+const c = params.get("c");
+const j = params.get("j");
+export const isShared = !!(h || c || j);

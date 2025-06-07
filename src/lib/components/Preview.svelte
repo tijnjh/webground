@@ -1,6 +1,6 @@
 <script lang="ts" module>
   import type { Code } from "../types";
-  import { template } from "../helpers";
+  import { isMobile, template } from "../helpers";
 
   let src = $state("/start.html");
 
@@ -17,12 +17,6 @@
 
     localStorage.code = JSON.stringify(code);
   }
-</script>
-
-<script lang="ts">
-  import { useIsMobile } from "../hooks.svelte";
-
-  const isMobile = useIsMobile();
 </script>
 
 <div class={isMobile ? "top-[68px] fixed inset-x-0 bottom-12 z-50" : "h-full"}>

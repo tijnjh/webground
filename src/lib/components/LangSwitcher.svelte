@@ -1,11 +1,9 @@
 <script lang="ts">
   import { haptic } from "ios-haptics";
-  import { useIsMobile } from "../hooks.svelte";
+  import { isMobile } from "../helpers";
   import type { LangUnion } from "../types";
 
   let { currentTab = $bindable() }: { currentTab: LangUnion } = $props();
-
-  const isMobile = useIsMobile();
 </script>
 
 <div
@@ -42,10 +40,7 @@
     class="flex justify-center items-center gap-2 py-1.5 rounded-lg w-24 font-medium text-sm uppercase cursor-pointer"
     data-lang={lang}
   >
-    <span
-      class="rounded-full size-2.5"
-      style={`background-color: ${color}`}
-    >
+    <span class="rounded-full size-2.5" style={`background-color: ${color}`}>
     </span>
     {lang}
   </button>

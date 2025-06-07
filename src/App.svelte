@@ -6,14 +6,13 @@
 
   import type { Code, LangUnion } from "./lib/types";
   import Preview, { updatePreview } from "./lib/components/Preview.svelte";
-  import { useIsMobile, useIsShared } from "./lib/hooks.svelte";
   import Editor from "./lib/components/Editor.svelte";
   import LangSwitcher from "./lib/components/LangSwitcher.svelte";
   import { haptic } from "ios-haptics";
+  import { isMobile, isShared } from "./lib/helpers";
+  import { decode } from "./lib/codec";
 
   let currentTab: LangUnion = $state("html");
-  let isMobile = $state(useIsMobile());
-  const isShared = useIsShared(window.location.href);
   let showMobilePreview = $state(false);
 
   let code: Code = $state({
@@ -31,7 +30,19 @@
   }
 
   onMount(() => {
-    if (!isShared) {
+    if (isShared) {
+      const params = new URL(location.href).searchParams;
+
+      const h = params.get("h");
+      const c = params.get("c");
+      const j = params.get("j");
+
+      code = {
+        html: h ? decode(h) : "",
+        css: c ? decode(c) : "",
+        js: j ? decode(j) : "",
+      };
+    } else {
       if (localStorage.code) {
         for (
           const [key, val] of Object.entries(
@@ -55,9 +66,6 @@
       e.preventDefault();
       updatePreview(code);
     }
-  }}
-  onresize={() => {
-    isMobile = useIsMobile();
   }}
 />
 
