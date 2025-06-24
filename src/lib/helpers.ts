@@ -18,7 +18,7 @@ export const template = ({
     </head>
     <body>
         ${html}
-        <script>${js}</script>
+        <script type="module">${js}</script>
     </body>
     </html>
 `;
