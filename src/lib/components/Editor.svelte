@@ -18,7 +18,6 @@
   import LangSwitcher from "./LangSwitcher.svelte";
   import { tryCatch } from "typecatch";
   import { toast } from "svelte-sonner";
-  import { page } from "$app/state";
 
   let {
     code = $bindable(),
@@ -33,7 +32,7 @@
   let isShareMenuOpen = $state(false);
   let title = $state("");
 
-  const isShared = checkIfShared(page.url);
+  const isShared = checkIfShared();
 </script>
 
 <div

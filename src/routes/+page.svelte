@@ -11,7 +11,6 @@
   import { haptic } from "ios-haptics";
   import { checkIfShared, isMobile } from "$lib/helpers";
   import { decode } from "$lib/codec";
-  import { page } from "$app/state";
 
   let currentTab: LangUnion = $state("html");
   let showMobilePreview = $state(false);
@@ -30,7 +29,7 @@
     }
   }
 
-  const isShared = checkIfShared(page.url);
+  const isShared = checkIfShared();
 
   onMount(() => {
     if (isShared) {
@@ -58,12 +57,11 @@
     }
 
     setTabFromHash();
-    window.addEventListener("hashchange", setTabFromHash);
-    return () => window.removeEventListener("hashchange", setTabFromHash);
   });
 </script>
 
 <svelte:window
+  onhashchange={setTabFromHash}
   onkeydown={(e) => {
     if ((e.metaKey || e.ctrlKey) && (e.key === "s" || e.key === "Enter")) {
       e.preventDefault();

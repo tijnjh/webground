@@ -33,7 +33,11 @@ export function clearCode(code: Code) {
 const mediaQuery = browser ? matchMedia("(max-width: 768px)") : null;
 export const isMobile = mediaQuery?.matches;
 
-export function checkIfShared(url: URL) {
+export function checkIfShared() {
+  if (!browser) return;
+
+  const url = new URL(location.href);
+
   const params = url.searchParams;
   const h = params.get("h");
   const c = params.get("c");
