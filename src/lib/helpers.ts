@@ -1,3 +1,4 @@
+import { browser } from "$app/environment";
 import type { Code } from "./types";
 
 export const template = ({
@@ -29,11 +30,13 @@ export function clearCode(code: Code) {
   }
 }
 
-const mediaQuery = matchMedia("(max-width: 768px)");
-export const isMobile = mediaQuery.matches;
+const mediaQuery = browser ? matchMedia("(max-width: 768px)") : null;
+export const isMobile = mediaQuery?.matches;
 
-const params = new URL(location.href).searchParams;
-const h = params.get("h");
-const c = params.get("c");
-const j = params.get("j");
-export const isShared = !!(h || c || j);
+export function checkIfShared(url: URL) {
+  const params = url.searchParams;
+  const h = params.get("h");
+  const c = params.get("c");
+  const j = params.get("j");
+  return !!(h || c || j);
+}

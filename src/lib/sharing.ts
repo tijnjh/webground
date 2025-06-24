@@ -1,5 +1,5 @@
 import { encode } from "./codec";
-import { Code } from "./types";
+import type { Code } from "./types";
 
 export function copyLink(
   code: Code,

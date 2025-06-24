@@ -10,7 +10,7 @@
     Trash2Icon,
   } from "@lucide/svelte";
   import Dialog from "./Dialog.svelte";
-  import { clearCode, isMobile, isShared } from "../helpers";
+  import { clearCode, isMobile, checkIfShared } from "../helpers";
   import type { Code, LangUnion } from "../types";
   import Monaco from "./Monaco.svelte";
   import { updatePreview } from "./Preview.svelte";
@@ -18,6 +18,7 @@
   import LangSwitcher from "./LangSwitcher.svelte";
   import { tryCatch } from "typecatch";
   import { toast } from "svelte-sonner";
+  import { page } from "$app/state";
 
   let {
     code = $bindable(),
@@ -31,6 +32,8 @@
   let isClearMenuOpen = $state(false);
   let isShareMenuOpen = $state(false);
   let title = $state("");
+
+  const isShared = checkIfShared(page.url);
 </script>
 
 <div
@@ -192,7 +195,9 @@
     </div>
   </div>
 
-  <div class="isolate *:absolute relative *:inset-0 *:h-full *:transition-[filter] *:duration-500">
+  <div
+    class="isolate *:absolute relative *:inset-0 *:h-full *:transition-[filter] *:duration-500"
+  >
     <div style={`z-index: ${currentTab === "html" ? "100" : "0"}`}>
       <Monaco bind:value={code.html} language="html" readOnly={isShared} />
     </div>
@@ -224,6 +229,7 @@
     }}
     class="bg-gray-100 w-full share-btn btn"
   >
-    <LinkIcon size={16} /> {label}
+    <LinkIcon size={16} />
+    {label}
   </button>
 {/snippet}
