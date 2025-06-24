@@ -40,3 +40,8 @@ export function checkIfShared(url: URL) {
   const j = params.get("j");
   return !!(h || c || j);
 }
+
+export function checkIfCrawler(url: URL) {
+  return /bot|crawl|spider|slurp|facebookexternalhit|twitterbot|linkedinbot/i
+    .test(url.searchParams.get("ua") || "");
+}
