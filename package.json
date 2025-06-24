@@ -9,20 +9,20 @@
   },
   "dependencies": {
     "@lucide/svelte": "^0.487.0",
-    "@tailwindcss/vite": "^4.1.8",
+    "@tailwindcss/vite": "^4.1.10",
     "emmet-monaco-es": "^5.5.0",
     "fflate": "^0.8.2",
-    "ios-haptics": "^0.0.3",
+    "ios-haptics": "^0.0.8",
     "monaco-editor": "^0.52.2",
     "paneforge": "^0.0.6",
     "svelte-sonner": "^0.3.28",
-    "tailwindcss": "^4.1.8",
-    "typecatch": "^0.2.2"
+    "tailwindcss": "^4.1.10",
+    "typecatch": "^0.2.5"
   },
   "devDependencies": {
     "@monaco-editor/loader": "^1.5.0",
     "@sveltejs/vite-plugin-svelte": "^5.1.0",
-    "svelte": "^5.33.15",
+    "svelte": "^5.34.7",
     "typescript": "~5.7.3",
     "vite": "^6.3.5"
   }
