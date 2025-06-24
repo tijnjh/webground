@@ -10,7 +10,7 @@
     Trash2Icon,
   } from "@lucide/svelte";
   import Dialog from "./Dialog.svelte";
-  import { clearCode, isMobile, checkIfShared } from "../helpers";
+  import { checkIfShared, clearCode, isMobile } from "../helpers";
   import type { Code, LangUnion } from "../types";
   import Monaco from "./Monaco.svelte";
   import { updatePreview } from "./Preview.svelte";
@@ -195,9 +195,7 @@
     </div>
   </div>
 
-  <div
-    class="isolate *:absolute relative *:inset-0 *:h-full *:transition-[filter] *:duration-500"
-  >
+  <div class="isolate *:absolute relative *:inset-0 *:h-full *:transition-[filter] *:duration-500">
     <div style={`z-index: ${currentTab === "html" ? "100" : "0"}`}>
       <Monaco bind:value={code.html} language="html" readOnly={isShared} />
     </div>
@@ -229,7 +227,6 @@
     }}
     class="bg-gray-100 w-full share-btn btn"
   >
-    <LinkIcon size={16} />
-    {label}
+    <LinkIcon size={16} /> {label}
   </button>
 {/snippet}
