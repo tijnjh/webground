@@ -1,6 +1,5 @@
 <script lang="ts" module>
   import { template } from "$lib/preview/template";
-  import { isMobile } from "$lib/utils";
   import type { Code } from "../types";
 
   let src = $state("/start.html");
@@ -22,13 +21,11 @@
   }
 </script>
 
-<div class={isMobile ? "inset-y-[68px] fixed inset-x-0 z-50" : "h-full"}>
-  <iframe
-    {src}
-    title="preview"
-    class="bg-white border-0 size-full"
-    referrerpolicy="no-referrer"
-    sandbox="allow-modals allow-downloads allow-scripts allow-forms"
-  >
-  </iframe>
-</div>
+<iframe
+  {src}
+  title="preview"
+  class="bg-white border-0 size-full grow"
+  referrerpolicy="no-referrer"
+  sandbox="allow-modals allow-downloads allow-scripts allow-forms"
+>
+</iframe>

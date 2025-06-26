@@ -18,6 +18,7 @@
   import { onMount } from "svelte";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
   import RunButton from "$lib/components/RunButton.svelte";
+  import Console from "$lib/components/Console.svelte";
 
   let showMobilePreview = $state(false);
 
@@ -82,7 +83,10 @@
     <Resizable.Handle />
 
     <Resizable.Pane defaultSize={50}>
-      <Preview />
+      <div class="flex flex-col h-full">
+        <Preview />
+        <Console />
+      </div>
     </Resizable.Pane>
   </Resizable.PaneGroup>
 {:else}
