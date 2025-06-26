@@ -47,6 +47,7 @@
         <Popover.Root bind:open={isMenuOpen}>
           <Popover.Trigger>
             <Button
+              variant="outline"
               aria-label="Toggle menu"
               onclick={haptic}
               disabled={isMenuOpen}
