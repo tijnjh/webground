@@ -15,6 +15,7 @@
   import { haptic } from "ios-haptics";
   import { Pane, PaneGroup, PaneResizer } from "paneforge";
   import { onMount } from "svelte";
+  import { ok, Result } from "neverthrow";
 
   let currentTab: LangUnion = $state("html");
   let showMobilePreview = $state(false);
@@ -25,13 +26,27 @@
 
   onMount(() => {
     if (isShared) {
-      const { h, c, j } = extractCodeParams(location.href);
+      const params = extractCodeParams();
 
-      code = {
-        html: h ? decode(h) : "",
-        css: c ? decode(c) : "",
-        js: j ? decode(j) : "",
-      };
+      if (params.isErr()) {
+        return;
+      }
+
+      const { h, c, j } = params.value;
+
+      const decoded = Result.combine([
+        h ? decode(h) : ok(""),
+        c ? decode(c) : ok(""),
+        j ? decode(j) : ok(""),
+      ]);
+
+      if (decoded.isErr()) {
+        return;
+      }
+
+      const [html, css, js] = decoded.value;
+
+      code = { html, css, js };
     } else {
       if (localStorage.code) {
         for (
