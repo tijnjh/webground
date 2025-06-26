@@ -22,7 +22,7 @@
   }
 </script>
 
-<div class={isMobile ? "top-[68px] fixed inset-x-0 bottom-12 z-50" : "h-full"}>
+<div class={isMobile ? "inset-y-[68px] fixed inset-x-0 z-50" : "h-full"}>
   <iframe
     {src}
     title="preview"

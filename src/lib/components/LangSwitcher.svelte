@@ -2,8 +2,9 @@
   import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
   import { µ } from "$lib/global.svelte";
   import type { LangUnion } from "$lib/types";
-  import { isMobile } from "$lib/utils";
   import { haptic } from "ios-haptics";
+
+  let props: { class?: string } = $props();
 
   let value: LangUnion = $state("html");
 
@@ -17,7 +18,7 @@
   variant="outline"
   type="single"
   bind:value
-  class={isMobile ? "ml-2" : ""}
+  class={props.class}
 >
   {@render langTab("html")}
   {@render langTab("css")}

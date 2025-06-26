@@ -15,8 +15,9 @@
   import { ChevronUpIcon } from "@lucide/svelte";
   import { haptic } from "ios-haptics";
   import { ok, Result } from "neverthrow";
-  import { Pane, PaneGroup, PaneResizer } from "paneforge";
   import { onMount } from "svelte";
+  import * as Resizable from "$lib/components/ui/resizable/index.js";
+  import RunButton from "$lib/components/RunButton.svelte";
 
   let showMobilePreview = $state(false);
 
@@ -47,9 +48,11 @@
       µ.code = { html, css, js };
     } else {
       if (localStorage.code) {
-        for (const [key, val] of Object.entries(
-          JSON.parse(localStorage.code),
-        )) {
+        for (
+          const [key, val] of Object.entries(
+            JSON.parse(localStorage.code),
+          )
+        ) {
           µ.code[key as keyof Code] = val as string;
         }
       }
@@ -71,34 +74,30 @@
 
 {#if !isMobile}
   <!-- desktop layout -->
-  <PaneGroup direction="horizontal">
-    <Pane defaultSize={50} class="h-svh">
+  <Resizable.PaneGroup direction="horizontal">
+    <Resizable.Pane defaultSize={50} class="h-svh">
       <Editor />
-    </Pane>
+    </Resizable.Pane>
 
-    <PaneResizer class="place-items-center grid bg-zinc-800 w-4">
-      <span class="bg-zinc-600 rounded-full w-1 h-12"></span>
-    </PaneResizer>
+    <Resizable.Handle />
 
-    <Pane defaultSize={50}>
+    <Resizable.Pane defaultSize={50}>
       <Preview />
-    </Pane>
-  </PaneGroup>
+    </Resizable.Pane>
+  </Resizable.PaneGroup>
 {:else}
   <!-- mobile layout -->
-  <div class="grid grid-rows-[1fr_3rem] h-svh">
+  <div class="grid grid-rows-[1fr_min-content] h-svh">
     <Editor />
 
-    <div
-      class="flex justify-between items-center bg-[#1e1e1e] pr-2 border-zinc-700 border-t"
-    >
-      <LangSwitcher />
+    <LangSwitcher class="bottom-20 left-2 fixed bg-white dark:bg-[#1e1e1e]" />
+
+    <div class="flex justify-between items-center bg-white dark:bg-[#1e1e1e] p-4 border-t">
       <Button
         onclick={() => {
           haptic();
           showMobilePreview = !showMobilePreview;
         }}
-        class="bg-white text-black btn"
       >
         <div
           class="transition-transform"
@@ -108,6 +107,7 @@
         </div>
         Preview
       </Button>
+      <RunButton />
     </div>
   </div>
 

@@ -1,26 +1,35 @@
-<!-- mostly from https://github.com/ala-garbaa-pro/svelte-5-monaco-editor-two-way-binding -->
+<script lang="ts" module>
+  let editor: Monaco.editor.IStandaloneCodeEditor;
+  let monaco: typeof Monaco;
+
+  type MonacoTheme = "vs-light" | "vs-dark";
+
+  export function setTheme(theme: MonacoTheme) {
+    if (monaco && editor) {
+      monaco.editor.setTheme(theme);
+    }
+  }
+</script>
+
 <script lang="ts">
   import loader from "@monaco-editor/loader";
   import { emmetHTML } from "emmet-monaco-es";
   import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
   import { onDestroy, onMount } from "svelte";
   import Spinner from "./Spinner.svelte";
+  import { mode } from "mode-watcher";
 
-  let editor: Monaco.editor.IStandaloneCodeEditor;
-  let monaco: typeof Monaco;
   let editorContainer: HTMLElement;
 
   interface Props {
     value: string;
     language?: string;
-    theme?: string;
     readOnly?: boolean;
   }
 
   let {
     value = $bindable(),
     language = "html",
-    theme = "vs-dark",
     readOnly = false,
   }: Props = $props();
 
@@ -37,7 +46,7 @@
       editor = monaco.editor.create(editorContainer, {
         value,
         language,
-        theme,
+        theme: `vs-${mode.current}`,
         overviewRulerLanes: 0,
         overviewRulerBorder: false,
         automaticLayout: true,
