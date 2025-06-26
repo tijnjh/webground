@@ -194,7 +194,7 @@
   <Button
     onclick={() => {
       isShareMenuOpen = false;
-      const { error } = tryCatch(() => copyLink(code, mode, title));
+      const { data, error } = tryCatch(() => copyLink(code, mode, title));
 
       if (error) {
         haptic.error();
@@ -204,6 +204,14 @@
 
       haptic.confirm();
       toast.success(`Copied link (${mode}) to clipboard`);
+
+      if (data?.isLong) {
+        setTimeout(() => {
+          toast.warning(
+            "URL is longer than 2048 characters, which might cause issues in certain browsers",
+          );
+        }, 300);
+      }
     }}
     class="w-full"
   >

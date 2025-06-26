@@ -38,9 +38,7 @@ export function copyLink(
       );
   }
 
-  if (newUrl.length > 2048) {
-    throw new Error(
-      "URL is longer than 2048 characters, which might cause issues in certain browsers",
-    );
-  }
+  return {
+    isLong: newUrl.length > 2048,
+  };
 }
