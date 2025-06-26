@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Toaster } from "svelte-sonner";
   import { Pane, PaneGroup, PaneResizer } from "paneforge";
   import { ChevronUpIcon } from "@lucide/svelte";
   import { onMount } from "svelte";
@@ -11,6 +10,7 @@
   import { haptic } from "ios-haptics";
   import { checkIfShared, isMobile } from "$lib/helpers";
   import { decode } from "$lib/codec";
+  import Button from "$lib/components/ui/button/button.svelte";
 
   let currentTab: LangUnion = $state("html");
   let showMobilePreview = $state(false);
@@ -92,7 +92,7 @@
 
     <div class="flex justify-between items-center bg-[#1e1e1e] pr-2 border-zinc-700 border-t">
       <LangSwitcher bind:currentTab />
-      <button
+      <Button
         onclick={() => {
           haptic();
           showMobilePreview = !showMobilePreview;
@@ -106,7 +106,7 @@
           <ChevronUpIcon />
         </div>
         Preview
-      </button>
+      </Button>
     </div>
   </div>
 
@@ -114,5 +114,3 @@
     <Preview />
   {/if}
 {/if}
-
-<Toaster richColors />

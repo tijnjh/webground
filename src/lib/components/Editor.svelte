@@ -5,11 +5,10 @@
     GithubIcon,
     LinkIcon,
     PencilIcon,
-    PlayIcon,
     ShareIcon,
+    TerminalIcon,
     Trash2Icon,
   } from "@lucide/svelte";
-  import Dialog from "./Dialog.svelte";
   import { checkIfShared, clearCode, isMobile } from "../helpers";
   import type { Code, LangUnion } from "../types";
   import Monaco from "./Monaco.svelte";
@@ -18,6 +17,9 @@
   import LangSwitcher from "./LangSwitcher.svelte";
   import { tryCatch } from "typecatch";
   import { toast } from "svelte-sonner";
+  import Button from "$lib/components/ui/button/button.svelte";
+  import * as Popover from "$lib/components/ui/popover/index.js";
+  import { Separator } from "$lib/components/ui/separator/index.js";
 
   let {
     code = $bindable(),
@@ -42,123 +44,104 @@
   <div class="flex justify-between items-center gap-2 p-4">
     <div class="flex items-center gap-3">
       <div class="flex items-center gap-2">
-        <div>
-          <button
-            class="bg-amber-600 p-0 text-white btn"
-            aria-label="Toggle menu"
-            onclick={() => {
-              haptic();
-              isMenuOpen = !isMenuOpen;
-            }}
-            disabled={isMenuOpen}
-          >
-            <EllipsisIcon size={16} />
-            <span class="sr-only">Menu</span>
-          </button>
+        <Popover.Root bind:open={isMenuOpen}>
+          <Popover.Trigger>
+            <Button
+              aria-label="Toggle menu"
+              onclick={haptic}
+              disabled={isMenuOpen}
+            >
+              <EllipsisIcon size={16} />
+              <span class="sr-only">Menu</span>
+            </Button>
+          </Popover.Trigger>
 
-          <Dialog bind:open={isMenuOpen}>
-            <ul class="gap-2 grid grid-cols-1">
-              <h1>WebGround</h1>
-              <li>
-                <span class="block">
-                  <a
-                    href="https://github.com/tijnjh/webground"
-                    class="bg-blue-100 w-full text-blue-500 btn"
-                    onclick={haptic}
-                  >
-                    <GithubIcon size={16} />
-                    View source
-                  </a>
-                </span>
-              </li>
-            </ul>
-            {#if !isShared}
-              <div class="bg-black/10 my-4 w-full h-px"></div>
-              <ul>
-                <li class="w-full">
-                  <div class="w-full">
-                    <button
-                      class="bg-red-100 w-full text-red-500 btn"
-                      onclick={() => {
-                        haptic();
-                        isClearMenuOpen = !isClearMenuOpen;
-                      }}
+          <Popover.Content>
+            <div class="flex flex-col gap-2">
+              <div>
+                <h1 class="mb-4">WebGround</h1>
+                <Button
+                  class="w-full"
+                  href="https://github.com/tijnjh/webground"
+                >
+                  <GithubIcon size={16} />
+                  View source
+                </Button>
+              </div>
+
+              {#if !isShared}
+                <Separator class="my-2" />
+                <Popover.Root bind:open={isClearMenuOpen}>
+                  <Popover.Trigger>
+                    <Button
+                      class="w-full"
+                      variant="destructive"
+                      onclick={haptic}
                       disabled={isClearMenuOpen}
                     >
                       <Trash2Icon size={16} />
                       Clear all code
-                    </button>
+                    </Button>
+                  </Popover.Trigger>
+                  <Popover.Content>
+                    <p class="mb-2">
+                      Are you sure you want to your clear your code?
+                    </p>
+                    <Button
+                      class="w-full"
+                      variant="destructive"
+                      onclick={() => {
+                        haptic();
+                        isMenuOpen = false;
+                        isClearMenuOpen = false;
+                        clearCode(code);
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Popover.Content>
+                </Popover.Root>
+              {/if}
+            </div>
+          </Popover.Content>
+        </Popover.Root>
 
-                    <Dialog bind:open={isClearMenuOpen}>
-                      <p class="mb-2">
-                        Are you sure you want to your clear your code?
-                      </p>
-                      <button
-                        onclick={() => {
-                          haptic();
-                          isMenuOpen = false;
-                          isClearMenuOpen = false;
-                          clearCode(code);
-                        }}
-                        class="bg-red-100 w-full text-red-500 btn"
-                      >
-                        Confirm
-                      </button>
-                    </Dialog>
-                  </div>
-                </li>
-              </ul>
-            {/if}
-          </Dialog>
-        </div>
+        <Popover.Root bind:open={isShareMenuOpen}>
+          <Popover.Trigger>
+            <Button
+              variant="outline"
+              onclick={haptic}
+              disabled={isShareMenuOpen}
+            >
+              <ShareIcon size={16} />
+              Share
+            </Button>
+          </Popover.Trigger>
+          <Popover.Content>
+            <div class="flex flex-col gap-2">
+              <h3>Link sharing options</h3>
 
-        <div class="w-full">
-          <button
-            class="bg-sky-800 text-white btn"
-            onclick={() => {
-              haptic();
-              isShareMenuOpen = !isShareMenuOpen;
-            }}
-            disabled={isShareMenuOpen}
-          >
-            <ShareIcon size={16} />
-            Share
-          </button>
-          <Dialog bind:open={isShareMenuOpen}>
-            <ul class="items-center grid grid-cols-1 w-full">
-              <li class="flex justify-between">
-                <p>Link sharing options</p>
-              </li>
+              <Separator class="my-2" />
 
-              <div class="bg-black/10 my-4 w-full h-px"></div>
+              {@render shareButton("full", "Full URL")}
 
-              <li>
-                <div class="gap-2 grid">
-                  {@render shareButton("full", "Full URL")}
-                </div>
-              </li>
+              <Separator class="my-2" />
 
-              <div class="bg-black/10 my-4 w-full h-px"></div>
-
-              <label class="flex items-center gap-4 mb-4">
+              <label class="flex justify-between items-center gap-4 mb-2">
                 <span>Title</span>
                 <input
                   type="text"
                   placeholder="Shared code"
-                  class="outline-none text-right grow"
+                  class="outline-none min-w-0 text-right"
                   bind:value={title}
                 />
               </label>
 
-              <li>
-                <div class="gap-2 grid">
-                  {@render shareButton("markdown", "Markdown")}
-                  {@render shareButton("html", "HTML")}
-                </div>
-              </li>
-            </ul>
-          </Dialog>
-        </div>
+              {@render shareButton("markdown", "Markdown")}
+              {@render shareButton("html", "HTML")}
+            </div>
+          </Popover.Content>
+        </Popover.Root>
       </div>
     </div>
 
@@ -168,29 +151,26 @@
 
     <div class="flex items-center gap-2">
       {#if isShared}
-        <button
+        <Button
           onclick={() => {
             localStorage.code = JSON.stringify(code);
             location.href = location.href.split("?")[0];
           }}
-          id="edit-code-btn"
-          class="bg-blue-100 text-blue-500 btn"
         >
           <PencilIcon size={16} />
           Edit
-        </button>
+        </Button>
       {/if}
 
-      <button
-        class="hidden md:flex bg-green-600 text-white run-btn btn"
+      <Button
         onclick={() => {
           haptic();
           updatePreview(code);
         }}
       >
-        <PlayIcon size={16} />
+        <TerminalIcon size={16} />
         Run
-      </button>
+      </Button>
     </div>
   </div>
 
@@ -210,7 +190,7 @@
 </div>
 
 {#snippet shareButton(mode: "full" | "markdown" | "html", label: string)}
-  <button
+  <Button
     onclick={() => {
       isShareMenuOpen = false;
       const { error } = tryCatch(() => copyLink(code, mode, title));
@@ -224,8 +204,8 @@
       haptic.confirm();
       toast.success(`Copied link (${mode}) to clipboard`);
     }}
-    class="bg-gray-100 w-full share-btn btn"
+    class="w-full"
   >
     <LinkIcon size={16} /> {label}
-  </button>
+  </Button>
 {/snippet}

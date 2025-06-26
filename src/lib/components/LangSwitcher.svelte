@@ -1,47 +1,48 @@
 <script lang="ts">
   import { haptic } from "ios-haptics";
   import { isMobile } from "../helpers";
+  import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
   import type { LangUnion } from "../types";
 
   let { currentTab = $bindable() }: { currentTab: LangUnion } = $props();
+
+  let value: string[] = $state(["html"]);
+
+  $effect(() => {
+    if (value.length >= 2) {
+      value.shift();
+    }
+  });
+
+  function setHashLang(lang: LangUnion) {
+    window.location.hash = "#" + lang;
+    currentTab = lang;
+  }
 </script>
 
-<div
-  class={`${
-    !isMobile && "border"
-  } flex relative border-zinc-700 p-1 rounded-xl isolate overflow-clip`}
+<ToggleGroup.Root
+  variant="outline"
+  type="multiple"
+  bind:value
+  class={isMobile ? "ml-2" : ""}
 >
-  <span
-    class="top-1 bottom-1 left-1 -z-10 absolute bg-zinc-700 rounded-lg w-24 transition-[left]"
-    style={`left: ${
-      currentTab === "html"
-        ? ".25rem"
-        : currentTab === "css"
-        ? "6.25rem"
-        : currentTab === "js"
-        ? "12.25rem"
-        : 0
-    }`}
-  ></span>
-  {@render langButton("html", "#ff5733")}
-  {@render langButton("css", "rebeccapurple")}
-  {@render langButton("js", "#f7df1e")}
-</div>
+  {@render langButton("html")}
+  {@render langButton("css")}
+  {@render langButton("js")}
+</ToggleGroup.Root>
 
-{#snippet langButton(lang: LangUnion, color: string)}
-  <button
+{#snippet langButton(lang: LangUnion)}
+  <ToggleGroup.Item
     onclick={() => {
       if (currentTab !== lang) {
         haptic();
-        window.location.hash = "#" + lang;
-        currentTab = lang;
+        setHashLang(lang);
       }
     }}
-    class="flex justify-center items-center gap-2 py-1.5 rounded-lg w-24 font-medium text-sm uppercase cursor-pointer"
+    value={lang}
+    class="px-6"
     data-lang={lang}
   >
-    <span class="rounded-full size-2.5" style={`background-color: ${color}`}>
-    </span>
     {lang}
-  </button>
+  </ToggleGroup.Item>
 {/snippet}
