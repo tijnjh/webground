@@ -20,7 +20,7 @@
 
   let showMobilePreview = $state(false);
 
-  const isShared = checkIfShared();
+  const isShared = checkIfShared().unwrapOr(false);
 
   onMount(() => {
     if (isShared) {

@@ -24,7 +24,7 @@
     let isShareMenuOpen = $state(false);
     let title = $state("");
 
-    const isShared = checkIfShared();
+    const isShared = checkIfShared().unwrapOr(false);
 </script>
 
 <div class="flex justify-between items-center gap-2 p-4">
