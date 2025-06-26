@@ -1,16 +1,15 @@
 <script lang="ts">
-  import { haptic } from "ios-haptics";
-  import { isMobile } from "$lib/utils";
   import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
-  import type { LangUnion } from "../types";
-
-  let { currentTab = $bindable() }: { currentTab: LangUnion } = $props();
+  import { µ } from "$lib/global.svelte";
+  import type { LangUnion } from "$lib/types";
+  import { isMobile } from "$lib/utils";
+  import { haptic } from "ios-haptics";
 
   let value: LangUnion = $state("html");
 
   $effect(() => {
     window.location.hash = "#" + value;
-    currentTab = value;
+    µ.currentTab = value;
   });
 </script>
 
@@ -20,15 +19,15 @@
   bind:value
   class={isMobile ? "ml-2" : ""}
 >
-  {@render langButton("html")}
-  {@render langButton("css")}
-  {@render langButton("js")}
+  {@render langTab("html")}
+  {@render langTab("css")}
+  {@render langTab("js")}
 </ToggleGroup.Root>
 
-{#snippet langButton(lang: LangUnion)}
+{#snippet langTab(lang: LangUnion)}
   <ToggleGroup.Item
     onclick={(e) => {
-      if (currentTab !== lang) {
+      if (µ.currentTab !== lang) {
         haptic();
       } else {
         e.preventDefault();

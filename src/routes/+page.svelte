@@ -4,23 +4,21 @@
   import LangSwitcher from "$lib/components/LangSwitcher.svelte";
   import Preview, { updatePreview } from "$lib/components/Preview.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
+  import { µ } from "$lib/global.svelte";
+  import type { Code } from "$lib/types";
   import {
     checkIfShared,
     extractCodeParams,
     isMobile,
     setTabFromHash,
   } from "$lib/utils";
-  import type { Code, LangUnion } from "$lib/types";
   import { ChevronUpIcon } from "@lucide/svelte";
   import { haptic } from "ios-haptics";
+  import { ok, Result } from "neverthrow";
   import { Pane, PaneGroup, PaneResizer } from "paneforge";
   import { onMount } from "svelte";
-  import { ok, Result } from "neverthrow";
 
-  let currentTab: LangUnion = $state("html");
   let showMobilePreview = $state(false);
-
-  let code: Code = $state({ html: "", css: "", js: "" });
 
   const isShared = checkIfShared();
 
@@ -46,29 +44,27 @@
 
       const [html, css, js] = decoded.value;
 
-      code = { html, css, js };
+      µ.code = { html, css, js };
     } else {
       if (localStorage.code) {
-        for (
-          const [key, val] of Object.entries(
-            JSON.parse(localStorage.code),
-          )
-        ) {
-          code[key as keyof Code] = val as string;
+        for (const [key, val] of Object.entries(
+          JSON.parse(localStorage.code),
+        )) {
+          µ.code[key as keyof Code] = val as string;
         }
       }
     }
 
-    setTabFromHash(currentTab, code);
+    setTabFromHash(µ.currentTab, µ.code);
   });
 </script>
 
 <svelte:window
-  onhashchange={() => void setTabFromHash(currentTab, code)}
+  onhashchange={() => void setTabFromHash(µ.currentTab, µ.code)}
   onkeydown={(e) => {
     if ((e.metaKey || e.ctrlKey) && (e.key === "s" || e.key === "Enter")) {
       e.preventDefault();
-      updatePreview(code);
+      updatePreview(µ.code);
     }
   }}
 />
@@ -77,7 +73,7 @@
   <!-- desktop layout -->
   <PaneGroup direction="horizontal">
     <Pane defaultSize={50} class="h-svh">
-      <Editor bind:code {currentTab} />
+      <Editor />
     </Pane>
 
     <PaneResizer class="place-items-center grid bg-zinc-800 w-4">
@@ -91,10 +87,12 @@
 {:else}
   <!-- mobile layout -->
   <div class="grid grid-rows-[1fr_3rem] h-svh">
-    <Editor bind:code {currentTab} />
+    <Editor />
 
-    <div class="flex justify-between items-center bg-[#1e1e1e] pr-2 border-zinc-700 border-t">
-      <LangSwitcher bind:currentTab />
+    <div
+      class="flex justify-between items-center bg-[#1e1e1e] pr-2 border-zinc-700 border-t"
+    >
+      <LangSwitcher />
       <Button
         onclick={() => {
           haptic();
