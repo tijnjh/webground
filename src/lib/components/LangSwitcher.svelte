@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
   import { µ } from "$lib/global.svelte";
   import type { LangUnion } from "$lib/types";
@@ -6,10 +7,15 @@
 
   let props: { class?: string } = $props();
 
-  let value: LangUnion = $state("html");
+  let hash = browser ? location.hash.replace("#", "") : "";
+
+  let validHash: LangUnion =
+    hash === "html" || hash === "css" || hash === "js" ? hash : "html";
+
+  let value: LangUnion = $state(validHash);
 
   $effect(() => {
-    window.location.hash = "#" + value;
+    location.hash = "#" + value;
     µ.currentTab = value;
   });
 </script>
