@@ -75,7 +75,7 @@
 {#if !isMobile}
   <!-- desktop layout -->
   <Resizable.PaneGroup direction="horizontal">
-    <Resizable.Pane defaultSize={50} class="h-svh">
+    <Resizable.Pane defaultSize={50} class="h-dvh">
       <Editor />
     </Resizable.Pane>
 
@@ -87,7 +87,7 @@
   </Resizable.PaneGroup>
 {:else}
   <!-- mobile layout -->
-  <div class="grid grid-rows-[1fr_min-content] h-svh">
+  <div class="grid grid-rows-[1fr_min-content] h-dvh">
     <Editor />
 
     <LangSwitcher class="bottom-20 left-2 fixed bg-white dark:bg-[#1e1e1e]" />
