@@ -2,6 +2,7 @@
   import type { ConsoleAction } from "$lib/types";
   import { cn } from "$lib/utils";
   import {
+    ChevronsUpDownIcon,
     CircleXIcon,
     Trash2Icon,
     TriangleAlertIcon,
@@ -11,17 +12,21 @@
   let messages: ConsoleAction[] = $state([]);
   let isCollapsed = $state(false);
 
-  function onmessage(e: MessageEvent) {
+  const messageCounts = $derived({
+    log: messages.filter((m) => m.type === "log").length,
+    warn: messages.filter((m) => m.type === "warn").length,
+    error: messages.filter((m) => m.type === "error").length,
+  });
+</script>
+
+<svelte:window
+  onmessage={(e: MessageEvent) => {
     const data = e.data as ConsoleAction;
 
     if (e.data.__webground) {
       messages.unshift(data);
     }
-  }
-</script>
-
-<svelte:window
-  {onmessage}
+  }}
   onkeydown={(e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "j") {
       e.preventDefault();
@@ -32,29 +37,55 @@
 
 <div class="bg-zinc-100 dark:bg-zinc-900 border-t">
   <div class="flex justify-between items-center gap-4 bg-white dark:bg-zinc-800 px-4 py-2">
-    <h3>Console</h3>
+    <div class="flex items-center gap-2">
+      <h3 class="font-medium">Console</h3>
+      <div class="flex items-center gap-2 text-xs">
+        {#if messageCounts.log > 0}
+          <span
+            class="bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 border rounded-full"
+          >
+            {messageCounts.log}
+          </span>
+        {/if}
+        {#if messageCounts.warn > 0}
+          <span
+            class="bg-yellow-500/10 px-2 py-0.5 border rounded-full text-yellow-500"
+          >
+            {messageCounts.warn}
+          </span>
+        {/if}
+        {#if messageCounts.error > 0}
+          <span
+            class="bg-red-500/10 px-2 py-0.5 border rounded-full text-red-500"
+          >
+            {messageCounts.error}
+          </span>
+        {/if}
+      </div>
+    </div>
 
-    {#if messages[0]}
-      {@render consoleMessage(messages[0], true)}
-    {/if}
-
-    <div class="flex gap-2">
-      <Button variant="outline" onclick={() => void (messages = [])}>
-        <Trash2Icon />
+    <div class="flex items-center gap-2">
+      <Button
+        size="icon"
+        variant="outline"
+        onclick={() => void (messages = [])}
+      >
+        <Trash2Icon size={14} />
         <span class="sr-only">Clear</span>
       </Button>
       <Button
+        size="icon"
         variant="outline"
-        class="w-18"
         onclick={() => void (isCollapsed = !isCollapsed)}
       >
-        {isCollapsed ? "Show" : "Hide"}
+        <ChevronsUpDownIcon size={14} />
+        <span class="sr-only">{isCollapsed ? "Show" : "Hide"}</span>
       </Button>
     </div>
   </div>
   <div
     class={cn([
-      "border-t flex px-2 flex-col overflow-y-scroll transition-[height] ",
+      "border-t flex px-4 flex-col overflow-y-scroll transition-[height]",
       isCollapsed ? "h-0" : "h-72",
     ])}
   >
@@ -69,17 +100,38 @@
   {@const { data, type } = message}
   <div
     class={cn([
-      "px-3 h-9 text-sm shrink-0 border flex items-center gap-2 rounded-md ",
-      type === "error" && "bg-destructive/25 text-destructive",
-      type === "warn" && "bg-yellow-500/25 text-yellow-500",
+      "px-3 py-2 text-xs overflow-clip shrink-0 border flex items-center gap-3 rounded-md",
+      type === "error"
+        ? "bg-red-500/10 text-red-500"
+        : type === "warn"
+        ? "bg-yellow-500/10 text-yellow-500"
+        : "",
       inHeader ? "grow transition-opacity" : "mt-2",
       inHeader && !isCollapsed ? "opacity-0" : "",
     ])}
   >
-    {#if ["warn", "error"].includes(type)}
-      {@const Icon = type === "warn" ? TriangleAlertIcon : CircleXIcon}
-      <Icon size={14} />
-    {/if}
-    {data}
+    <div class="flex items-center gap-2">
+      {#if type === "error"}
+        <CircleXIcon size={14} />
+      {:else if type === "warn"}
+        <TriangleAlertIcon size={14} />
+      {/if}
+    </div>
+    <div class="font-mono whitespace-pre-wrap">
+      {#each data as item}
+        {#if item?.__isError}
+          <span class="font-bold">{item.message.trim()}</span>
+          <span class="text-zinc-400 dark:text-zinc-600 text-xs">
+            {item.stack}
+          </span>
+        {:else if item?.__isTrace}
+          <span class="text-zinc-400 dark:text-zinc-600 text-xs">
+            {item.stack}
+          </span>
+        {:else}
+          {JSON.stringify(item, null, 2)}
+        {/if}
+      {/each}
+    </div>
   </div>
 {/snippet}
