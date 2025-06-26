@@ -1,4 +1,4 @@
-import console from "./console?raw";
+// import console from "./console?raw";
 
 import type { Code } from "$lib/types";
 
@@ -13,8 +13,8 @@ export function template({ css, html, js }: Code) {
         </head>
         <body>
             ${html}
-            <webground-console></webground-console>
-            <script>${console}</script>
+            // <webground-console></webground-console>
+            // <script>${console}</script>
             <script type="module">
                 ${js}
             </script>
