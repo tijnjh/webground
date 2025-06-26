@@ -8,7 +8,6 @@
 
 <Button
   onclick={() => {
-    haptic();
     const didUpdate = updatePreview(µ.code);
     if (didUpdate) {
       haptic.confirm();
