@@ -1,3 +1,4 @@
+import { err, ok, Result } from "neverthrow";
 import { encode } from "./codec";
 import type { Code } from "./types";
 
@@ -5,18 +6,24 @@ export function copyLink(
   code: Code,
   mode: "full" | "markdown" | "html",
   title: string,
-) {
-  const encoded = {
-    html: encode(code.html),
-    css: encode(code.css),
-    js: encode(code.js),
-  };
+): Result<any, Error> {
+  const encoded = Result.combine([
+    encode(code.html),
+    encode(code.css),
+    encode(code.js),
+  ]);
 
   const params = new URLSearchParams();
 
-  if (code.html) params.set("h", encoded.html);
-  if (code.css) params.set("c", encoded.css);
-  if (code.js) params.set("j", encoded.js);
+  if (encoded.isErr()) {
+    return err(new Error("Failed to encode"));
+  }
+
+  const [html, css, js] = encoded.value;
+
+  if (code.html) params.set("h", html);
+  if (code.css) params.set("c", css);
+  if (code.js) params.set("j", js);
 
   const newUrl = `${origin}?${params.toString()}`;
 
@@ -33,12 +40,14 @@ export function copyLink(
       );
       break;
     default:
-      throw new Error(
-        `Copy link type "${mode}" is not supported.`,
+      return err(
+        new Error(
+          `Copy link type "${mode}" is not supported.`,
+        ),
       );
   }
 
-  return {
+  return ok({
     isLong: newUrl.length > 2048,
-  };
+  });
 }

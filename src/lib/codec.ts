@@ -1,6 +1,7 @@
 import { deflateSync, inflateSync, strFromU8, strToU8 } from "fflate";
+import { err, ok, Result } from "neverthrow";
 
-export function encode(str: string) {
+export function encode(str: string): Result<string, Error> {
   let encoded;
 
   try {
@@ -12,14 +13,14 @@ export function encode(str: string) {
       /\//g,
       "_",
     );
-  } catch (err) {
-    throw new Error(`Failed to encode: ${err}`);
+  } catch (error) {
+    return err(new Error(`Failed to encode: ${error}`));
   }
 
-  return encoded;
+  return ok(encoded);
 }
 
-export function decode(str: string) {
+export function decode(str: string): Result<string, Error> {
   let decoded;
 
   try {
@@ -30,11 +31,11 @@ export function decode(str: string) {
     decoded = Uint8Array.from(decoded, (c: string) => c.charCodeAt(0));
     decoded = inflateSync(decoded);
     decoded = strFromU8(decoded);
-  } catch (err) {
-    throw new Error(`Failed to encode: ${err}`);
+  } catch (error) {
+    return err(new Error(`Failed to decode: ${error}`));
   }
 
-  return decoded;
+  return ok(decoded);
 }
 
 export function padBase64(input: string) {

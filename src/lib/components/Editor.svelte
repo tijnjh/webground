@@ -14,7 +14,6 @@
   } from "@lucide/svelte";
   import { haptic } from "ios-haptics";
   import { toast } from "svelte-sonner";
-  import { tryCatch } from "typecatch";
   import { copyLink } from "../sharing";
   import type { Code, LangUnion } from "../types";
   import LangSwitcher from "./LangSwitcher.svelte";
@@ -34,10 +33,12 @@
   let isShareMenuOpen = $state(false);
   let title = $state("");
 
-  const isShared = checkIfShared();
+  const isShared = checkIfShared().unwrapOr(false);
 </script>
 
-<div class="relative grid grid-rows-[min-content_1fr] bg-[#1e1e1e] h-full overflow-hidden width-screen">
+<div
+  class="relative grid grid-rows-[min-content_1fr] bg-[#1e1e1e] h-full overflow-hidden width-screen"
+>
   <div class="flex justify-between items-center gap-2 p-4">
     <div class="flex items-center gap-3">
       <div class="flex items-center gap-2">
@@ -175,7 +176,9 @@
     </div>
   </div>
 
-  <div class="isolate *:absolute relative *:inset-0 *:h-full *:transition-[filter] *:duration-500">
+  <div
+    class="isolate *:absolute relative *:inset-0 *:h-full *:transition-[filter] *:duration-500"
+  >
     <div style={`z-index: ${currentTab === "html" ? "100" : "0"}`}>
       <Monaco bind:value={code.html} language="html" readOnly={isShared} />
     </div>
@@ -194,18 +197,19 @@
   <Button
     onclick={() => {
       isShareMenuOpen = false;
-      const { data, error } = tryCatch(() => copyLink(code, mode, title));
 
-      if (error) {
+      const res = copyLink(code, mode, title);
+
+      if (res.isErr()) {
         haptic.error();
-        toast.error(error.message);
+        toast.error(res.error.message);
         return;
       }
 
       haptic.confirm();
       toast.success(`Copied link (${mode}) to clipboard`);
 
-      if (data?.isLong) {
+      if (res.value.isLong) {
         setTimeout(() => {
           toast.warning(
             "URL is longer than 2048 characters, which might cause issues in certain browsers",
@@ -215,6 +219,7 @@
     }}
     class="w-full"
   >
-    <LinkIcon size={16} /> {label}
+    <LinkIcon size={16} />
+    {label}
   </Button>
 {/snippet}

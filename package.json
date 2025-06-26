@@ -16,6 +16,7 @@
     "fflate": "^0.8.2",
     "ios-haptics": "^0.0.8",
     "monaco-editor": "^0.52.2",
+    "neverthrow": "^8.2.0",
     "paneforge": "^1.0.0",
     "svelte-sonner": "^1.0.5",
     "typecatch": "^0.2.5"
