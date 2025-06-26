@@ -3,7 +3,7 @@
 import type { Code } from "$lib/types";
 
 export function template({ css, html, js }: Code) {
-    return `
+  return `
         <!doctype html>
         <html lang="en">
         <head>

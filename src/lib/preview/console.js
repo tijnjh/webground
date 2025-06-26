@@ -10,9 +10,9 @@
  * @returns {HTMLElementTagNameMap[TagName]}
  */
 function createEl(tagName, attributes) {
-    const el = document.createElement(tagName);
-    Object.assign(el, attributes);
-    return el;
+  const el = document.createElement(tagName);
+  Object.assign(el, attributes);
+  return el;
 }
 
 /**
@@ -27,74 +27,73 @@ let originalConsole = null;
 
 /** @param {LogTypes} type */
 function fakeConsole(type) {
-    /** @param {*[]} args */
-    return (...args) => {
-        if (!consoleEl) return;
+  /** @param {*[]} args */
+  return (...args) => {
+    if (!consoleEl) return;
 
-        originalConsole?.[type](...args);
+    originalConsole?.[type](...args);
 
-        for (const arg of args) {
-            const lineEl = document.createElement("div");
-            lineEl.className = `line ${type}`;
-            lineEl.textContent = arg;
-            consoleEl.append(lineEl);
-        }
-    };
+    for (const arg of args) {
+      const lineEl = document.createElement("div");
+      lineEl.className = `line ${type}`;
+      lineEl.textContent = arg;
+      consoleEl.append(lineEl);
+    }
+  };
 }
 
 function initOverrides() {
-    if (!consoleEl) return;
+  if (!consoleEl) return;
 
-    originalConsole = {
-        log: console.log.bind(console),
-        warn: console.warn.bind(console),
-        error: console.error.bind(console),
-    };
+  originalConsole = {
+    log: console.log.bind(console),
+    warn: console.warn.bind(console),
+    error: console.error.bind(console),
+  };
 
-    console.log = fakeConsole("log");
-    console.warn = fakeConsole("warn");
-    console.error = fakeConsole("error");
+  console.log = fakeConsole("log");
+  console.warn = fakeConsole("warn");
+  console.error = fakeConsole("error");
 }
 
 class WebgroundConsole extends HTMLElement {
-    constructor() {
-        super();
-        const shadow = this.attachShadow({ mode: "open" });
-        const style = document.createElement("style");
-        style.textContent = getStyles();
+  constructor() {
+    super();
+    const shadow = this.attachShadow({ mode: "open" });
+    const style = document.createElement("style");
+    style.textContent = getStyles();
 
-        const consoleContainerEl = createEl("div", { className: "collapsed" });
+    const consoleContainerEl = createEl("div", { className: "collapsed" });
 
-        consoleContainerEl.setAttribute("data-webground-console", "");
+    consoleContainerEl.setAttribute("data-webground-console", "");
 
-        const headerEl = createEl("div", {
-            className: "header",
-            innerHTML: "Console",
-        });
+    const headerEl = createEl("div", {
+      className: "header",
+      innerHTML: "Console",
+    });
 
-        const collapseButton = createEl("button", {
-            textContent: "Toggle",
-            onclick: () =>
-                void consoleContainerEl.classList.toggle("collapsed"),
-        });
+    const collapseButton = createEl("button", {
+      textContent: "Toggle",
+      onclick: () => void consoleContainerEl.classList.toggle("collapsed"),
+    });
 
-        headerEl.append(collapseButton);
+    headerEl.append(collapseButton);
 
-        const outputEl = createEl("div", { className: "output" });
-        consoleEl = outputEl;
+    const outputEl = createEl("div", { className: "output" });
+    consoleEl = outputEl;
 
-        consoleContainerEl.append(headerEl, outputEl);
+    consoleContainerEl.append(headerEl, outputEl);
 
-        shadow.append(style, consoleContainerEl);
+    shadow.append(style, consoleContainerEl);
 
-        initOverrides();
-    }
+    initOverrides();
+  }
 }
 
 customElements.define("webground-console", WebgroundConsole);
 
 function getStyles() {
-    return `
+  return `
         [data-webground-console] {
             all: unset;
             background-color: #fff;
