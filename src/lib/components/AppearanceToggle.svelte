@@ -1,14 +1,15 @@
 <script lang="ts">
-  import SunIcon from "@lucide/svelte/icons/sun";
   import MoonIcon from "@lucide/svelte/icons/moon";
-
-  import { mode, toggleMode } from "mode-watcher";
+  import SunIcon from "@lucide/svelte/icons/sun";
   import { Button } from "$lib/components/ui/button/index.js";
+  import { haptic } from "ios-haptics";
+  import { mode, toggleMode } from "mode-watcher";
   import { setTheme } from "./Monaco.svelte";
 </script>
 
 <Button
   onclick={() => {
+    haptic();
     toggleMode();
     if (!mode.current) return;
     setTheme(`vs-${mode.current}`);
