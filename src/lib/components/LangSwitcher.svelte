@@ -6,23 +6,17 @@
 
   let { currentTab = $bindable() }: { currentTab: LangUnion } = $props();
 
-  let value: string[] = $state(["html"]);
+  let value: LangUnion = $state("html");
 
   $effect(() => {
-    if (value.length >= 2) {
-      value.shift();
-    }
+    window.location.hash = "#" + value;
+    currentTab = value;
   });
-
-  function setHashLang(lang: LangUnion) {
-    window.location.hash = "#" + lang;
-    currentTab = lang;
-  }
 </script>
 
 <ToggleGroup.Root
   variant="outline"
-  type="multiple"
+  type="single"
   bind:value
   class={isMobile ? "ml-2" : ""}
 >
@@ -33,15 +27,15 @@
 
 {#snippet langButton(lang: LangUnion)}
   <ToggleGroup.Item
-    onclick={() => {
+    onclick={(e) => {
       if (currentTab !== lang) {
         haptic();
-        setHashLang(lang);
+      } else {
+        e.preventDefault();
       }
     }}
     value={lang}
     class="px-6"
-    data-lang={lang}
   >
     {lang}
   </ToggleGroup.Item>

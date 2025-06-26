@@ -37,10 +37,7 @@
   const isShared = checkIfShared();
 </script>
 
-<div
-  id="outer-editor"
-  class="relative grid grid-rows-[min-content_1fr] bg-[#1e1e1e] h-full overflow-hidden width-screen"
->
+<div class="relative grid grid-rows-[min-content_1fr] bg-[#1e1e1e] h-full overflow-hidden width-screen">
   <div class="flex justify-between items-center gap-2 p-4">
     <div class="flex items-center gap-3">
       <div class="flex items-center gap-2">
@@ -166,7 +163,10 @@
       <Button
         onclick={() => {
           haptic();
-          updatePreview(code);
+          const didUpdate = updatePreview(code);
+          if (didUpdate) {
+            haptic.confirm();
+          }
         }}
       >
         <TerminalIcon size={16} />

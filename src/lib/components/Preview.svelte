@@ -8,7 +8,7 @@
   export function updatePreview(code: Code) {
     if (Object.values(code).every((value) => value.trim() === "")) {
       src = "/start.html";
-      return;
+      return false;
     }
     const url = URL.createObjectURL(
       new Blob([template(code)], { type: "text/html" }),
@@ -17,6 +17,8 @@
     src = url;
 
     localStorage.code = JSON.stringify(code);
+
+    return true;
   }
 </script>
 
