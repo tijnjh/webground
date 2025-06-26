@@ -46,7 +46,7 @@ export function extractCodeParams(): Result<CodeParams, Error> {
 export function setTabFromHash(currentTab: LangUnion, code: Code) {
   if (!browser) return;
 
-  const hash = window.location.hash.replace("#", "");
+  const hash = location.hash.replace("#", "");
 
   if (Object.keys(code).includes(hash)) {
     currentTab = hash as keyof Code;
