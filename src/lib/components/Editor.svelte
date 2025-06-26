@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { haptic } from "ios-haptics";
+  import Button from "$lib/components/ui/button/button.svelte";
+  import * as Popover from "$lib/components/ui/popover/index.js";
+  import { Separator } from "$lib/components/ui/separator/index.js";
+  import { checkIfShared, clearCode, isMobile } from "$lib/utils";
   import {
     EllipsisIcon,
     GithubIcon,
@@ -9,17 +12,14 @@
     TerminalIcon,
     Trash2Icon,
   } from "@lucide/svelte";
-  import { checkIfShared, clearCode, isMobile } from "../helpers";
+  import { haptic } from "ios-haptics";
+  import { toast } from "svelte-sonner";
+  import { tryCatch } from "typecatch";
+  import { copyLink } from "../sharing";
   import type { Code, LangUnion } from "../types";
+  import LangSwitcher from "./LangSwitcher.svelte";
   import Monaco from "./Monaco.svelte";
   import { updatePreview } from "./Preview.svelte";
-  import { copyLink } from "../sharing";
-  import LangSwitcher from "./LangSwitcher.svelte";
-  import { tryCatch } from "typecatch";
-  import { toast } from "svelte-sonner";
-  import Button from "$lib/components/ui/button/button.svelte";
-  import * as Popover from "$lib/components/ui/popover/index.js";
-  import { Separator } from "$lib/components/ui/separator/index.js";
 
   let {
     code = $bindable(),

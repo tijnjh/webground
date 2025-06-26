@@ -1,43 +1,31 @@
 <script lang="ts">
-  import { Pane, PaneGroup, PaneResizer } from "paneforge";
-  import { ChevronUpIcon } from "@lucide/svelte";
-  import { onMount } from "svelte";
-
-  import type { Code, LangUnion } from "$lib/types";
-  import Preview, { updatePreview } from "$lib/components/Preview.svelte";
+  import { decode } from "$lib/codec";
   import Editor from "$lib/components/Editor.svelte";
   import LangSwitcher from "$lib/components/LangSwitcher.svelte";
-  import { haptic } from "ios-haptics";
-  import { checkIfShared, isMobile } from "$lib/helpers";
-  import { decode } from "$lib/codec";
+  import Preview, { updatePreview } from "$lib/components/Preview.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
+  import {
+    checkIfShared,
+    extractCodeParams,
+    isMobile,
+    setTabFromHash,
+  } from "$lib/utils";
+  import type { Code, LangUnion } from "$lib/types";
+  import { ChevronUpIcon } from "@lucide/svelte";
+  import { haptic } from "ios-haptics";
+  import { Pane, PaneGroup, PaneResizer } from "paneforge";
+  import { onMount } from "svelte";
 
   let currentTab: LangUnion = $state("html");
   let showMobilePreview = $state(false);
 
-  let code: Code = $state({
-    html: "",
-    css: "",
-    js: "",
-  });
-
-  function setTabFromHash() {
-    const hash = window.location.hash.replace("#", "");
-
-    if (Object.keys(code).includes(hash)) {
-      currentTab = hash as keyof Code;
-    }
-  }
+  let code: Code = $state({ html: "", css: "", js: "" });
 
   const isShared = checkIfShared();
 
   onMount(() => {
     if (isShared) {
-      const params = new URL(location.href).searchParams;
-
-      const h = params.get("h");
-      const c = params.get("c");
-      const j = params.get("j");
+      const { h, c, j } = extractCodeParams(location.href);
 
       code = {
         html: h ? decode(h) : "",
@@ -56,12 +44,12 @@
       }
     }
 
-    setTabFromHash();
+    setTabFromHash(currentTab, code);
   });
 </script>
 
 <svelte:window
-  onhashchange={setTabFromHash}
+  onhashchange={() => void setTabFromHash(currentTab, code)}
   onkeydown={(e) => {
     if ((e.metaKey || e.ctrlKey) && (e.key === "s" || e.key === "Enter")) {
       e.preventDefault();

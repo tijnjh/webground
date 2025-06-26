@@ -1,7 +1,7 @@
 <script lang="ts" module>
-  import type { Code } from "../types";
-  import { isMobile } from "../helpers";
   import { template } from "$lib/preview/template";
+  import { isMobile } from "$lib/utils";
+  import type { Code } from "../types";
 
   let src = $state("/start.html");
 

@@ -7,7 +7,7 @@
     pause?: boolean;
   }
 
-  const {
+  let {
     color = "#FF3E00",
     unit = "px",
     duration = "0.6s",

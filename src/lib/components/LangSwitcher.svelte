@@ -1,6 +1,6 @@
 <script lang="ts">
   import { haptic } from "ios-haptics";
-  import { isMobile } from "../helpers";
+  import { isMobile } from "$lib/utils";
   import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
   import type { LangUnion } from "../types";
 
