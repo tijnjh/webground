@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { codeState } from "$lib/code-state.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Popover from "$lib/components/ui/popover/index.js";
   import { Separator } from "$lib/components/ui/separator/index.js";
@@ -14,10 +15,9 @@
   import { haptic } from "ios-haptics";
   import { toast } from "svelte-sonner";
   import { copyLink } from "../sharing";
-  import LangSwitcher from "./LangSwitcher.svelte";
   import AppearanceToggle from "./AppearanceToggle.svelte";
+  import LangSwitcher from "./LangSwitcher.svelte";
   import RunButton from "./RunButton.svelte";
-  import { codeState } from "$lib/code-state.svelte";
 
   let isMenuOpen = $state(false);
   let isClearMenuOpen = $state(false);
