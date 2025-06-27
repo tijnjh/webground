@@ -95,7 +95,7 @@
 
     <Resizable.Pane defaultSize={50}>
       <div class="flex flex-col h-full">
-        <Preview />
+        <Preview class="size-full grow" />
         <Console />
       </div>
     </Resizable.Pane>
@@ -105,7 +105,7 @@
   <div class="grid grid-rows-[1fr_min-content] h-dvh">
     <Editor />
 
-    <LangSwitcher class="bottom-20 left-2 fixed bg-white dark:bg-[#1e1e1e]" />
+    <LangSwitcher class="bottom-20 left-4 fixed bg-white dark:bg-[#1e1e1e]" />
 
     <div class="flex justify-between items-center bg-white dark:bg-[#1e1e1e] p-4 border-t">
       <Button
@@ -127,6 +127,9 @@
   </div>
 
   {#if showMobilePreview}
-    <Preview />
+    <div class="top-17 bottom-17 isolate fixed flex flex-col w-full">
+      <Preview class="grow" />
+      <Console />
+    </div>
   {/if}
 {/if}
