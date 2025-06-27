@@ -18,20 +18,18 @@
   import { onDestroy, onMount } from "svelte";
   import Spinner from "./Spinner.svelte";
   import { mode } from "mode-watcher";
+  import type { LangUnion } from "$lib/types";
+  import { codeState } from "$lib/code-state.svelte";
 
   let editorContainer: HTMLElement;
 
   interface Props {
-    value: string;
-    language?: string;
+    language: string;
+    lang: LangUnion;
     readOnly?: boolean;
   }
 
-  let {
-    value = $bindable(),
-    language = "html",
-    readOnly = false,
-  }: Props = $props();
+  let { language, lang, readOnly = false }: Props = $props();
 
   let isLoading = $state(false);
 
@@ -44,7 +42,7 @@
       emmetHTML(monaco);
 
       editor = monaco.editor.create(editorContainer, {
-        value,
+        value: codeState.current[lang],
         language,
         theme: `vs-${mode.current}`,
         overviewRulerLanes: 0,
@@ -60,33 +58,34 @@
 
       editor.onDidChangeModelContent((e) => {
         if (!e.isFlush) {
+          console.log("updating:", lang);
           const updatedValue = editor?.getValue() ?? " ";
-          value = updatedValue;
+          codeState.current[lang] = updatedValue;
         }
       });
     })();
   });
 
-  $effect(() => {
-    if (value) {
-      if (editor) {
-        if (editor.hasWidgetFocus()) {
-        } else {
-          if (editor?.getValue() ?? " " !== value) {
-            editor?.setValue(value);
-          }
-        }
-      }
-    }
-    if (value === "") {
-      editor?.setValue(" ");
-    }
-  });
+  // $effect(() => {
+  //   if (value) {
+  //     if (editor) {
+  //       if (editor.hasWidgetFocus()) {
+  //       } else {
+  //         if (editor?.getValue() ?? " " !== value) {
+  //           // editor?.setValue(value);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   if (value === "") {
+  //     editor?.setValue(" ");
+  //   }
+  // });
 
-  onDestroy(() => {
-    monaco?.editor.getModels().forEach((model) => model.dispose());
-    editor?.dispose();
-  });
+  // onDestroy(() => {
+  //   monaco?.editor.getModels().forEach((model) => model.dispose());
+  //   editor?.dispose();
+  // });
 </script>
 
 <div class="container" bind:this={editorContainer}>

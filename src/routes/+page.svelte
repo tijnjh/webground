@@ -19,6 +19,7 @@
   import * as Resizable from "$lib/components/ui/resizable/index.js";
   import RunButton from "$lib/components/RunButton.svelte";
   import Console from "$lib/components/Console.svelte";
+  import { codeState } from "$lib/code-state.svelte";
 
   let showMobilePreview = $state(false);
 
@@ -46,7 +47,7 @@
 
       const [html, css, js] = decoded.value;
 
-      µ.code = { html, css, js };
+      codeState.current = { html, css, js };
     } else {
       if (localStorage.code) {
         for (
@@ -54,24 +55,34 @@
             JSON.parse(localStorage.code),
           )
         ) {
-          µ.code[key as keyof Code] = val as string;
+          codeState.current[key as keyof Code] = val as string;
         }
       }
     }
 
-    setTabFromHash(µ.currentTab, µ.code);
+    setTabFromHash(µ.currentTab, codeState.current);
   });
 </script>
 
 <svelte:window
-  onhashchange={() => void setTabFromHash(µ.currentTab, µ.code)}
+  onhashchange={() => void setTabFromHash(µ.currentTab, codeState.current)}
   onkeydown={(e) => {
     if ((e.metaKey || e.ctrlKey) && (e.key === "s" || e.key === "Enter")) {
       e.preventDefault();
-      updatePreview(µ.code);
+      updatePreview(codeState.current);
     }
   }}
 />
+
+<!-- <div class="top-0 right-0 z-100 fixed bg-red-400 size-128">
+  html: {codeState.current.html}
+  <br />
+  <br />
+  css: {codeState.current.css}
+  <br />
+  <br />  
+  js: {codeState.current.js}
+</div> -->
 
 {#if !isMobile}
   <!-- desktop layout -->

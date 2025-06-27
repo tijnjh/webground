@@ -3,12 +3,12 @@
   import Button from "./ui/button/button.svelte";
   import { updatePreview } from "./Preview.svelte";
   import { TerminalIcon } from "@lucide/svelte";
-  import { µ } from "$lib/global.svelte";
+  import { codeState } from "$lib/code-state.svelte";
 </script>
 
 <Button
   onclick={() => {
-    const didUpdate = updatePreview(µ.code);
+    const didUpdate = updatePreview(codeState.current);
     if (didUpdate) {
       haptic.confirm();
     }

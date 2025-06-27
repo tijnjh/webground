@@ -2,24 +2,22 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Popover from "$lib/components/ui/popover/index.js";
   import { Separator } from "$lib/components/ui/separator/index.js";
-  import { µ } from "$lib/global.svelte";
-  import { checkIfShared, clearCode, isMobile } from "$lib/utils";
+  import { checkIfShared, isMobile } from "$lib/utils";
   import {
     EllipsisIcon,
     GithubIcon,
     LinkIcon,
     PencilIcon,
     ShareIcon,
-    TerminalIcon,
     Trash2Icon,
   } from "@lucide/svelte";
   import { haptic } from "ios-haptics";
   import { toast } from "svelte-sonner";
   import { copyLink } from "../sharing";
   import LangSwitcher from "./LangSwitcher.svelte";
-  import { updatePreview } from "./Preview.svelte";
   import AppearanceToggle from "./AppearanceToggle.svelte";
   import RunButton from "./RunButton.svelte";
+  import { codeState } from "$lib/code-state.svelte";
 
   let isMenuOpen = $state(false);
   let isClearMenuOpen = $state(false);
@@ -50,10 +48,7 @@
           <div class="flex flex-col gap-2">
             <h1>WebGround</h1>
 
-            <Button
-              class="w-full"
-              href="https://github.com/tijnjh/webground"
-            >
+            <Button class="w-full" href="https://github.com/tijnjh/webground">
               <GithubIcon size={16} />
               View source
             </Button>
@@ -83,7 +78,7 @@
                       haptic();
                       isMenuOpen = false;
                       isClearMenuOpen = false;
-                      clearCode(µ.code);
+                      codeState.clear();
                     }}
                   >
                     Confirm
@@ -101,11 +96,7 @@
 
       <Popover.Root bind:open={isShareMenuOpen}>
         <Popover.Trigger>
-          <Button
-            variant="outline"
-            onclick={haptic}
-            disabled={isShareMenuOpen}
-          >
+          <Button variant="outline" onclick={haptic} disabled={isShareMenuOpen}>
             <ShareIcon size={16} />
             Share
           </Button>
@@ -146,7 +137,7 @@
     {#if isShared}
       <Button
         onclick={() => {
-          localStorage.code = JSON.stringify(µ.code);
+          localStorage.code = JSON.stringify(codeState.current);
           location.href = location.href.split("?")[0];
         }}
       >
@@ -166,7 +157,7 @@
     onclick={() => {
       isShareMenuOpen = false;
 
-      const res = copyLink(µ.code, mode, title);
+      const res = copyLink(codeState.current, mode, title);
 
       if (res.isErr()) {
         haptic.error();
