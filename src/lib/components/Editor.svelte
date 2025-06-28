@@ -5,6 +5,11 @@
   import Monaco from "./Monaco.svelte";
 
   const isShared = checkIfShared().unwrapOr(false);
+
+  let {
+    class: className,
+    readonly = false,
+  }: { class?: string; readonly?: boolean } = $props();
 </script>
 
 <div class="relative grid grid-rows-[min-content_1fr] dark:bg-[#1e1e1e] h-full overflow-hidden width-screen">
@@ -16,7 +21,7 @@
     }
       {#if µ.currentTab === lang}
         <div>
-          <Monaco {lang} {language} readOnly={isShared} />
+          <Monaco {lang} {language} readOnly={isShared || readonly} />
         </div>
       {/if}
     {/each}

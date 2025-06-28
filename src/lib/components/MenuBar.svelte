@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { enhance } from "$app/forms";
+  import { page } from "$app/state";
   import { codeState } from "$lib/code-state.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Popover from "$lib/components/ui/popover/index.js";
@@ -25,6 +27,47 @@
   let title = $state("");
 
   const isShared = checkIfShared().unwrapOr(false);
+
+  async function shareProject() {
+    const user = page.data.user;
+    if (!user) {
+      toast.error("Please log in to save projects");
+      return;
+    }
+
+    const title = prompt("Enter a title for your project:");
+    if (!title) return;
+
+    try {
+      const response = await fetch("/api/share", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description: "",
+          htmlCode: codeState.current.html,
+          cssCode: codeState.current.css,
+          jsCode: codeState.current.js,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save project");
+      }
+
+      const data = await response.json();
+      const shortUrl = `${window.location.origin}${data.url}`;
+
+      await navigator.clipboard.writeText(shortUrl);
+      toast.success(
+        `Project saved! Short URL copied to clipboard: ${shortUrl}`,
+      );
+    } catch (error) {
+      toast.error("Failed to save project");
+    }
+  }
 </script>
 
 <div class="flex justify-between items-center gap-2 p-4">
@@ -53,6 +96,31 @@
               View source
             </Button>
 
+            <Separator class="my-2" />
+
+            {#if page.data.user}
+              <Button variant="outline" href="/@{page.data.user.username}">
+                Profile (@{page.data.user.username})
+              </Button>
+              <form method="POST" action="/logout" use:enhance>
+                <Button variant="outline" type="submit" class="w-full"
+                >Logout</Button>
+              </form>
+            {:else}
+              <a
+                href="/login"
+                class="block hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded w-full text-sm text-center"
+              >
+                Login
+              </a>
+              <a
+                href="/signup"
+                class="block hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded w-full text-sm text-center"
+              >
+                Sign Up
+              </a>
+            {/if}
+
             {#if !isShared}
               <Separator class="my-2" />
               <Popover.Root bind:open={isClearMenuOpen}>
@@ -68,9 +136,10 @@
                   </Button>
                 </Popover.Trigger>
                 <Popover.Content align="start">
-                  <p class="mb-2">
-                    Are you sure you want to your clear your code?
-                  </p>
+                  Are you sure you want to your clear your code?
+
+                  <Separator class="my-4" />
+
                   <Button
                     class="w-full"
                     variant="destructive"
@@ -124,6 +193,15 @@
 
             {@render shareButton("markdown", "Markdown")}
             {@render shareButton("html", "HTML")}
+
+            <Separator class="my-2" />
+
+            <button
+              onclick={shareProject}
+              class="bg-blue-600 hover:bg-blue-700 px-3 py-2 border border-blue-600 rounded w-full text-white text-sm text-center"
+            >
+              Save & Get Short URL
+            </button>
           </div>
         </Popover.Content>
       </Popover.Root>
@@ -154,7 +232,7 @@
 </div>
 
 {#snippet shareButton(mode: "full" | "markdown" | "html", label: string)}
-  <Button
+  <button
     onclick={() => {
       isShareMenuOpen = false;
 
@@ -177,8 +255,8 @@
         }, 300);
       }
     }}
-    class="w-full"
+    class="flex justify-center items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded w-full text-sm text-center"
   >
     <LinkIcon size={16} /> {label}
-  </Button>
+  </button>
 {/snippet}

@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -71,6 +70,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+  --font-mono: "DM Mono";
 }
 
 @theme inline {
@@ -115,10 +115,7 @@
   * {
     @apply border-border outline-ring/50 touch-manipulation;
   }
-  html, body {
-    @apply overscroll-none touch-manipulation fixed w-full;
-  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background dark:bg-zinc-800 text-foreground;
   }
 }
