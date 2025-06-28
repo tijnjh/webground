@@ -19,9 +19,9 @@
 
   onMount(() => {
     codeState.current = {
-      html: data.project.htmlCode,
-      css: data.project.cssCode,
-      js: data.project.jsCode,
+      html: data.project.html_code,
+      css: data.project.css_code,
+      js: data.project.js_code,
     };
 
     setTabFromHash(µ.currentTab, codeState.current);
@@ -64,7 +64,8 @@
     </span>
   {/if}
   <a href="/" class="ml-4 text-blue-600 dark:text-blue-400 hover:underline"
-  >Create your own</a>
+    >Create your own</a
+  >
 </div>
 
 {#if !isMobile}
@@ -90,7 +91,9 @@
 
     <LangSwitcher class="bottom-20 left-4 fixed bg-white dark:bg-[#1e1e1e]" />
 
-    <div class="flex justify-between items-center bg-white dark:bg-[#1e1e1e] p-4 border-t">
+    <div
+      class="flex justify-between items-center bg-white dark:bg-[#1e1e1e] p-4 border-t"
+    >
       <Button
         onclick={() => {
           haptic();

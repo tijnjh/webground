@@ -1,26 +1,25 @@
-import { db } from "$lib/server/db";
-import { projects, users } from "$lib/server/schema";
+import { supabase } from "$lib/server/db";
 import { error } from "@sveltejs/kit";
-import { eq } from "drizzle-orm";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {
-  const result = await db
-    .select({
-      project: projects,
-      user: users,
-    })
-    .from(projects)
-    .leftJoin(users, eq(projects.userId, users.id))
-    .where(eq(projects.shortId, params.id))
-    .get();
+  const { data: project, error: projectError } = await supabase
+    .from("projects")
+    .select(
+      `
+      *,
+      users (*)
+    `
+    )
+    .eq("short_id", params.id)
+    .single();
 
-  if (!result) {
+  if (projectError || !project) {
     throw error(404, "Project not found");
   }
 
   return {
-    project: result.project,
-    creator: result.user,
+    project,
+    creator: project.users,
   };
 };

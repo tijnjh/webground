@@ -1,9 +1,7 @@
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
-import * as schema from "./schema";
+import { SUPABASE_KEY } from "$env/static/private";
+import { createClient } from "@supabase/supabase-js";
 
-const client = createClient({
-  url: "file:data/db.sqlite",
-});
+const supabaseUrl = "https://satstldgrbsrpfktfmlt.supabase.co";
+const supabaseKey = SUPABASE_KEY;
 
-export const db = drizzle(client, { schema });
+export const supabase = createClient(supabaseUrl, supabaseKey);

@@ -18,7 +18,9 @@
 <div class="flex flex-col gap-8 mx-auto p-4 py-12 w-full max-w-4xl">
   <div class="gap-8 grid grid-cols-1 md:grid-cols-2">
     <hgroup>
-      <h2 class="mb-4 font-mono font-extrabold text-4xl text-balance tracking-tight scroll-m-20">
+      <h2
+        class="mb-4 font-mono font-extrabold text-4xl text-balance tracking-tight scroll-m-20"
+      >
         sign up
       </h2>
       <p>
@@ -40,6 +42,15 @@
         type="text"
         required
         placeholder="Username"
+      />
+
+      <label for="email" class="sr-only">Email</label>
+      <Input
+        id="email"
+        name="email"
+        type="email"
+        required
+        placeholder="Email"
       />
 
       <label for="password" class="sr-only">Password</label>

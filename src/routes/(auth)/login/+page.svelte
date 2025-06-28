@@ -18,7 +18,9 @@
 <div class="flex flex-col gap-8 mx-auto p-4 py-12 w-full max-w-4xl">
   <div class="gap-8 grid grid-cols-1 md:grid-cols-2">
     <hgroup>
-      <h2 class="mb-4 font-mono font-extrabold text-4xl text-balance tracking-tight scroll-m-20">
+      <h2
+        class="mb-4 font-mono font-extrabold text-4xl text-balance tracking-tight scroll-m-20"
+      >
         log in
       </h2>
       <p>
@@ -33,13 +35,13 @@
     </hgroup>
 
     <form method="POST" use:enhance class="flex flex-col gap-2">
-      <label for="username" class="sr-only">Username</label>
+      <label for="usernameOrEmail" class="sr-only">Username or Email</label>
       <Input
-        id="username"
-        name="username"
+        id="usernameOrEmail"
+        name="usernameOrEmail"
         type="text"
         required
-        placeholder="Username"
+        placeholder="Username or Email"
       />
       <label for="password" class="sr-only">Password</label>
       <Input

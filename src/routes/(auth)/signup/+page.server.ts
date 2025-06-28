@@ -12,10 +12,11 @@ export const actions: Actions = {
   default: async ({ request, cookies }) => {
     const data = await request.formData();
     const username = data.get("username")?.toString();
+    const email = data.get("email")?.toString();
     const password = data.get("password")?.toString();
     const confirmPassword = data.get("confirmPassword")?.toString();
 
-    if (!username || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       return fail(400, { error: "All fields are required" });
     }
 
@@ -27,7 +28,12 @@ export const actions: Actions = {
       return fail(400, { error: "Password must be at least 6 characters" });
     }
 
-    const result = await createUser(username, password);
+    // Basic email validation
+    if (!email.includes("@") || !email.includes(".")) {
+      return fail(400, { error: "Please enter a valid email address" });
+    }
+
+    const result = await createUser(username, email, password);
 
     if (result.isErr()) {
       return fail(400, { error: result.error });
@@ -42,6 +48,6 @@ export const actions: Actions = {
       maxAge: 60 * 60 * 24 * 30, // 30 days
     });
 
-    throw redirect(302, `/@${username}`);
+    throw redirect(302, `/@${user.username}`);
   },
 };
