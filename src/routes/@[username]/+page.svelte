@@ -51,12 +51,6 @@
     style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))"
   >
     {#each data.projects as { title, shortId, createdAt }}
-      <ProjectCard
-        {title}
-        {shortId}
-        {createdAt}
-        deleteAction={() => console.log("hi")}
-      />
       <ProjectCard {title} {shortId} {createdAt} />
     {:else}
       <Card.Root class="py-12 text-center">
