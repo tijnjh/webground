@@ -10,7 +10,7 @@
   import Button from "./ui/button/button.svelte";
 
   let messages: ConsoleAction[] = $state([]);
-  let isCollapsed = $state(false);
+  let isCollapsed = $state(true);
 
   const messageCounts = $derived({
     log: messages.filter((m) => m.type === "log").length,
