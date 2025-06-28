@@ -1,33 +1,25 @@
-# ---- Build stage ----
 FROM oven/bun:latest as build
 
 WORKDIR /app
 
-# Install dependencies
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
-# Copy source
 COPY . .
 
-# Build the app
+RUN mkdir -p data && touch data/db.sqlite
+
 RUN bun run build
 
-# ---- Production stage ----
 FROM oven/bun:latest as prod
 
 WORKDIR /app
 
-# Copy built app and dependencies
 COPY --from=build /app /app
 
-# Expose port (change if your app uses a different port)
-EXPOSE 5173
+EXPOSE 3000
 
-# Ensure the db.sqlite file exists (if not, create it)
-RUN touch db.sqlite
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-# Set environment variables if needed
-ENV NODE_ENV=production
-
-CMD ["bun", "run", "start"]
+ENTRYPOINT ["/app/entrypoint.sh"]
