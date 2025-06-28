@@ -107,18 +107,8 @@
                 >Logout</Button>
               </form>
             {:else}
-              <a
-                href="/login"
-                class="block hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded w-full text-sm text-center"
-              >
-                Login
-              </a>
-              <a
-                href="/signup"
-                class="block hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded w-full text-sm text-center"
-              >
-                Sign Up
-              </a>
+              <Button variant="outline" href="/login">Login</Button>
+              <Button variant="outline" href="/signup">Sign Up</Button>
             {/if}
 
             {#if !isShared}
@@ -196,12 +186,7 @@
 
             <Separator class="my-2" />
 
-            <button
-              onclick={shareProject}
-              class="bg-blue-600 hover:bg-blue-700 px-3 py-2 border border-blue-600 rounded w-full text-white text-sm text-center"
-            >
-              Save & Get Short URL
-            </button>
+            <Button onclick={shareProject}>Save & Get Short URL</Button>
           </div>
         </Popover.Content>
       </Popover.Root>
@@ -232,7 +217,8 @@
 </div>
 
 {#snippet shareButton(mode: "full" | "markdown" | "html", label: string)}
-  <button
+  <Button
+    variant="outline"
     onclick={() => {
       isShareMenuOpen = false;
 
@@ -255,8 +241,7 @@
         }, 300);
       }
     }}
-    class="flex justify-center items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded w-full text-sm text-center"
   >
     <LinkIcon size={16} /> {label}
-  </button>
+  </Button>
 {/snippet}
