@@ -115,7 +115,10 @@
   * {
     @apply border-border outline-ring/50 touch-manipulation;
   }
+  html, body {
+    @apply overscroll-none touch-manipulation fixed w-full;
+  }
   body {
-    @apply bg-background text-foreground touch-manipulation;
+    @apply bg-background text-foreground;
   }
 }

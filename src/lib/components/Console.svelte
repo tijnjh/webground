@@ -2,11 +2,13 @@
   import type { ConsoleAction } from "$lib/types";
   import { cn } from "$lib/utils";
   import {
-    ChevronsUpDownIcon,
+    ChevronUp,
     CircleXIcon,
     Trash2Icon,
     TriangleAlertIcon,
   } from "@lucide/svelte";
+  import { haptic } from "ios-haptics";
+  import { toast } from "svelte-sonner";
   import Button from "./ui/button/button.svelte";
 
   let messages: ConsoleAction[] = $state([]);
@@ -17,6 +19,11 @@
     warn: messages.filter((m) => m.type === "warn").length,
     error: messages.filter((m) => m.type === "error").length,
   });
+
+  function toggle() {
+    isCollapsed = !isCollapsed;
+    haptic();
+  }
 </script>
 
 <svelte:window
@@ -30,7 +37,7 @@
   onkeydown={(e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "j") {
       e.preventDefault();
-      isCollapsed = !isCollapsed;
+      toggle();
     }
   }}
 />
@@ -67,18 +74,24 @@
     <div class="flex items-center gap-2">
       <Button
         size="icon"
-        variant="outline"
-        onclick={() => void (messages = [])}
+        variant="destructive"
+        onclick={() => {
+          haptic();
+          messages = [];
+          toast.success("Cleared console");
+        }}
       >
         <Trash2Icon size={14} />
         <span class="sr-only">Clear</span>
       </Button>
-      <Button
-        size="icon"
-        variant="outline"
-        onclick={() => void (isCollapsed = !isCollapsed)}
-      >
-        <ChevronsUpDownIcon size={14} />
+      <Button size="icon" variant="outline" onclick={toggle}>
+        <ChevronUp
+          size={14}
+          class={cn([
+            "transition-transform",
+            isCollapsed ? "" : "-rotate-180",
+          ])}
+        />
         <span class="sr-only">{isCollapsed ? "Show" : "Hide"}</span>
       </Button>
     </div>

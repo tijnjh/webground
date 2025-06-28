@@ -79,6 +79,7 @@
                       isMenuOpen = false;
                       isClearMenuOpen = false;
                       codeState.clear();
+                      toast.success("Cleared code");
                     }}
                   >
                     Confirm

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Toaster } from "$lib/components/ui/sonner/index.js";
+  import { isMobile } from "$lib/utils";
   import { ModeWatcher } from "mode-watcher";
   import "../app.css";
 
@@ -7,6 +8,6 @@
 </script>
 
 <ModeWatcher />
-<Toaster richColors />
+<Toaster richColors position={isMobile ? "top-center" : "bottom-right"} />
 
 {@render children()}
