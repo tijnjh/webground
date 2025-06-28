@@ -9,6 +9,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run migrate.ts",
     "dev": "vite dev",
+    "start": "node build",
     "prepare": "svelte-kit sync || echo ''",
     "preview": "vite preview"
   },

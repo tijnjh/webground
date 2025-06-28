@@ -4,7 +4,7 @@ export default defineConfig({
   dialect: "turso",
   schema: "./src/lib/server/schema.ts",
   dbCredentials: {
-    url: "file:db.sqlite",
+    url: "file:data/db.sqlite",
   },
   out: "./drizzle",
 });

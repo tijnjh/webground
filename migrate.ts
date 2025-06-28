@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
 
 const client = createClient({
-  url: "file:db.sqlite",
+  url: "file:data/db.sqlite",
 });
 
 const db = drizzle(client);
