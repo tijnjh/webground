@@ -68,4 +68,20 @@ CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_projects_updated_at BEFORE UPDATE ON projects
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column(); 
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Function to create user profile (for OAuth and regular signup)
+CREATE OR REPLACE FUNCTION create_user_simple(
+  user_id UUID,
+  user_username TEXT,
+  user_email TEXT
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  INSERT INTO users (id, username, email)
+  VALUES (user_id, user_username, user_email);
+END;
+$$; 

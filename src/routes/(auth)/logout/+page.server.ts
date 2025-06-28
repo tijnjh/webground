@@ -30,6 +30,6 @@ export const actions: Actions = {
     // Clear any remaining cookies (legacy cleanup)
     cookies.delete("session", { path: "/" });
 
-    throw redirect(302, "/");
+    throw redirect(302, "/auth");
   },
 };

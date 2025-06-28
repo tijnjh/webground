@@ -62,7 +62,7 @@
 
       await navigator.clipboard.writeText(shortUrl);
       toast.success(
-        `Project saved! Short URL copied to clipboard: ${shortUrl}`,
+        `Project saved! Short URL copied to clipboard: ${shortUrl}`
       );
     } catch (error) {
       toast.error("Failed to save project");
@@ -104,11 +104,12 @@
               </Button>
               <form method="POST" action="/logout" use:enhance>
                 <Button variant="outline" type="submit" class="w-full"
-                >Logout</Button>
+                  >Logout</Button
+                >
               </form>
             {:else}
-              <Button variant="outline" href="/login">Login</Button>
-              <Button variant="outline" href="/signup">Sign Up</Button>
+              <Button variant="outline" href="/auth">Sign in with GitHub</Button
+              >
             {/if}
 
             {#if !isShared}
@@ -236,12 +237,13 @@
       if (res.value.isLong) {
         setTimeout(() => {
           toast.warning(
-            "URL is longer than 2048 characters, which might cause issues in certain browsers",
+            "URL is longer than 2048 characters, which might cause issues in certain browsers"
           );
         }, 300);
       }
     }}
   >
-    <LinkIcon size={16} /> {label}
+    <LinkIcon size={16} />
+    {label}
   </Button>
 {/snippet}
