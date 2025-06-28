@@ -6,6 +6,7 @@ COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 COPY . .
+COPY drizzle ./drizzle
 
 RUN mkdir -p data && touch data/db.sqlite
 
