@@ -1,38 +1,12 @@
 import { browser } from "$app/environment";
 import { type ClassValue, clsx } from "clsx";
-import { err, ok, type Result } from "neverthrow";
 import { twMerge } from "tailwind-merge";
 import type { Code, LangUnion } from "./types";
 
-export function clearCode(code: Code) {
-  for (const key of Object.keys(code)) {
-    code[key as keyof Code] = "";
+export function extractCodeParams() {
+  if (!browser) {
+    return { h: "", c: "", j: "" };
   }
-}
-
-const mediaQuery = browser ? matchMedia("(max-width: 768px)") : null;
-export const isMobile = mediaQuery?.matches;
-
-export function checkIfShared(): Result<boolean, Error> {
-  if (!browser) return err(new Error("not a browser"));
-
-  const params = new URL(location.href).searchParams;
-
-  const h = params.get("h");
-  const c = params.get("c");
-  const j = params.get("j");
-
-  return ok(!!(h || c || j));
-}
-
-interface CodeParams {
-  h?: string;
-  c?: string;
-  j?: string;
-}
-
-export function extractCodeParams(): Result<CodeParams, Error> {
-  if (!browser) return err(new Error("not a browser"));
 
   const params = new URL(location.href).searchParams;
 
@@ -40,7 +14,7 @@ export function extractCodeParams(): Result<CodeParams, Error> {
   const c = params.get("c") ?? undefined;
   const j = params.get("j") ?? undefined;
 
-  return ok({ h, c, j });
+  return { h, c, j };
 }
 
 export function setTabFromHash(currentTab: LangUnion, code: Code) {

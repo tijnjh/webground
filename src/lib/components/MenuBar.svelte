@@ -3,7 +3,7 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Popover from "$lib/components/ui/popover/index.js";
   import { Separator } from "$lib/components/ui/separator/index.js";
-  import { checkIfShared, isMobile } from "$lib/utils";
+  import { useIsMobile, useIsShared } from "$lib/hooks.svelte";
   import {
     EllipsisIcon,
     GithubIcon,
@@ -19,25 +19,22 @@
   import LangSwitcher from "./LangSwitcher.svelte";
   import RunButton from "./RunButton.svelte";
 
-  let isMenuOpen = $state(false);
-  let isClearMenuOpen = $state(false);
-  let isShareMenuOpen = $state(false);
-  let title = $state("");
+  const isMobile = useIsMobile();
+  const isShared = useIsShared();
 
-  const isShared = checkIfShared().unwrapOr(false);
+  let title = $state("");
 </script>
 
 <div class="flex justify-between items-center gap-2 p-4">
   <div class="flex items-center gap-3">
     <div class="flex items-center gap-2">
-      <Popover.Root bind:open={isMenuOpen}>
+      <Popover.Root>
         <Popover.Trigger>
           <Button
             size="icon"
             variant="outline"
             aria-label="Toggle menu"
             onclick={haptic}
-            disabled={isMenuOpen}
           >
             <EllipsisIcon size={16} />
             <span class="sr-only">Menu</span>
@@ -46,7 +43,12 @@
 
         <Popover.Content align="start">
           <div class="flex flex-col gap-2">
-            <h1>WebGround</h1>
+            <div class="flex items-center justify-between">
+              <h1>Webground</h1>
+              <AppearanceToggle />
+            </div>
+
+            <Separator class="my-2" />
 
             <Button class="w-full" href="https://github.com/tijnjh/webground">
               <GithubIcon size={16} />
@@ -55,14 +57,9 @@
 
             {#if !isShared}
               <Separator class="my-2" />
-              <Popover.Root bind:open={isClearMenuOpen}>
+              <Popover.Root>
                 <Popover.Trigger>
-                  <Button
-                    class="w-full"
-                    variant="destructive"
-                    onclick={haptic}
-                    disabled={isClearMenuOpen}
-                  >
+                  <Button class="w-full" variant="destructive" onclick={haptic}>
                     <Trash2Icon size={16} />
                     Clear all code
                   </Button>
@@ -76,8 +73,6 @@
                     variant="destructive"
                     onclick={() => {
                       haptic();
-                      isMenuOpen = false;
-                      isClearMenuOpen = false;
                       codeState.clear();
                       toast.success("Cleared code");
                     }}
@@ -87,17 +82,13 @@
                 </Popover.Content>
               </Popover.Root>
             {/if}
-
-            <Separator class="my-2" />
-
-            <AppearanceToggle />
           </div>
         </Popover.Content>
       </Popover.Root>
 
-      <Popover.Root bind:open={isShareMenuOpen}>
+      <Popover.Root>
         <Popover.Trigger>
-          <Button variant="outline" onclick={haptic} disabled={isShareMenuOpen}>
+          <Button variant="outline" onclick={haptic}>
             <ShareIcon size={16} />
             Share
           </Button>
@@ -156,8 +147,6 @@
 {#snippet shareButton(mode: "full" | "markdown" | "html", label: string)}
   <Button
     onclick={() => {
-      isShareMenuOpen = false;
-
       const res = copyLink(codeState.current, mode, title);
 
       if (res.isErr()) {

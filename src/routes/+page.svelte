@@ -1,17 +1,11 @@
 <script lang="ts">
   import { decode } from "$lib/codec";
-  import Editor from "$lib/components/Editor.svelte";
   import LangSwitcher from "$lib/components/LangSwitcher.svelte";
   import Preview, { updatePreview } from "$lib/components/Preview.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import { µ } from "$lib/global.svelte";
   import type { Code } from "$lib/types";
-  import {
-    checkIfShared,
-    extractCodeParams,
-    isMobile,
-    setTabFromHash,
-  } from "$lib/utils";
+  import { extractCodeParams, setTabFromHash } from "$lib/utils";
   import { ChevronUpIcon } from "@lucide/svelte";
   import { haptic } from "ios-haptics";
   import { ok, Result } from "neverthrow";
@@ -20,20 +14,17 @@
   import RunButton from "$lib/components/RunButton.svelte";
   import Console from "$lib/components/Console.svelte";
   import { codeState } from "$lib/code-state.svelte";
+  import { useIsMobile, useIsShared } from "$lib/hooks.svelte";
+  import Editor from "$lib/components/Editor.svelte";
+
+  const isMobile = useIsMobile();
+  const isShared = useIsShared();
 
   let showMobilePreview = $state(false);
 
-  const isShared = checkIfShared().unwrapOr(false);
-
   onMount(() => {
     if (isShared) {
-      const params = extractCodeParams();
-
-      if (params.isErr()) {
-        return;
-      }
-
-      const { h, c, j } = params.value;
+      const { h, c, j } = extractCodeParams();
 
       const decoded = Result.combine([
         h ? decode(h) : ok(""),
@@ -73,16 +64,6 @@
     }
   }}
 />
-
-<!-- <div class="top-0 right-0 z-100 fixed bg-red-400 size-128">
-  html: {codeState.current.html}
-  <br />
-  <br />
-  css: {codeState.current.css}
-  <br />
-  <br />  
-  js: {codeState.current.js}
-</div> -->
 
 {#if !isMobile}
   <!-- desktop layout -->
