@@ -9,13 +9,13 @@ export function template({ css, html, js }: Code) {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>${css}</style>
+            <script defer>${console}</script>
+            <script defer type="module">
+                ${js}
+            </script>
         </head>
         <body>
             ${html}
-            <script>${console}</script>
-            <script type="module">
-                ${js}
-            </script>
         </body>
         </html>
     `;
