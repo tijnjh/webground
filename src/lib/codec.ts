@@ -1,42 +1,38 @@
-import { deflateSync, inflateSync, strFromU8, strToU8 } from "fflate";
-import { err, ok, Result } from "neverthrow";
+import { Effect, pipe } from "effect";
+import { deflateSync, inflate, inflateSync, strFromU8, strToU8 } from "fflate";
 
-export function encode(str: string): Result<string, Error> {
-  let encoded;
+export const encode = (str: string): Effect.Effect<string, Error> =>
+  Effect.try({
+    try: () =>
+      pipe(
+        str,
+        strToU8,
+        deflateSync,
+        (v) => String.fromCharCode(...v),
+        btoa,
+        (v) => v.replaceAll("=", ""),
+        (v) => v.replaceAll("+", "~"),
+        (v) => v.replaceAll("/", "_")
+      ),
 
-  try {
-    encoded = str;
-    encoded = strToU8(str);
-    encoded = deflateSync(encoded);
-    encoded = btoa(String.fromCharCode.apply(null, [...encoded]));
-    encoded = encoded.replace(/=/g, "").replace(/\+/g, "~").replace(
-      /\//g,
-      "_",
-    );
-  } catch (error) {
-    return err(new Error(`Failed to encode: ${error}`));
-  }
+    catch: (error) => new Error(`failed to encode: ${error}`) as Error,
+  });
 
-  return ok(encoded);
-}
-
-export function decode(str: string): Result<string, Error> {
-  let decoded;
-
-  try {
-    decoded = str;
-    decoded = padBase64(decoded);
-    decoded = decoded.replace(/\~/g, "+").replace(/_/g, "/");
-    decoded = atob(decoded);
-    decoded = Uint8Array.from(decoded, (c: string) => c.charCodeAt(0));
-    decoded = inflateSync(decoded);
-    decoded = strFromU8(decoded);
-  } catch (error) {
-    return err(new Error(`Failed to decode: ${error}`));
-  }
-
-  return ok(decoded);
-}
+export const decode = (str: string): Effect.Effect<string, Error> =>
+  Effect.try({
+    try: () =>
+      pipe(
+        str,
+        padBase64,
+        (v) => v.replaceAll("~", "+"),
+        (v) => v.replaceAll("_", "/"),
+        atob,
+        (v) => Uint8Array.from(v, (c: string) => c.charCodeAt(0)),
+        inflateSync,
+        strFromU8
+      ),
+    catch: (error) => new Error(`failed to decode: ${error}`) as Error,
+  });
 
 export function padBase64(input: string) {
   const segmentLength = 4;

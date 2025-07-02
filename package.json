@@ -12,15 +12,14 @@
   },
   "dependencies": {
     "@lucide/svelte": "^0.523.0",
+    "effect": "^3.16.11",
     "emmet-monaco-es": "^5.5.0",
     "fflate": "^0.8.2",
     "ios-haptics": "^0.0.8",
     "mode-watcher": "^1.0.8",
     "monaco-editor": "^0.52.2",
-    "neverthrow": "^8.2.0",
     "paneforge": "^1.0.0",
-    "svelte-sonner": "^1.0.5",
-    "typecatch": "^0.2.5"
+    "svelte-sonner": "^1.0.5"
   },
   "devDependencies": {
     "@internationalized/date": "^3.8.1",

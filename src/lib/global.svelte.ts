@@ -4,6 +4,6 @@ interface Global {
   currentTab: LangUnion;
 }
 
-export let µ: Global = $state({
+export const µ: Global = $state({
   currentTab: "html",
 });

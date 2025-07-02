@@ -5,10 +5,10 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import { µ } from "$lib/global.svelte";
   import type { Code } from "$lib/types";
-  import { extractCodeParams, setTabFromHash } from "$lib/utils";
+  import { extractCodeParams, localStore, setTabFromHash } from "$lib/utils";
   import { ChevronUpIcon } from "@lucide/svelte";
   import { haptic } from "ios-haptics";
-  import { ok, Result } from "neverthrow";
+  import { Effect } from "effect";
   import { onMount } from "svelte";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
   import RunButton from "$lib/components/RunButton.svelte";
@@ -16,36 +16,60 @@
   import { codeState } from "$lib/code-state.svelte";
   import { useIsMobile, useIsShared } from "$lib/hooks.svelte";
   import Editor from "$lib/components/Editor.svelte";
+  import { toast } from "svelte-sonner";
 
   const isMobile = useIsMobile();
   const isShared = useIsShared();
 
   let showMobilePreview = $state(false);
 
-  onMount(() => {
+  onMount(async () => {
     if (isShared) {
       const { h, c, j } = extractCodeParams();
 
-      const decoded = Result.combine([
-        h ? decode(h) : ok(""),
-        c ? decode(c) : ok(""),
-        j ? decode(j) : ok(""),
-      ]);
+      // let html = "";
+      // let css = "";
+      // let js = "";
 
-      if (decoded.isErr()) {
+      // [html, css, js] = Effect.runSync(
+      //   Effect.catchAll(
+      //     Effect.all([
+      //       h ? decode(h) : Effect.succeed(""),
+      //       c ? decode(c) : Effect.succeed(""),
+      //       j ? decode(j) : Effect.succeed(""),
+      //     ]),
+      //     (error) => {
+      //       toast.error(error.message);
+      //       console.error(error);
+      //       return Effect.succeed(["", "", ""]);
+      //     },
+      //   ),
+      // );
+
+      const decoded = await Effect.runPromiseExit(
+        Effect.all([
+          h ? decode(h) : Effect.succeed(""),
+          c ? decode(c) : Effect.succeed(""),
+          j ? decode(j) : Effect.succeed(""),
+        ])
+      );
+
+      if (decoded._tag === "Failure") {
+        toast.error(decoded._op);
+        console.error(decoded.cause);
         return;
       }
 
-      const [html, css, js] = decoded.value;
+      decoded;
+
+      const { html, css, js } = decoded.value;
 
       codeState.current = { html, css, js };
     } else {
-      if (localStorage.code) {
-        for (
-          const [key, val] of Object.entries(
-            JSON.parse(localStorage.code),
-          )
-        ) {
+      const code = Effect.runSync(localStore("code"));
+
+      if (code) {
+        for (const [key, val] of Object.entries(code)) {
           codeState.current[key as keyof Code] = val as string;
         }
       }
@@ -57,10 +81,10 @@
 
 <svelte:window
   onhashchange={() => void setTabFromHash(µ.currentTab, codeState.current)}
-  onkeydown={(e) => {
+  onkeydown={async (e) => {
     if ((e.metaKey || e.ctrlKey) && (e.key === "s" || e.key === "Enter")) {
       e.preventDefault();
-      updatePreview(codeState.current);
+      await Effect.runPromise(updatePreview(codeState.current));
     }
   }}
 />
@@ -88,7 +112,9 @@
 
     <LangSwitcher class="bottom-20 left-4 fixed bg-white dark:bg-[#1e1e1e]" />
 
-    <div class="flex justify-between items-center bg-white dark:bg-[#1e1e1e] p-4 border-t">
+    <div
+      class="flex justify-between items-center bg-white dark:bg-[#1e1e1e] p-4 border-t"
+    >
       <Button
         onclick={() => {
           haptic();

@@ -2,6 +2,27 @@ import { browser } from "$app/environment";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Code, LangUnion } from "./types";
+import { Effect } from "effect";
+
+export const localStore = <T>(
+  key: string,
+  newValue?: T,
+): Effect.Effect<T, Error> =>
+  Effect.gen(function* () {
+    if (newValue) {
+      localStorage.setItem(key, JSON.stringify(newValue));
+    }
+
+    const item = localStorage.getItem(key);
+
+    if (!item) {
+      return yield* Effect.fail(
+        new Error(`failed to find item with key ${key}`),
+      );
+    }
+
+    return JSON.parse(item) as T;
+  });
 
 export function extractCodeParams() {
   if (!browser) {

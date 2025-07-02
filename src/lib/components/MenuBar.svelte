@@ -18,6 +18,8 @@
   import AppearanceToggle from "./AppearanceToggle.svelte";
   import LangSwitcher from "./LangSwitcher.svelte";
   import RunButton from "./RunButton.svelte";
+  import { Effect } from "effect";
+  import { localStore } from "$lib/utils";
 
   const isMobile = useIsMobile();
   const isShared = useIsShared();
@@ -43,7 +45,7 @@
 
         <Popover.Content align="start">
           <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-between">
+            <div class="flex justify-between items-center">
               <h1>Webground</h1>
               <AppearanceToggle />
             </div>
@@ -129,7 +131,7 @@
     {#if isShared}
       <Button
         onclick={() => {
-          localStorage.code = JSON.stringify(codeState.current);
+          Effect.runSync(localStore("code", codeState.current));
           location.href = location.href.split("?")[0];
         }}
       >
@@ -147,24 +149,23 @@
 {#snippet shareButton(mode: "full" | "markdown" | "html", label: string)}
   <Button
     onclick={() => {
-      const res = copyLink(codeState.current, mode, title);
+      Effect.runPromise(copyLink({ code: codeState.current, mode, title }))
+        .then((res) => {
+          haptic.confirm();
+          toast.success(`Copied link (${mode}) to clipboard`);
 
-      if (res.isErr()) {
-        haptic.error();
-        toast.error(res.error.message);
-        return;
-      }
-
-      haptic.confirm();
-      toast.success(`Copied link (${mode}) to clipboard`);
-
-      if (res.value.isLong) {
-        setTimeout(() => {
-          toast.warning(
-            "URL is longer than 2048 characters, which might cause issues in certain browsers",
-          );
-        }, 300);
-      }
+          if (res.isLong) {
+            setTimeout(() => {
+              toast.warning(
+                "URL is longer than 2048 characters, which might cause issues in certain browsers",
+              );
+            }, 300);
+          }
+        })
+        .catch((error) => {
+          haptic.error();
+          toast.error(error.message);
+        });
     }}
     class="w-full"
   >

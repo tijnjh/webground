@@ -4,14 +4,19 @@
   import { updatePreview } from "./Preview.svelte";
   import { TerminalIcon } from "@lucide/svelte";
   import { codeState } from "$lib/code-state.svelte";
+  import { Effect } from "effect";
+  import { toast } from "svelte-sonner";
 </script>
 
 <Button
   onclick={() => {
-    const didUpdate = updatePreview(codeState.current);
-    if (didUpdate) {
-      haptic.confirm();
-    }
+    Effect.runPromise(updatePreview(codeState.current))
+      .then(({ didUpdate }) => didUpdate && haptic.confirm())
+      .catch((error) => {
+        console.error(error);
+        haptic.error();
+        toast.error(JSON.stringify(error));
+      });
   }}
 >
   <TerminalIcon size={16} />
