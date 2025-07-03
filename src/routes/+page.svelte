@@ -12,7 +12,7 @@
   } from "$lib/utils";
   import { ChevronUpIcon } from "@lucide/svelte";
   import { haptic } from "ios-haptics";
-  import { Effect } from "effect";
+  import { Micro } from "effect";
   import { onMount } from "svelte";
   import * as Resizable from "$lib/components/ui/resizable/index.js";
   import RunButton from "$lib/components/RunButton.svelte";
@@ -31,16 +31,16 @@
     if (isShared) {
       const { h, c, j } = extractCodeParams();
 
-      const decoded = await Effect.runPromiseExit(
-        Effect.all([
-          h ? decode(h) : Effect.succeed(""),
-          c ? decode(c) : Effect.succeed(""),
-          j ? decode(j) : Effect.succeed(""),
+      const decoded = await Micro.runPromiseExit(
+        Micro.all([
+          h ? decode(h) : Micro.succeed(""),
+          c ? decode(c) : Micro.succeed(""),
+          j ? decode(j) : Micro.succeed(""),
         ]),
       );
 
       if (decoded._tag === "Failure") {
-        toast.error(decoded._op);
+        toast.error(decoded.cause.message);
         console.error(decoded.cause);
         return;
       }
@@ -49,7 +49,7 @@
 
       codeState.current = { html, css, js };
     } else {
-      const code = Effect.runSync(localStore("code"));
+      const code = Micro.runSync(localStore("code"));
 
       if (code) {
         for (const [key, val] of Object.entries(code)) {
@@ -67,7 +67,7 @@
   onkeydown={async (e) => {
     if ((e.metaKey || e.ctrlKey) && (e.key === "s" || e.key === "Enter")) {
       e.preventDefault();
-      await Effect.runPromise(updatePreview(codeState.current));
+      await Micro.runPromise(updatePreview(codeState.current));
     }
   }}
 />

@@ -1,37 +1,22 @@
 <script lang="ts" module>
   import { template } from "$lib/preview/template";
-  import { cn, localStore } from "$lib/utils";
-  import { Effect } from "effect";
+  import { localStore } from "$lib/utils";
+  import { Micro } from "effect";
   import type { Code } from "../types";
+  import { cn } from "cnfn";
 
   let src = $state("/start.html");
 
-  // export function updatePreview(code: Code) {
-  //   if (Object.values(code).every((value) => value.trim() === "")) {
-  //     src = "/start.html";
-  //     return false;
-  //   }
-  //   const url = URL.createObjectURL(
-  //     new Blob([template(code)], { type: "text/html" }),
-  //   );
-
-  //   src = url;
-
-  //   Effect.runSync(localStore("code", code));
-
-  //   return true;
-  // }
-
   export const updatePreview = (
     code: Code,
-  ): Effect.Effect<{ didUpdate: boolean }, Error> =>
-    Effect.gen(function* () {
+  ): Micro.Micro<{ didUpdate: boolean }, Error> =>
+    Micro.gen(function* () {
       if (Object.values(code).every((v) => v.trim() === "")) {
         src = "/start.html";
         return { didUpdate: false };
       }
 
-      const url = Effect.try({
+      const url = Micro.try({
         try: () => {
           const blob = new Blob([template(code)], { type: "text/html" });
           return URL.createObjectURL(blob);

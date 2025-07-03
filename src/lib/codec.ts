@@ -1,8 +1,8 @@
-import { Effect, pipe } from "effect";
+import { Micro, pipe } from "effect";
 import { deflateSync, inflate, inflateSync, strFromU8, strToU8 } from "fflate";
 
-export const encode = (str: string): Effect.Effect<string, Error> =>
-  Effect.try({
+export const encode = (str: string): Micro.Micro<string, Error> =>
+  Micro.try({
     try: () =>
       pipe(
         str,
@@ -18,8 +18,8 @@ export const encode = (str: string): Effect.Effect<string, Error> =>
     catch: (error) => new Error(`failed to encode: ${error}`) as Error,
   });
 
-export const decode = (str: string): Effect.Effect<string, Error> =>
-  Effect.try({
+export const decode = (str: string): Micro.Micro<string, Error> =>
+  Micro.try({
     try: () =>
       pipe(
         str,

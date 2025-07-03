@@ -1,4 +1,4 @@
-import { Effect } from "effect";
+import { Micro } from "effect";
 import { encode } from "./codec";
 import type { Code } from "./types";
 
@@ -10,9 +10,9 @@ export const copyLink = ({
   code: Code;
   mode: "full" | "markdown" | "html";
   title: string;
-}): Effect.Effect<{ isLong: boolean }, Error> =>
-  Effect.gen(function* () {
-    const [html, css, js] = yield* Effect.all([
+}): Micro.Micro<{ isLong: boolean }, Error> =>
+  Micro.gen(function* () {
+    const [html, css, js] = yield* Micro.all([
       encode(code.html),
       encode(code.css),
       encode(code.js),
@@ -37,7 +37,7 @@ export const copyLink = ({
         navigator.clipboard.writeText(`<a href="${newUrl}">${title}</a>`);
         break;
       default:
-        return yield* Effect.fail(
+        return yield* Micro.fail(
           new Error(`copy link type "${mode}" is not supported.`),
         );
     }

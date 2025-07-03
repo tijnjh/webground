@@ -18,7 +18,7 @@
   import AppearanceToggle from "./AppearanceToggle.svelte";
   import LangSwitcher from "./LangSwitcher.svelte";
   import RunButton from "./RunButton.svelte";
-  import { Effect } from "effect";
+  import { Micro } from "effect";
   import { localStore } from "$lib/utils";
 
   const isMobile = useIsMobile();
@@ -131,7 +131,7 @@
     {#if isShared}
       <Button
         onclick={() => {
-          Effect.runSync(localStore("code", codeState.current));
+          Micro.runSync(localStore("code", codeState.current));
           location.href = location.href.split("?")[0];
         }}
       >
@@ -149,7 +149,7 @@
 {#snippet shareButton(mode: "full" | "markdown" | "html", label: string)}
   <Button
     onclick={() => {
-      Effect.runPromise(copyLink({ code: codeState.current, mode, title }))
+      Micro.runPromise(copyLink({ code: codeState.current, mode, title }))
         .then((res) => {
           haptic.confirm();
           toast.success(`Copied link (${mode}) to clipboard`);

@@ -1,12 +1,12 @@
 import { browser } from "$app/environment";
 import type { Code, LangUnion } from "./types";
-import { Effect } from "effect";
+import { Micro } from "effect";
 
 export const localStore = <T>(
   key: string,
   newValue?: T,
-): Effect.Effect<T, Error> =>
-  Effect.gen(function* () {
+): Micro.Micro<T, Error> =>
+  Micro.gen(function* () {
     if (newValue) {
       localStorage.setItem(key, JSON.stringify(newValue));
     }
@@ -14,7 +14,7 @@ export const localStore = <T>(
     const item = localStorage.getItem(key);
 
     if (!item) {
-      return yield* Effect.fail(
+      return yield* Micro.fail(
         new Error(`failed to find item with key ${key}`),
       );
     }
