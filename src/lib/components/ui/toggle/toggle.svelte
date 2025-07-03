@@ -31,7 +31,7 @@
 
 <script lang="ts">
   import { Toggle as TogglePrimitive } from "bits-ui";
-  import { cn } from "$lib/utils.js";
+  import { cn } from "cnfn";
 
   let {
     ref = $bindable(null),

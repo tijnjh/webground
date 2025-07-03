@@ -1,7 +1,8 @@
 <script lang="ts">
   import GripVerticalIcon from "@lucide/svelte/icons/grip-vertical";
   import * as ResizablePrimitive from "paneforge";
-  import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
+  import { cn } from "cnfn";
+  import type { WithoutChildrenOrChild } from "$lib/utils.js";
 
   let {
     ref = $bindable(null),
@@ -23,7 +24,7 @@
   {...restProps}
 >
   {#if withHandle}
-    <div class="bg-border rounded-xs z-10 flex h-4 w-3 items-center justify-center border">
+    <div class="z-10 flex justify-center items-center bg-border border rounded-xs w-3 h-4">
       <GripVerticalIcon class="size-2.5" />
     </div>
   {/if}
