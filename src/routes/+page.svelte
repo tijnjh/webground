@@ -5,7 +5,11 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import { µ } from "$lib/global.svelte";
   import type { Code } from "$lib/types";
-  import { extractCodeParams, localStore, setTabFromHash } from "$lib/utils";
+  import {
+    extractCodeParams,
+    localStore,
+    setTabFromHash,
+  } from "$lib/utils";
   import { ChevronUpIcon } from "@lucide/svelte";
   import { haptic } from "ios-haptics";
   import { Effect } from "effect";
@@ -27,31 +31,12 @@
     if (isShared) {
       const { h, c, j } = extractCodeParams();
 
-      // let html = "";
-      // let css = "";
-      // let js = "";
-
-      // [html, css, js] = Effect.runSync(
-      //   Effect.catchAll(
-      //     Effect.all([
-      //       h ? decode(h) : Effect.succeed(""),
-      //       c ? decode(c) : Effect.succeed(""),
-      //       j ? decode(j) : Effect.succeed(""),
-      //     ]),
-      //     (error) => {
-      //       toast.error(error.message);
-      //       console.error(error);
-      //       return Effect.succeed(["", "", ""]);
-      //     },
-      //   ),
-      // );
-
       const decoded = await Effect.runPromiseExit(
         Effect.all([
           h ? decode(h) : Effect.succeed(""),
           c ? decode(c) : Effect.succeed(""),
           j ? decode(j) : Effect.succeed(""),
-        ])
+        ]),
       );
 
       if (decoded._tag === "Failure") {
@@ -60,9 +45,7 @@
         return;
       }
 
-      decoded;
-
-      const { html, css, js } = decoded.value;
+      const [html, css, js] = decoded.value;
 
       codeState.current = { html, css, js };
     } else {
@@ -112,9 +95,7 @@
 
     <LangSwitcher class="bottom-20 left-4 fixed bg-white dark:bg-[#1e1e1e]" />
 
-    <div
-      class="flex justify-between items-center bg-white dark:bg-[#1e1e1e] p-4 border-t"
-    >
+    <div class="flex justify-between items-center bg-white dark:bg-[#1e1e1e] p-4 border-t">
       <Button
         onclick={() => {
           haptic();

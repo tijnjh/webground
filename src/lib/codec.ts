@@ -12,7 +12,7 @@ export const encode = (str: string): Effect.Effect<string, Error> =>
         btoa,
         (v) => v.replaceAll("=", ""),
         (v) => v.replaceAll("+", "~"),
-        (v) => v.replaceAll("/", "_")
+        (v) => v.replaceAll("/", "_"),
       ),
 
     catch: (error) => new Error(`failed to encode: ${error}`) as Error,
@@ -29,7 +29,7 @@ export const decode = (str: string): Effect.Effect<string, Error> =>
         atob,
         (v) => Uint8Array.from(v, (c: string) => c.charCodeAt(0)),
         inflateSync,
-        strFromU8
+        strFromU8,
       ),
     catch: (error) => new Error(`failed to decode: ${error}`) as Error,
   });

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@lucide/svelte": "^0.523.0",
+    "cnfn": "^0.0.2",
     "effect": "^3.16.11",
     "emmet-monaco-es": "^5.5.0",
     "fflate": "^0.8.2",
@@ -30,10 +31,8 @@
     "@sveltejs/vite-plugin-svelte": "^5.1.0",
     "@tailwindcss/vite": "^4.1.10",
     "bits-ui": "^2.8.6",
-    "clsx": "^2.1.1",
     "svelte": "^5.34.7",
     "svelte-check": "^4.2.2",
-    "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^1.0.0",
     "tailwindcss": "^4.1.10",
     "tw-animate-css": "^1.3.4",
