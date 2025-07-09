@@ -7,7 +7,7 @@ export const localStore = <T>(
   newValue?: T,
 ): Micro.Micro<T, Error> =>
   Micro.gen(function* () {
-    if (newValue) {
+    if (newValue !== undefined) {
       localStorage.setItem(key, JSON.stringify(newValue));
     }
 
