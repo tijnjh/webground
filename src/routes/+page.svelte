@@ -49,12 +49,17 @@
 
       codeState.current = { html, css, js };
     } else {
-      const code = Micro.runSync(localStore("code"));
+      const codeResult = await Micro.runPromiseExit(
+        Micro.succeed(localStore("code") || {})
+      );
 
-      if (code) {
+      if (codeResult._tag === "Success") {
+        const code = codeResult.value;
         for (const [key, val] of Object.entries(code)) {
           codeState.current[key as keyof Code] = val as string;
         }
+      } else {
+        console.error("Failed to retrieve code from localStorage:", codeResult.cause);
       }
     }
 
