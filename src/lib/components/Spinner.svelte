@@ -1,31 +1,31 @@
-<script lang="ts">
+<script lang='ts'>
   interface Props {
-    color?: string;
-    unit?: string;
-    duration?: string;
-    size?: string | number;
-    pause?: boolean;
+    color?: string
+    unit?: string
+    duration?: string
+    size?: string | number
+    pause?: boolean
   }
 
-  let {
-    color = "#FF3E00",
-    unit = "px",
-    duration = "0.6s",
+  const {
+    color = '#FF3E00',
+    unit = 'px',
+    duration = '0.6s',
     size = 60,
     pause = false,
-  }: Props = $props();
+  }: Props = $props()
 
-  let moonSize: number = +size / 7;
-  let top: number = +size / 2 - moonSize / 2;
+  const moonSize: number = +size / 7
+  const top: number = +size / 2 - moonSize / 2
 </script>
 
 <div
-  class="wrapper"
+  class='wrapper'
   class:pause-animation={pause}
-  style="--size: {size}{unit}; --color: {color}; --moonSize: {top}{unit}; --duration: {duration}"
+  style='--size: {size}{unit}; --color: {color}; --moonSize: {top}{unit}; --duration: {duration}'
 >
-  <div class="circle-one" class:pause-animation={pause}></div>
-  <div class="circle-two" class:pause-animation={pause}></div>
+  <div class='circle-one' class:pause-animation={pause}></div>
+  <div class='circle-two' class:pause-animation={pause}></div>
 </div>
 
 <style>

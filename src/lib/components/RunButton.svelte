@@ -1,16 +1,16 @@
-<script lang="ts">
-  import { haptic } from "ios-haptics";
-  import Button from "./ui/button/button.svelte";
-  import { updatePreview } from "./Preview.svelte";
-  import { TerminalIcon } from "@lucide/svelte";
-  import { codeState } from "$lib/code-state.svelte";
+<script lang='ts'>
+  import { codeState } from '$lib/code-state.svelte'
+  import { TerminalIcon } from '@lucide/svelte'
+  import { haptic } from 'ios-haptics'
+  import { updatePreview } from './Preview.svelte'
+  import Button from './ui/button/button.svelte'
 </script>
 
 <Button
   onclick={() => {
-    const didUpdate = updatePreview(codeState.current);
+    const didUpdate = updatePreview(codeState.current)
     if (didUpdate) {
-      haptic.confirm();
+      haptic.confirm()
     }
   }}
 >

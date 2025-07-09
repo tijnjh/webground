@@ -1,5 +1,5 @@
-import type { Code } from "$lib/types";
-import console from "./console?raw";
+import type { Code } from '$lib/types'
+import console from './console?raw'
 
 export function template({ css, html, js }: Code) {
   return `
@@ -18,5 +18,5 @@ export function template({ css, html, js }: Code) {
             ${html}
         </body>
         </html>
-    `;
+    `
 }

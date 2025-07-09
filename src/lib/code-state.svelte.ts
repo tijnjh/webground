@@ -1,13 +1,13 @@
-import type { Code } from "$lib/types";
+import type { Code } from '$lib/types'
 
 export const codeState = new class {
-  current: Code;
+  current: Code
 
   constructor() {
-    this.current = $state({ html: "", css: "", js: "" });
+    this.current = $state({ html: '', css: '', js: '' })
   }
 
   clear() {
-    this.current = { html: "", css: "", js: "" };
+    this.current = { html: '', css: '', js: '' }
   }
-}();
+}()
