@@ -10,10 +10,7 @@ export function encode(str: string): Result<string, Error> {
     encoded = strToU8(str)
     encoded = deflateSync(encoded)
     encoded = btoa(String.fromCharCode.apply(null, [...encoded]))
-    encoded = encoded.replace(/=/g, '').replace(/\+/g, '~').replace(
-      /\//g,
-      '_',
-    )
+    encoded = encoded.replace(/=/g, '').replace(/\+/g, '~').replace(/\//g, '_')
   }
   catch (error) {
     return err(new Error(`Failed to encode: ${error}`))

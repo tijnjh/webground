@@ -4,14 +4,7 @@
   import * as Popover from '$lib/components/ui/popover/index.js'
   import { Separator } from '$lib/components/ui/separator/index.js'
   import { useIsMobile, useIsShared } from '$lib/hooks.svelte'
-  import {
-    EllipsisIcon,
-    GithubIcon,
-    LinkIcon,
-    PencilIcon,
-    ShareIcon,
-    Trash2Icon,
-  } from '@lucide/svelte'
+  import { EllipsisIcon, GithubIcon, LinkIcon, PencilIcon, ShareIcon, Trash2Icon } from '@lucide/svelte'
   import { haptic } from 'ios-haptics'
   import { toast } from 'svelte-sonner'
   import { copyLink } from '../sharing'
@@ -160,9 +153,7 @@
 
       if (res.value.isLong) {
         setTimeout(() => {
-          toast.warning(
-            'URL is longer than 2048 characters, which might cause issues in certain browsers',
-          )
+          toast.warning('URL is longer than 2048 characters, which might cause issues in certain browsers')
         }, 300)
       }
     }}

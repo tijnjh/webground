@@ -9,8 +9,7 @@
 
   const hash = browser ? location.hash.replace('#', '') : ''
 
-  const validHash: LangUnion
-    = hash === 'html' || hash === 'css' || hash === 'js' ? hash : 'html'
+  const validHash: LangUnion = hash === 'html' || hash === 'css' || hash === 'js' ? hash : 'html'
 
   let value: LangUnion = $state(validHash)
 
