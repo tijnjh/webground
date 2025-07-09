@@ -27,5 +27,7 @@ export function useIsShared() {
     return Boolean(h || c || j)
   }
 
-  return $state(check())
+  const isShared = $state(check())
+
+  return isShared
 }
