@@ -1,5 +1,5 @@
 import { Micro, pipe } from "effect";
-import { deflateSync, inflate, inflateSync, strFromU8, strToU8 } from "fflate";
+import { deflateSync, inflateSync, strFromU8, strToU8 } from "fflate";
 
 export const encode = (str: string): Micro.Micro<string, Error> =>
   Micro.try({
