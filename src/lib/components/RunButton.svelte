@@ -1,5 +1,4 @@
 <script lang='ts'>
-  import { codeState } from '$lib/code-state.svelte'
   import { TerminalIcon } from '@lucide/svelte'
   import { Micro } from 'effect'
   import { haptic } from 'ios-haptics'
@@ -10,7 +9,7 @@
 
 <Button
   onclick={() => {
-    Micro.runPromise(updatePreview(codeState.current))
+    Micro.runPromise(updatePreview)
       .then(({ didUpdate }) => didUpdate && haptic.confirm())
       .catch((error) => {
         console.error(error)

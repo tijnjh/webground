@@ -5,14 +5,7 @@
   import { Separator } from '$lib/components/ui/separator/index.js'
   import { useIsMobile, useIsShared } from '$lib/hooks.svelte'
   import { localStore } from '$lib/utils'
-  import {
-    EllipsisIcon,
-    GithubIcon,
-    LinkIcon,
-    PencilIcon,
-    ShareIcon,
-    Trash2Icon,
-  } from '@lucide/svelte'
+  import { EllipsisIcon, GithubIcon, LinkIcon, PencilIcon, ShareIcon, Trash2Icon } from '@lucide/svelte'
   import { Micro } from 'effect'
   import { haptic } from 'ios-haptics'
   import { toast } from 'svelte-sonner'

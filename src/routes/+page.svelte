@@ -11,11 +11,7 @@
   import * as Resizable from '$lib/components/ui/resizable/index.js'
   import { µ } from '$lib/global.svelte'
   import { useIsMobile, useIsShared } from '$lib/hooks.svelte'
-  import {
-    extractCodeParams,
-    localStore,
-    setTabFromHash,
-  } from '$lib/utils'
+  import { extractCodeParams, localStore, setTabFromHash } from '$lib/utils'
   import { ChevronUpIcon } from '@lucide/svelte'
   import { Micro } from 'effect'
   import { haptic } from 'ios-haptics'
@@ -36,7 +32,7 @@
           h ? decode(h) : Micro.succeed(''),
           c ? decode(c) : Micro.succeed(''),
           j ? decode(j) : Micro.succeed(''),
-        ]),
+        ], { concurrency: 3 }),
       )
 
       if (decoded._tag === 'Failure') {
@@ -50,9 +46,7 @@
       codeState.current = { html, css, js }
     }
     else {
-      const codeResult = await Micro.runPromiseExit(
-        Micro.succeed(localStore('code') || {}),
-      )
+      const codeResult = await Micro.runPromiseExit(Micro.succeed(localStore('code') || {}))
 
       if (codeResult._tag === 'Success') {
         const code = codeResult.value
@@ -74,7 +68,7 @@
   onkeydown={async (e) => {
     if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'Enter')) {
       e.preventDefault()
-      await Micro.runPromise(updatePreview(codeState.current))
+      await Micro.runPromise(updatePreview)
     }
   }}
 />

@@ -1,33 +1,34 @@
 <script lang='ts' module>
-  import type { Code } from '../types'
+  import { codeState } from '$lib/code-state.svelte'
   import { template } from '$lib/preview/template'
   import { cn, localStore } from '$lib/utils'
   import { Micro } from 'effect'
 
   let src = $state('/start.html')
 
-  export function updatePreview(code: Code): Micro.Micro<{ didUpdate: boolean }, Error> {
-    return Micro.gen(function* () {
-      if (Object.values(code).every(v => v.trim() === '')) {
-        src = '/start.html'
-        return { didUpdate: false }
-      }
+  export const updatePreview = Micro.gen(function* () {
+    const code = codeState.current
 
-      const url = Micro.try({
-        try: () => {
-          const blob = new Blob([template(code)], { type: 'text/html' })
-          return URL.createObjectURL(blob)
-        },
-        catch: () => new Error('failed to create object url'),
-      })
+    if (Object.values(code).every(v => v.trim() === '')) {
+      src = '/start.html'
+      return { didUpdate: false }
+    }
 
-      src = yield* url
-
-      yield* localStore('code', code)
-
-      return { didUpdate: true }
+    const url = Micro.try({
+      try: () => {
+        const blob = new Blob([template(code)], { type: 'text/html' })
+        return URL.createObjectURL(blob)
+      },
+      catch: () => new Error('failed to create object url'),
     })
-  }
+
+    src = yield* url
+
+    yield* localStore('code', code)
+
+    return { didUpdate: true }
+  })
+
 </script>
 
 <script lang='ts'>

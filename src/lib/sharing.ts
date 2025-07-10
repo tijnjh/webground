@@ -1,6 +1,9 @@
 import type { Code } from './types'
 import { Micro } from 'effect'
+import { TaggedError as TaggedErr } from 'effect/Data'
 import { encode } from './codec'
+
+export class CopyLinkError extends TaggedErr('CopyLinkError')<{ message: string }> {}
 
 export function copyLink({
   code,
@@ -40,9 +43,7 @@ export function copyLink({
         navigator.clipboard.writeText(`<a href="${newUrl}">${title}</a>`)
         break
       default:
-        return yield* Micro.fail(
-          new Error(`copy link type "${mode}" is not supported.`),
-        )
+        return yield* Micro.fail(new CopyLinkError({ message: `copy link type "${mode}" is not supported.` }))
     }
 
     return {

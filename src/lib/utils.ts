@@ -11,9 +11,7 @@ export function localStore<T>(key: string, newValue?: T): Micro.Micro<T, Error> 
     const item = localStorage.getItem(key)
 
     if (!item) {
-      return yield* Micro.fail(
-        new Error(`failed to find item with key ${key}`),
-      )
+      return yield* Micro.fail(new Error(`failed to find item with key ${key}`))
     }
 
     return JSON.parse(item) as T
