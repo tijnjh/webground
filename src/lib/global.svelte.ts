@@ -1,9 +1,9 @@
-import type { LangUnion } from "$lib/types";
+import type { LangUnion } from '$lib/types'
 
 interface Global {
-  currentTab: LangUnion;
+  currentTab: LangUnion
 }
 
 export const µ: Global = $state({
-  currentTab: "html",
-});
+  currentTab: 'html',
+})

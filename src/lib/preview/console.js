@@ -1,30 +1,34 @@
+/* eslint-disable eslint-comments/no-unlimited-disable */
+/* eslint-disable */
+
 /** @typedef {import("../types").ConsoleAction} ConsoleAction */
 
-const timers = new Map();
+const timers = new Map()
 
 /**
  * @template T
  * @param {T} arg
- * @returns {SanitizedValue<T>}
+ * @returns {SanitizedValue<T>} 
  */
-const sanitize = (arg) => {
+function sanitize(arg) {
   /**
    * @type {WeakSet<object>}
    */
-  const seen = new WeakSet();
+  const seen = new WeakSet()
   /**
    * @param {any} obj
-   * @returns {any}
+   * @returns {any} 
    */
   const traverse = (obj) => {
-    if (obj === null || typeof obj !== "object") {
-      if (typeof obj === "function") return obj.toString();
-      return obj;
+    if (obj === null || typeof obj !== 'object') {
+      if (typeof obj === 'function')
+        return obj.toString()
+      return obj
     }
     if (seen.has(obj)) {
-      return "[Circular]";
+      return '[Circular]'
     }
-    seen.add(obj);
+    seen.add(obj)
 
     if (obj instanceof Error) {
       /** @type {SanitizedError} */
@@ -32,22 +36,22 @@ const sanitize = (arg) => {
         __isError: true,
         message: obj.message,
         stack: obj.stack,
-      };
+      }
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(traverse);
+      return obj.map(traverse)
     }
 
     /** @type {Record<string, any>} */
-    const newObj = {};
+    const newObj = {}
     for (const key of Object.keys(obj)) {
-      newObj[key] = traverse(obj[key]);
+      newObj[key] = traverse(obj[key])
     }
-    return newObj;
-  };
-  return traverse(arg);
-};
+    return newObj
+  }
+  return traverse(arg)
+}
 
 /**
  * @typedef {object} SanitizedError
@@ -69,65 +73,67 @@ const sanitize = (arg) => {
  */
 
 /** @param {ConsoleAction["type"]} type */
-const createLogger = (type) => (/** @type {*[]} */ ...args) => {
-  const data = args.map(sanitize);
-  window.parent.postMessage({ __webground: true, type, data }, "*");
-};
+function createLogger(type) {
+  return (/** @type {*[]} */ ...args) => {
+    const data = args.map(sanitize)
+    window.parent.postMessage({ __webground: true, type, data }, '*')
+  }
+}
 
-console.log = createLogger("log");
-console.warn = createLogger("warn");
-console.error = createLogger("error");
-console.dir = createLogger("dir");
-console.info = createLogger("info");
-console.debug = createLogger("debug");
+console.log = createLogger('log')
+console.warn = createLogger('warn')
+console.error = createLogger('error')
+console.dir = createLogger('dir')
+console.info = createLogger('info')
+console.debug = createLogger('debug')
 
 console.assert = (condition, ...args) => {
   if (!condition) {
-    const data = ["Assertion failed:", ...args.map(sanitize)];
-    window.parent.postMessage({ __webground: true, type: "error", data }, "*");
+    const data = ['Assertion failed:', ...args.map(sanitize)]
+    window.parent.postMessage({ __webground: true, type: 'error', data }, '*')
   }
-};
+}
 
 console.clear = () => {
   window.parent.postMessage(
-    { __webground: true, type: "clear", data: [] },
-    "*",
-  );
-};
+    { __webground: true, type: 'clear', data: [] },
+    '*',
+  )
+}
 
 console.table = (...args) => {
-  const data = args.map(sanitize);
-  window.parent.postMessage({ __webground: true, type: "table", data }, "*");
-};
+  const data = args.map(sanitize)
+  window.parent.postMessage({ __webground: true, type: 'table', data }, '*')
+}
 
-console.timeLog = (label = "default") => {
-  const startTime = timers.get(label);
+console.timeLog = (label = 'default') => {
+  const startTime = timers.get(label)
   if (startTime) {
-    const duration = performance.now() - startTime;
-    console.log(`${label}: ${duration.toFixed(2)}ms`);
+    const duration = performance.now() - startTime
+    console.log(`${label}: ${duration.toFixed(2)}ms`)
     // Note: doesn't delete the timer like timeEnd does
   }
-};
+}
 
-console.time = (label = "default") => {
-  timers.set(label, performance.now());
-};
+console.time = (label = 'default') => {
+  timers.set(label, performance.now())
+}
 
-console.timeEnd = (label = "default") => {
-  const startTime = timers.get(label);
+console.timeEnd = (label = 'default') => {
+  const startTime = timers.get(label)
   if (startTime) {
-    const duration = performance.now() - startTime;
-    console.log(`${label}: ${duration.toFixed(2)}ms`);
-    timers.delete(label);
+    const duration = performance.now() - startTime
+    console.log(`${label}: ${duration.toFixed(2)}ms`)
+    timers.delete(label)
   }
-};
+}
 
 console.trace = (...args) => {
-  const stack = new Error().stack?.split("\n").slice(2).join("\n");
-  const data = [...args.map(sanitize), { __isTrace: true, stack }];
-  window.parent.postMessage({ __webground: true, type: "trace", data }, "*");
-};
+  const stack = new Error().stack?.split('\n').slice(2).join('\n')
+  const data = [...args.map(sanitize), { __isTrace: true, stack }]
+  window.parent.postMessage({ __webground: true, type: 'trace', data }, '*')
+}
 
-window.addEventListener("error", (event) => {
-  console.error(event.error);
-});
+window.addEventListener('error', (event) => {
+  console.error(event.error)
+})
