@@ -11,28 +11,37 @@
   import * as Resizable from '$lib/components/ui/resizable/index.js'
   import { µ } from '$lib/global.svelte'
   import { useIsMobile, useIsShared } from '$lib/hooks.svelte'
-  import { extractCodeParams, setTabFromHash } from '$lib/utils'
+  import {
+    extractCodeParams,
+    localStore,
+    setTabFromHash,
+  } from '$lib/utils'
   import { ChevronUpIcon } from '@lucide/svelte'
+  import { Micro } from 'effect'
   import { haptic } from 'ios-haptics'
-  import { ok, Result } from 'neverthrow'
   import { onMount } from 'svelte'
+  import { toast } from 'svelte-sonner'
 
   const isMobile = useIsMobile()
   const isShared = useIsShared()
 
   let showMobilePreview = $state(false)
 
-  onMount(() => {
+  onMount(async () => {
     if (isShared) {
       const { h, c, j } = extractCodeParams()
 
-      const decoded = Result.combine([
-        h ? decode(h) : ok(''),
-        c ? decode(c) : ok(''),
-        j ? decode(j) : ok(''),
-      ])
+      const decoded = await Micro.runPromiseExit(
+        Micro.all([
+          h ? decode(h) : Micro.succeed(''),
+          c ? decode(c) : Micro.succeed(''),
+          j ? decode(j) : Micro.succeed(''),
+        ]),
+      )
 
-      if (decoded.isErr()) {
+      if (decoded._tag === 'Failure') {
+        toast.error(decoded.cause.message)
+        console.error(decoded.cause)
         return
       }
 
@@ -41,14 +50,18 @@
       codeState.current = { html, css, js }
     }
     else {
-      if (localStorage.code) {
-        for (
-          const [key, val] of Object.entries(
-            JSON.parse(localStorage.code),
-          )
-        ) {
+      const codeResult = await Micro.runPromiseExit(
+        Micro.succeed(localStore('code') || {}),
+      )
+
+      if (codeResult._tag === 'Success') {
+        const code = codeResult.value
+        for (const [key, val] of Object.entries(code)) {
           codeState.current[key as keyof Code] = val as string
         }
+      }
+      else {
+        console.error('Failed to retrieve code from localStorage:', codeResult.cause)
       }
     }
 
@@ -58,10 +71,10 @@
 
 <svelte:window
   onhashchange={() => void setTabFromHash(µ.currentTab, codeState.current)}
-  onkeydown={(e) => {
+  onkeydown={async (e) => {
     if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'Enter')) {
       e.preventDefault()
-      updatePreview(codeState.current)
+      await Micro.runPromise(updatePreview(codeState.current))
     }
   }}
 />

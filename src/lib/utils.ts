@@ -1,8 +1,24 @@
-import type { ClassValue } from 'clsx'
 import type { Code, LangUnion } from './types'
 import { browser } from '$app/environment'
-import { clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { Micro } from 'effect'
+
+export function localStore<T>(key: string, newValue?: T): Micro.Micro<T, Error> {
+  return Micro.gen(function* () {
+    if (newValue !== undefined) {
+      localStorage.setItem(key, JSON.stringify(newValue))
+    }
+
+    const item = localStorage.getItem(key)
+
+    if (!item) {
+      return yield* Micro.fail(
+        new Error(`failed to find item with key ${key}`),
+      )
+    }
+
+    return JSON.parse(item) as T
+  })
+}
 
 export function extractCodeParams() {
   if (!browser) {
@@ -29,9 +45,7 @@ export function setTabFromHash(currentTab: LangUnion, code: Code) {
   }
 }
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+export { cn } from 'cnfn'
 
 export type WithoutChild<T> = T extends { child?: any } ? Omit<T, 'child'> : T
 export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, 'children'> : T

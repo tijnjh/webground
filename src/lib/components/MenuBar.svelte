@@ -4,7 +4,16 @@
   import * as Popover from '$lib/components/ui/popover/index.js'
   import { Separator } from '$lib/components/ui/separator/index.js'
   import { useIsMobile, useIsShared } from '$lib/hooks.svelte'
-  import { EllipsisIcon, GithubIcon, LinkIcon, PencilIcon, ShareIcon, Trash2Icon } from '@lucide/svelte'
+  import { localStore } from '$lib/utils'
+  import {
+    EllipsisIcon,
+    GithubIcon,
+    LinkIcon,
+    PencilIcon,
+    ShareIcon,
+    Trash2Icon,
+  } from '@lucide/svelte'
+  import { Micro } from 'effect'
   import { haptic } from 'ios-haptics'
   import { toast } from 'svelte-sonner'
   import { copyLink } from '../sharing'
@@ -122,7 +131,7 @@
     {#if isShared}
       <Button
         onclick={() => {
-          localStorage.code = JSON.stringify(codeState.current)
+          Micro.runSync(localStore('code', codeState.current))
           location.href = location.href.split('?')[0]
         }}
       >
@@ -140,22 +149,23 @@
 {#snippet shareButton(mode: 'full' | 'markdown' | 'html', label: string)}
   <Button
     onclick={() => {
-      const res = copyLink(codeState.current, mode, title)
+      Micro.runPromise(copyLink({ code: codeState.current, mode, title }))
+        .then((res) => {
+          haptic.confirm()
+          toast.success(`Copied link (${mode}) to clipboard`)
 
-      if (res.isErr()) {
-        haptic.error()
-        toast.error(res.error.message)
-        return
-      }
-
-      haptic.confirm()
-      toast.success(`Copied link (${mode}) to clipboard`)
-
-      if (res.value.isLong) {
-        setTimeout(() => {
-          toast.warning('URL is longer than 2048 characters, which might cause issues in certain browsers')
-        }, 300)
-      }
+          if (res.isLong) {
+            setTimeout(() => {
+              toast.warning(
+                'URL is longer than 2048 characters, which might cause issues in certain browsers',
+              )
+            }, 300)
+          }
+        })
+        .catch((error) => {
+          haptic.error()
+          toast.error(error.message)
+        })
     }}
     class='w-full'
   >

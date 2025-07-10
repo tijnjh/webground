@@ -82,20 +82,20 @@
       <Button size='icon' variant='outline' onclick={toggle}>
         <ChevronUp
           size={14}
-          class={cn([
+          class={cn(
             'transition-transform',
             isCollapsed ? '' : '-rotate-180',
-          ])}
+          )}
         />
         <span class='sr-only'>{isCollapsed ? 'Show' : 'Hide'}</span>
       </Button>
     </div>
   </div>
   <div
-    class={cn([
+    class={cn(
       'border-t flex px-4 flex-col overflow-y-scroll transition-[height]',
       isCollapsed ? 'h-0' : 'h-72',
-    ])}
+    )}
   >
     {#each messages as message}
       {@render consoleMessage(message)}
@@ -107,7 +107,7 @@
 {#snippet consoleMessage(message: ConsoleAction, inHeader: boolean = false)}
   {@const { data, type } = message}
   <div
-    class={cn([
+    class={cn(
       'px-3 py-2 text-xs overflow-clip shrink-0 border flex items-center gap-3 rounded-md',
       type === 'error'
         ? 'bg-red-500/10 text-red-500'
@@ -116,7 +116,7 @@
         : '',
       inHeader ? 'grow transition-opacity' : 'mt-2',
       inHeader && !isCollapsed ? 'opacity-0' : '',
-    ])}
+    )}
   >
     <div class='flex items-center gap-2'>
       {#if type === 'error'}

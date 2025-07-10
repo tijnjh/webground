@@ -1,24 +1,32 @@
 <script lang='ts' module>
   import type { Code } from '../types'
   import { template } from '$lib/preview/template'
-  import { cn } from '$lib/utils'
+  import { cn, localStore } from '$lib/utils'
+  import { Micro } from 'effect'
 
   let src = $state('/start.html')
 
-  export function updatePreview(code: Code) {
-    if (Object.values(code).every(value => value.trim() === '')) {
-      src = '/start.html'
-      return false
-    }
-    const url = URL.createObjectURL(
-      new Blob([template(code)], { type: 'text/html' }),
-    )
+  export function updatePreview(code: Code): Micro.Micro<{ didUpdate: boolean }, Error> {
+    return Micro.gen(function* () {
+      if (Object.values(code).every(v => v.trim() === '')) {
+        src = '/start.html'
+        return { didUpdate: false }
+      }
 
-    src = url
+      const url = Micro.try({
+        try: () => {
+          const blob = new Blob([template(code)], { type: 'text/html' })
+          return URL.createObjectURL(blob)
+        },
+        catch: () => new Error('failed to create object url'),
+      })
 
-    localStorage.code = JSON.stringify(code)
+      src = yield* url
 
-    return true
+      yield* localStore('code', code)
+
+      return { didUpdate: true }
+    })
   }
 </script>
 
