@@ -45,7 +45,7 @@
 
         <Popover.Content align='start'>
           <div class='flex flex-col gap-2'>
-            <div class='flex justify-between items-center'>
+            <div class='flex items-center justify-between'>
               <h1>Webground</h1>
               <AppearanceToggle />
             </div>

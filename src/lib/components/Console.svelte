@@ -1,12 +1,7 @@
 <script lang='ts'>
   import type { ConsoleAction } from '$lib/types'
   import { cn } from '$lib/utils'
-  import {
-    ChevronUp,
-    CircleXIcon,
-    Trash2Icon,
-    TriangleAlertIcon,
-  } from '@lucide/svelte'
+  import { ChevronUp, CircleXIcon, Trash2Icon, TriangleAlertIcon } from '@lucide/svelte'
   import { haptic } from 'ios-haptics'
   import { toast } from 'svelte-sonner'
   import Button from './ui/button/button.svelte'

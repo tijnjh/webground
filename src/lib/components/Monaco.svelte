@@ -65,27 +65,6 @@
       })
     })()
   })
-
-// $effect(() => {
-  //   if (value) {
-  //     if (editor) {
-  //       if (editor.hasWidgetFocus()) {
-  //       } else {
-  //         if (editor?.getValue() ?? " " !== value) {
-  //           // editor?.setValue(value);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   if (value === "") {
-  //     editor?.setValue(" ");
-  //   }
-  // });
-
-  // onDestroy(() => {
-  //   monaco?.editor.getModels().forEach((model) => model.dispose());
-  //   editor?.dispose();
-  // });
 </script>
 
 <div class='container' bind:this={editorContainer}>

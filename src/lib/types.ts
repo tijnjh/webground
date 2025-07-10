@@ -5,19 +5,9 @@ export interface Code {
 }
 
 export type LangUnion = 'html' | 'css' | 'js'
+
 export interface ConsoleAction {
   __webground: true
-  type:
-    | 'log'
-    | 'warn'
-    | 'error'
-    | 'dir'
-    | 'trace'
-    | 'info'
-    | 'debug'
-    | 'assert'
-    | 'clear'
-    | 'table'
-    | 'timeLog'
+  type: 'log' | 'warn' | 'error' | 'dir' | 'trace' | 'info' | 'debug' | 'assert' | 'clear' | 'table' | 'timeLog'
   data: any[]
 }
