@@ -1,8 +1,7 @@
 <script lang='ts' module>
   import type { Code } from '../types'
   import { template } from '$lib/preview/template'
-  import { localStore } from '$lib/utils'
-  import { cn } from 'cnfn'
+  import { cn, localStore } from '$lib/utils'
   import { Micro } from 'effect'
 
   let src = $state('/start.html')

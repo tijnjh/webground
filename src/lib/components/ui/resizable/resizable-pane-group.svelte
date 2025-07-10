@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { cn } from 'cnfn'
+  import { cn } from '$lib/utils'
   import * as ResizablePrimitive from 'paneforge'
 
   let {

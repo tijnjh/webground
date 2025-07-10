@@ -12,8 +12,8 @@
 </script>
 
 <script lang='ts'>
+  import { cn } from '$lib/utils'
   import { ToggleGroup as ToggleGroupPrimitive } from 'bits-ui'
-  import { cn } from 'cnfn'
 
   let {
     ref = $bindable(null),

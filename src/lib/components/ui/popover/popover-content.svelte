@@ -1,6 +1,6 @@
 <script lang='ts'>
+  import { cn } from '$lib/utils'
   import { Popover as PopoverPrimitive } from 'bits-ui'
-  import { cn } from 'cnfn'
 
   let {
     ref = $bindable(null),

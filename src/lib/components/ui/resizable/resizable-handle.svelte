@@ -1,7 +1,7 @@
 <script lang='ts'>
   import type { WithoutChildrenOrChild } from '$lib/utils.js'
+  import { cn } from '$lib/utils'
   import GripVerticalIcon from '@lucide/svelte/icons/grip-vertical'
-  import { cn } from 'cnfn'
   import * as ResizablePrimitive from 'paneforge'
 
   let {
