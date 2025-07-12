@@ -63,17 +63,24 @@
                   <p class='mb-2'>
                     Are you sure you want to your clear your code?
                   </p>
-                  <Button
+
+                  <Separator class='my-4' />
+
+                  <Popover.Close
                     class='w-full'
-                    variant='destructive'
-                    onclick={() => {
-                      haptic()
-                      codeState.clear()
-                      toast.success('Cleared code')
-                    }}
                   >
-                    Confirm
-                  </Button>
+                    <Button
+                      class='w-full'
+                      variant='destructive'
+                      onclick={() => {
+                        haptic()
+                        codeState.clear()
+                        toast.success('Cleared code')
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </Popover.Close>
                 </Popover.Content>
               </Popover.Root>
             {/if}
@@ -90,7 +97,7 @@
         </Popover.Trigger>
         <Popover.Content align='start'>
           <div class='flex flex-col gap-2'>
-            <h3>Link sharing options</h3>
+            <h3>Link sharing</h3>
 
             <Separator class='my-2' />
 
@@ -140,28 +147,30 @@
 </div>
 
 {#snippet shareButton(mode: 'full' | 'markdown' | 'html', label: string)}
-  <Button
-    onclick={() => {
-      Micro.runPromise(copyLink({ code: codeState.current, mode, title }))
-        .then((res) => {
-          haptic.confirm()
-          toast.success(`Copied link (${mode}) to clipboard`)
+  <Popover.Close>
+    <Button
+      onclick={() => {
+        Micro.runPromise(copyLink({ code: codeState.current, mode, title }))
+          .then((res) => {
+            haptic.confirm()
+            toast.success(`Copied link (${mode}) to clipboard`)
 
-          if (res.isLong) {
-            setTimeout(() => {
-              toast.warning(
-                'URL is longer than 2048 characters, which might cause issues in certain browsers',
-              )
-            }, 300)
-          }
-        })
-        .catch((error) => {
-          haptic.error()
-          toast.error(error.message)
-        })
-    }}
-    class='w-full'
-  >
-    <LinkIcon size={16} /> {label}
-  </Button>
+            if (res.isLong) {
+              setTimeout(() => {
+                toast.warning(
+                  'URL is longer than 2048 characters, which might cause issues in certain browsers',
+                )
+              }, 300)
+            }
+          })
+          .catch((error) => {
+            haptic.error()
+            toast.error(error.message)
+          })
+      }}
+      class='w-full'
+    >
+      <LinkIcon size={16} /> {label}
+    </Button>
+  </Popover.Close>
 {/snippet}

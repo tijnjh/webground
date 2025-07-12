@@ -1,9 +1,8 @@
 <script lang='ts'>
   import type { ConsoleAction } from '$lib/types'
   import { cn } from '$lib/utils'
-  import { ChevronUp, CircleXIcon, Trash2Icon, TriangleAlertIcon } from '@lucide/svelte'
+  import { CheckIcon, ChevronUp, CircleXIcon, Trash2Icon, TriangleAlertIcon } from '@lucide/svelte'
   import { haptic } from 'ios-haptics'
-  import { toast } from 'svelte-sonner'
   import Button from './ui/button/button.svelte'
 
   let messages: ConsoleAction[] = $state([])
@@ -19,6 +18,8 @@
     isCollapsed = !isCollapsed
     haptic()
   }
+
+  let cleared = $state(false)
 </script>
 
 <svelte:window
@@ -68,16 +69,20 @@
 
     <div class='flex items-center gap-2'>
       <Button
-        size='icon'
-        variant='destructive'
         onclick={() => {
           haptic()
           messages = []
-          toast.success('Cleared console')
+          cleared = true
+          setTimeout(() => cleared = false, 2000)
         }}
+        size='icon'
+        class='relative'
+        variant='destructive'
       >
-        <Trash2Icon size={14} />
+        <CheckIcon size={16} class='absolute transition-all scale-0 {cleared && 'scale-100'}' />
+        <Trash2Icon size={16} class='transition-all {cleared && 'scale-0'}' />
         <span class='sr-only'>Clear</span>
+
       </Button>
       <Button size='icon' variant='outline' onclick={toggle}>
         <ChevronUp

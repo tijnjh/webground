@@ -1,9 +1,47 @@
 import type { Code } from './types'
+import { browser } from '$app/environment'
 import { Micro } from 'effect'
 import { TaggedError as TaggedErr } from 'effect/Data'
 import { encode } from './codec'
 
 export class CopyLinkError extends TaggedErr('CopyLinkError')<{ message: string }> {}
+
+export function createShareUrl(code: Code) {
+  return Micro.gen(function* () {
+    const [html, css, js] = yield* Micro.all([
+      encode(code.html),
+      encode(code.css),
+      encode(code.js),
+    ])
+
+    const url = new URL(browser ? location.origin : 'http://localhost:5173')
+
+    if (code.html)
+      url.searchParams.set('h', html)
+    if (code.css)
+      url.searchParams.set('c', css)
+    if (code.js)
+      url.searchParams.set('j', js)
+
+    return url
+  })
+}
+
+function createShareableString(url: URL, mode: 'full' | 'markdown' | 'html', title: string): Micro.Micro<string, CopyLinkError> {
+  return Micro.gen(function* () {
+    const urlString = url.toString()
+    switch (mode) {
+      case 'full':
+        return urlString
+      case 'markdown':
+        return `[${title}](${urlString})`
+      case 'html':
+        return `<a href="${urlString}">${title}</a>`
+      default:
+        return yield* Micro.fail(new CopyLinkError({ message: `copy link type "${mode}" is not supported.` }))
+    }
+  })
+}
 
 export function copyLink({
   code,
@@ -13,41 +51,18 @@ export function copyLink({
   code: Code
   mode: 'full' | 'markdown' | 'html'
   title: string
-}): Micro.Micro<{ isLong: boolean }, Error> {
+}) {
   return Micro.gen(function* () {
-    const [html, css, js] = yield* Micro.all([
-      encode(code.html),
-      encode(code.css),
-      encode(code.js),
-    ])
+    const url = yield* createShareUrl(code)
+    const shareableString = yield* createShareableString(url, mode, title)
 
-    const params = new URLSearchParams()
-
-    if (code.html)
-      params.set('h', html)
-    if (code.css)
-      params.set('c', css)
-    if (code.js)
-      params.set('j', js)
-
-    const newUrl = `${origin}?${params.toString()}`
-
-    switch (mode) {
-      case 'full':
-        navigator.clipboard.writeText(newUrl)
-        break
-      case 'markdown':
-        navigator.clipboard.writeText(`[${title}](${newUrl})`)
-        break
-      case 'html':
-        navigator.clipboard.writeText(`<a href="${newUrl}">${title}</a>`)
-        break
-      default:
-        return yield* Micro.fail(new CopyLinkError({ message: `copy link type "${mode}" is not supported.` }))
-    }
+    yield* Micro.tryPromise({
+      try: () => navigator.clipboard.writeText(shareableString),
+      catch: () => new CopyLinkError({ message: 'Failed to copy to clipboard' }),
+    })
 
     return {
-      isLong: newUrl.length > 2048,
+      isLong: url.toString().length > 2048,
     }
   })
 }
