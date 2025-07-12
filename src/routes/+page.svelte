@@ -46,7 +46,7 @@
       codeState.current = { html, css, js }
     }
     else {
-      const codeResult = await Micro.runPromiseExit(Micro.succeed(localStore('code') || {}))
+      const codeResult = await Micro.runPromiseExit(localStore<Code>('code') || {})
 
       if (codeResult._tag === 'Success') {
         const code = codeResult.value
