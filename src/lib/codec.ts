@@ -1,8 +1,7 @@
-import { Micro, pipe } from 'effect'
-import { TaggedError as TaggedErr } from 'effect/Data' // need to alias this to avoid eslint error ;-:
+import { Data, Micro, pipe } from 'effect'
 import { deflateSync, inflateSync, strFromU8, strToU8 } from 'fflate'
 
-export class EncodingError extends TaggedErr('EncodingError')<{ message: string }> {}
+export class EncodingError extends Data.TaggedError('EncodingError')<{ message: string }> {}
 
 export function encode(str: string) {
   return Micro.try({
@@ -20,7 +19,7 @@ export function encode(str: string) {
   })
 }
 
-export class DecodingError extends TaggedErr('DecodingError')<{ message: string }> {}
+export class DecodingError extends Data.TaggedError('DecodingError')<{ message: string }> {}
 
 export function decode(str: string) {
   return Micro.try({

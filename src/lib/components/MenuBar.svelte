@@ -150,16 +150,14 @@
   <Popover.Close>
     <Button
       onclick={() => {
-        Micro.runPromise(copyLink({ code: codeState.current, mode, title }))
+        Micro.runPromise(copyLink({ mode, title }))
           .then((res) => {
             haptic.confirm()
             toast.success(`Copied link (${mode}) to clipboard`)
 
             if (res.isLong) {
               setTimeout(() => {
-                toast.warning(
-                  'URL is longer than 2048 characters, which might cause issues in certain browsers',
-                )
+                toast.warning('URL is longer than 2048 characters, which might cause issues in certain browsers')
               }, 300)
             }
           })

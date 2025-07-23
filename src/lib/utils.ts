@@ -2,7 +2,7 @@ import type { Code, LangUnion } from './types'
 import { browser } from '$app/environment'
 import { Micro } from 'effect'
 
-export function localStore<T>(key: string, newValue?: T): Micro.Micro<T, Error> {
+export function localStore<T>(key: string, newValue?: T) {
   return Micro.gen(function* () {
     if (newValue !== undefined) {
       localStorage.setItem(key, JSON.stringify(newValue))
@@ -25,9 +25,9 @@ export function extractCodeParams() {
 
   const params = new URL(location.href).searchParams
 
-  const h = params.get('h') ?? undefined
-  const c = params.get('c') ?? undefined
-  const j = params.get('j') ?? undefined
+  const h = params.get('h')
+  const c = params.get('c')
+  const j = params.get('j')
 
   return { h, c, j }
 }
