@@ -2,21 +2,19 @@ import type { Code, LangUnion } from './types'
 import { browser } from '$app/environment'
 import { Micro } from 'effect'
 
-export function localStore<T>(key: string, newValue?: T) {
-  return Micro.gen(function* () {
-    if (newValue !== undefined) {
-      localStorage.setItem(key, JSON.stringify(newValue))
-    }
+export const localStore = <T>(key: string, newValue?: T) => Micro.gen(function* () {
+  if (newValue !== undefined) {
+    localStorage.setItem(key, JSON.stringify(newValue))
+  }
 
-    const item = localStorage.getItem(key)
+  const item = localStorage.getItem(key)
 
-    if (!item) {
-      return yield* Micro.fail(new Error(`failed to find item with key ${key}`))
-    }
+  if (!item) {
+    return yield* Micro.fail(new Error(`failed to find item with key ${key}`))
+  }
 
-    return JSON.parse(item) as T
-  })
-}
+  return JSON.parse(item) as T
+})
 
 export function extractCodeParams() {
   if (!browser) {
@@ -33,8 +31,9 @@ export function extractCodeParams() {
 }
 
 export function setTabFromHash(currentTab: LangUnion, code: Code) {
-  if (!browser)
+  if (!browser) {
     return
+  }
 
   const hash = location.hash.replace('#', '')
 

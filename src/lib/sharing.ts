@@ -1,3 +1,4 @@
+import type { LinkShareUnion } from './types'
 import { browser } from '$app/environment'
 import { Data, Micro } from 'effect'
 import { codeState } from './code-state.svelte'
@@ -26,34 +27,31 @@ export const createShareUrl = Micro.gen(function* () {
   return url
 })
 
-function createShareableString(url: URL, mode: 'full' | 'markdown' | 'html', title: string) {
-  return Micro.gen(function* () {
-    const urlString = url.toString()
-    switch (mode) {
-      case 'full':
-        return urlString
-      case 'markdown':
-        return `[${title}](${urlString})`
-      case 'html':
-        return `<a href="${urlString}">${title}</a>`
-      default:
-        return yield* Micro.fail(new CopyLinkError({ message: `copy link type "${mode}" is not supported.` }))
-    }
+export const createShareableString = (url: URL, mode: LinkShareUnion, title: string) => Micro.gen(function* () {
+  const urlString = url.toString()
+
+  switch (mode) {
+    case 'full':
+      return urlString
+    case 'markdown':
+      return `[${title}](${urlString})`
+    case 'html':
+      return `<a href="${urlString}">${title}</a>`
+    default:
+      return yield* Micro.fail(new CopyLinkError({ message: `copy link type "${mode}" is not supported.` }))
+  }
+})
+
+export const copyLink = ({ mode, title }: { mode: LinkShareUnion, title: string }) => Micro.gen(function* () {
+  const url = yield* createShareUrl
+  const shareableString = yield* createShareableString(url, mode, title)
+
+  yield* Micro.tryPromise({
+    try: () => navigator.clipboard.writeText(shareableString),
+    catch: () => new CopyLinkError({ message: 'Failed to copy to clipboard' }),
   })
-}
 
-export function copyLink({ mode, title }: { mode: 'full' | 'markdown' | 'html', title: string }) {
-  return Micro.gen(function* () {
-    const url = yield* createShareUrl
-    const shareableString = yield* createShareableString(url, mode, title)
-
-    yield* Micro.tryPromise({
-      try: () => navigator.clipboard.writeText(shareableString),
-      catch: () => new CopyLinkError({ message: 'Failed to copy to clipboard' }),
-    })
-
-    return {
-      isLong: url.toString().length > 2048,
-    }
-  })
-}
+  return {
+    isLong: url.toString().length > 2048,
+  }
+})

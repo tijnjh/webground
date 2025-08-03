@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import type { LinkShareUnion } from '$lib/types'
   import { codeState } from '$lib/code-state.svelte'
   import Button from '$lib/components/ui/button/button.svelte'
   import * as Popover from '$lib/components/ui/popover/index.js'
@@ -146,7 +147,7 @@
   </div>
 </div>
 
-{#snippet shareButton(mode: 'full' | 'markdown' | 'html', label: string)}
+{#snippet shareButton(mode: LinkShareUnion, label: string)}
   <Popover.Close>
     <Button
       onclick={() => {

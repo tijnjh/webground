@@ -6,7 +6,7 @@ export function useIsMobile() {
 
   const mediaQuery = matchMedia('(max-width: 768px)')
 
-  let isMobile = $state(mediaQuery.matches)
+  let isMobile = mediaQuery.matches
 
   window.onresize = () => void (isMobile = mediaQuery.matches)
 
