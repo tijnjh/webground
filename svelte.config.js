@@ -1,5 +1,5 @@
-import adapter from '@sveltejs/adapter-static'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
+import adapter from 'svelte-adapter-bun'
 
 export default {
   preprocess: vitePreprocess(),
