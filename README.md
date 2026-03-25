@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/ebcaaae0-36c6-491a-9a27-d627a6d8a912" height="256" />
+  <img src="https://github.com/user-attachments/assets/ebcaaae0-36c6-491a-9a27-d627a6d8a912" alt="logo" height="256" />
   <h1>WebGround</h1>
   <p>Open source CodePen alternative</p>
 </div>

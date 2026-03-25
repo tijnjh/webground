@@ -1,15 +1,26 @@
 export interface Code {
-  html: string
-  css: string
-  js: string
+	html: string;
+	css: string;
+	js: string;
 }
 
-export type LangUnion = 'html' | 'css' | 'js'
+export type LangUnion = 'html' | 'css' | 'js';
 
-export type LinkShareUnion = 'full' | 'markdown' | 'html'
+export type LinkShareUnion = 'full' | 'markdown' | 'html';
 
 export interface ConsoleAction {
-  __webground: true
-  type: 'log' | 'warn' | 'error' | 'dir' | 'trace' | 'info' | 'debug' | 'assert' | 'clear' | 'table' | 'timeLog'
-  data: any[]
+	__webground: true;
+	type:
+		| 'log'
+		| 'warn'
+		| 'error'
+		| 'dir'
+		| 'trace'
+		| 'info'
+		| 'debug'
+		| 'assert'
+		| 'clear'
+		| 'table'
+		| 'timeLog';
+	data: any[];
 }
