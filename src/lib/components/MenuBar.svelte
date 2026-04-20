@@ -8,7 +8,7 @@
 	import { localStore } from '$lib/utils';
 	import {
 		EllipsisIcon,
-		GithubIcon,
+		CodeIcon,
 		LinkIcon,
 		PencilIcon,
 		ShareIcon,
@@ -49,7 +49,7 @@
 						<Separator class="my-2" />
 
 						<Button class="w-full" href="https://github.com/tijnjh/webground">
-							<GithubIcon size={16} />
+							<CodeIcon size={16} />
 							View source
 						</Button>
 
