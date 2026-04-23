@@ -2,7 +2,6 @@
 	import type { ConsoleAction } from '$lib/types';
 	import { cn } from '$lib/utils';
 	import { CheckIcon, ChevronUp, CircleXIcon, Trash2Icon, TriangleAlertIcon } from '@lucide/svelte';
-	import { haptic } from 'ios-haptics';
 	import Button from './ui/button/button.svelte';
 
 	let messages: ConsoleAction[] = $state([]);
@@ -16,7 +15,6 @@
 
 	function toggle() {
 		isCollapsed = !isCollapsed;
-		haptic();
 	}
 
 	let cleared = $state(false);
@@ -64,7 +62,6 @@
 		<div class="flex items-center gap-2">
 			<Button
 				onclick={() => {
-					haptic();
 					messages = [];
 					cleared = true;
 					setTimeout(() => (cleared = false), 2000);

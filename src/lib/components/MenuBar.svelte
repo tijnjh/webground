@@ -15,7 +15,6 @@
 		Trash2Icon
 	} from '@lucide/svelte';
 	import { Effect } from 'effect';
-	import { haptic } from 'ios-haptics';
 	import { toast } from 'svelte-sonner';
 	import { copyLink } from '../sharing';
 	import AppearanceToggle from './AppearanceToggle.svelte';
@@ -33,7 +32,7 @@
 		<div class="flex items-center gap-2">
 			<Popover.Root>
 				<Popover.Trigger>
-					<Button size="icon" variant="outline" aria-label="Toggle menu" onclick={haptic}>
+					<Button size="icon" variant="outline" aria-label="Toggle menu">
 						<EllipsisIcon size={16} />
 						<span class="sr-only">Menu</span>
 					</Button>
@@ -57,7 +56,7 @@
 							<Separator class="my-2" />
 							<Popover.Root>
 								<Popover.Trigger>
-									<Button class="w-full" variant="destructive" onclick={haptic}>
+									<Button class="w-full" variant="destructive">
 										<Trash2Icon size={16} />
 										Clear all code
 									</Button>
@@ -72,7 +71,6 @@
 											class="w-full"
 											variant="destructive"
 											onclick={() => {
-												haptic();
 												codeState.clear();
 												toast.success('Cleared code');
 											}}
@@ -89,7 +87,7 @@
 
 			<Popover.Root>
 				<Popover.Trigger>
-					<Button variant="outline" onclick={haptic}>
+					<Button variant="outline">
 						<ShareIcon size={16} />
 						Share
 					</Button>
@@ -151,7 +149,6 @@
 			onclick={() => {
 				Effect.runPromise(copyLink({ mode, title }))
 					.then((res) => {
-						haptic.confirm();
 						toast.success(`Copied link (${mode}) to clipboard`);
 
 						if (res.isLong) {
@@ -163,7 +160,6 @@
 						}
 					})
 					.catch((error) => {
-						haptic.error();
 						toast.error(error.message);
 					});
 			}}

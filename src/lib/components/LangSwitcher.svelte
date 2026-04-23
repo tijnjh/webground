@@ -3,7 +3,6 @@
 	import { browser } from '$app/environment';
 	import * as ToggleGroup from '$lib/components/ui/toggle-group/index.js';
 	import { µ } from '$lib/global.svelte';
-	import { haptic } from 'ios-haptics';
 
 	const props: { class?: string } = $props();
 
@@ -28,9 +27,7 @@
 {#snippet langTab(lang: LangUnion)}
 	<ToggleGroup.Item
 		onclick={(e) => {
-			if (µ.currentTab !== lang) {
-				haptic();
-			} else {
+			if (µ.currentTab === lang) {
 				e.preventDefault();
 			}
 		}}

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { TerminalIcon } from '@lucide/svelte';
 	import { Effect } from 'effect';
-	import { haptic } from 'ios-haptics';
 	import { toast } from 'svelte-sonner';
 	import { updatePreview } from './Preview.svelte';
 	import Button from './ui/button/button.svelte';
@@ -13,7 +12,6 @@
 			.then(({ didUpdate }) => didUpdate && haptic.confirm())
 			.catch((error) => {
 				console.error(error);
-				haptic.error();
 				toast.error(JSON.stringify(error));
 			});
 	}}
