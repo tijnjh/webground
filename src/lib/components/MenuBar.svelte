@@ -14,7 +14,7 @@
 		ShareIcon,
 		Trash2Icon
 	} from '@lucide/svelte';
-	import { Micro } from 'effect';
+	import { Effect } from 'effect';
 	import { haptic } from 'ios-haptics';
 	import { toast } from 'svelte-sonner';
 	import { copyLink } from '../sharing';
@@ -130,7 +130,7 @@
 		{#if isShared}
 			<Button
 				onclick={() => {
-					Micro.runSync(localStore('code', codeState.current));
+					Effect.runSync(localStore('code', codeState.current));
 					location.href = location.href.split('?')[0];
 				}}
 			>
@@ -149,7 +149,7 @@
 	<Popover.Close>
 		<Button
 			onclick={() => {
-				Micro.runPromise(copyLink({ mode, title }))
+				Effect.runPromise(copyLink({ mode, title }))
 					.then((res) => {
 						haptic.confirm();
 						toast.success(`Copied link (${mode}) to clipboard`);

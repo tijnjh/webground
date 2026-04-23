@@ -15,7 +15,7 @@
 	"dependencies": {
 		"@lucide/svelte": "^1.8.0",
 		"cnfn": "^5.5.1",
-		"effect": "^3.21.1",
+		"effect": "^4.0.0-beta.56",
 		"emmet-monaco-es": "^5.7.0",
 		"fflate": "^0.8.2",
 		"ios-haptics": "^0.1.4",

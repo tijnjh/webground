@@ -1,15 +1,8 @@
 import { browser } from '$app/environment';
+import { MediaQuery } from 'svelte/reactivity';
 
 export function useIsMobile() {
-	if (!browser) return false;
-
-	const mediaQuery = matchMedia('(max-width: 768px)');
-
-	let isMobile = mediaQuery.matches;
-
-	window.onresize = () => void (isMobile = mediaQuery.matches);
-
-	return isMobile;
+	return new MediaQuery('max-width: 768px');
 }
 
 export function useIsShared() {
