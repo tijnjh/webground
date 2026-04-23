@@ -14,7 +14,6 @@
 	import { extractCodeParams, localStore, setTabFromHash } from '$lib/utils';
 	import { ChevronUpIcon } from '@lucide/svelte';
 	import { Micro } from 'effect';
-	import { haptic } from 'ios-haptics';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -100,7 +99,6 @@
 		<div class="flex items-center justify-between border-t bg-white p-4 dark:bg-[#1e1e1e]">
 			<Button
 				onclick={() => {
-					haptic();
 					showMobilePreview = !showMobilePreview;
 				}}
 			>

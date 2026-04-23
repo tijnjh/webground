@@ -18,7 +18,6 @@
 		"effect": "^3.21.1",
 		"emmet-monaco-es": "^5.7.0",
 		"fflate": "^0.8.2",
-		"ios-haptics": "^0.1.4",
 		"mode-watcher": "^1.1.0",
 		"monaco-editor": "^0.55.1",
 		"paneforge": "^1.0.2",
