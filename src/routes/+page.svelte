@@ -13,7 +13,7 @@
 	import { useIsMobile, useIsShared } from '$lib/hooks.svelte';
 	import { extractCodeParams, localStore, setTabFromHash } from '$lib/utils';
 	import { ChevronUpIcon } from '@lucide/svelte';
-	import { Micro } from 'effect';
+	import { Effect } from 'effect';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -26,19 +26,19 @@
 		if (isShared) {
 			const { h, c, j } = extractCodeParams();
 
-			const decoded = await Micro.runPromiseExit(
-				Micro.all(
+			const decoded = await Effect.runPromiseExit(
+				Effect.all(
 					[
-						h ? decode(h) : Micro.succeed(''),
-						c ? decode(c) : Micro.succeed(''),
-						j ? decode(j) : Micro.succeed('')
+						h ? decode(h) : Effect.succeed(''),
+						c ? decode(c) : Effect.succeed(''),
+						j ? decode(j) : Effect.succeed('')
 					],
 					{ concurrency: 3 }
 				)
 			);
 
 			if (decoded._tag === 'Failure') {
-				toast.error(decoded.cause.message);
+				toast.error(decoded.cause.reasons.map((r) => r.toString()).join(', '));
 				console.error(decoded.cause);
 				return;
 			}
@@ -47,7 +47,7 @@
 
 			codeState.current = { html, css, js };
 		} else {
-			const codeResult = await Micro.runPromiseExit(localStore<Code>('code') || {});
+			const codeResult = await Effect.runPromiseExit(localStore<Code>('code') || {});
 
 			if (codeResult._tag === 'Success') {
 				const code = codeResult.value;
@@ -68,12 +68,12 @@
 	onkeydown={async (e) => {
 		if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'Enter')) {
 			e.preventDefault();
-			await Micro.runPromise(updatePreview);
+			await Effect.runPromise(updatePreview());
 		}
 	}}
 />
 
-{#if !isMobile}
+{#if !isMobile.current}
 	<!-- desktop layout -->
 	<Resizable.PaneGroup direction="horizontal">
 		<Resizable.Pane defaultSize={50} class="h-dvh">

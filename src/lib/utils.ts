@@ -1,21 +1,20 @@
 import type { Code, LangUnion } from './types';
 import { browser } from '$app/environment';
-import { Micro } from 'effect';
+import { Effect } from 'effect';
 
-export const localStore = <T>(key: string, newValue?: T) =>
-	Micro.gen(function* () {
-		if (newValue !== undefined) {
-			localStorage.setItem(key, JSON.stringify(newValue));
-		}
+export const localStore = Effect.fn(function* <T>(key: string, newValue?: T) {
+	if (newValue !== undefined) {
+		localStorage.setItem(key, JSON.stringify(newValue));
+	}
 
-		const item = localStorage.getItem(key);
+	const item = localStorage.getItem(key);
 
-		if (!item) {
-			return yield* Micro.fail(new Error(`failed to find item with key ${key}`));
-		}
+	if (!item) {
+		return yield* Effect.fail(new Error(`failed to find item with key ${key}`));
+	}
 
-		return JSON.parse(item) as T;
-	});
+	return JSON.parse(item) as T;
+});
 
 export function extractCodeParams() {
 	if (!browser) {

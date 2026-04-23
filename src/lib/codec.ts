@@ -1,20 +1,20 @@
-import { Data, Micro, pipe } from 'effect';
+import { Data, Effect, pipe } from 'effect';
 import { deflateSync, inflateSync, strFromU8, strToU8 } from 'fflate';
 
 export class EncodingError extends Data.TaggedError('EncodingError')<{ message: string }> {}
 
 export const encode = (str: string) =>
-	Micro.try({
+	Effect.try({
 		try: () =>
 			pipe(
 				str,
-				strToU8,
-				deflateSync,
-				(v) => String.fromCharCode(...v),
-				btoa,
-				(v) => v.replaceAll('=', ''),
-				(v) => v.replaceAll('+', '~'),
-				(v) => v.replaceAll('/', '_')
+				(x) => strToU8(x),
+				(x) => deflateSync(x),
+				(x) => String.fromCharCode(...x),
+				(x) => btoa(x),
+				(x) => x.replaceAll('=', ''),
+				(x) => x.replaceAll('+', '~'),
+				(x) => x.replaceAll('/', '_')
 			),
 		catch: (error) => new EncodingError({ message: `failed to encode: ${error}` })
 	});
@@ -22,17 +22,17 @@ export const encode = (str: string) =>
 export class DecodingError extends Data.TaggedError('DecodingError')<{ message: string }> {}
 
 export const decode = (str: string) =>
-	Micro.try({
+	Effect.try({
 		try: () =>
 			pipe(
 				str,
-				padBase64,
-				(v) => v.replaceAll('~', '+'),
-				(v) => v.replaceAll('_', '/'),
-				atob,
-				(v) => Uint8Array.from(v, (c: string) => c.charCodeAt(0)),
-				inflateSync,
-				strFromU8
+				(x) => padBase64(x),
+				(x) => x.replaceAll('~', '+'),
+				(x) => x.replaceAll('_', '/'),
+				(x) => atob(x),
+				(x) => Uint8Array.from(x, (c) => c.charCodeAt(0)),
+				(x) => inflateSync(x),
+				(x) => strFromU8(x)
 			),
 		catch: () => new DecodingError({ message: 'failed to decode' })
 	});

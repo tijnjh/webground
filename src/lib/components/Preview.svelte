@@ -2,11 +2,11 @@
 	import { codeState } from '$lib/code-state.svelte';
 	import { template } from '$lib/preview/template';
 	import { cn, localStore } from '$lib/utils';
-	import { Micro } from 'effect';
+	import { Effect } from 'effect';
 
 	let src = $state('/start.html');
 
-	export const updatePreview = Micro.gen(function* () {
+	export const updatePreview = Effect.fn(function* () {
 		const code = codeState.current;
 
 		if (Object.values(code).every((v) => v.trim() === '')) {
@@ -14,7 +14,7 @@
 			return { didUpdate: false };
 		}
 
-		const url = Micro.try({
+		const url = Effect.try({
 			try: () => {
 				const blob = new Blob([template(code)], { type: 'text/html' });
 				return URL.createObjectURL(blob);
