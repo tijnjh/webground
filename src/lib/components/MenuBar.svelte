@@ -120,7 +120,7 @@
 		</div>
 	</div>
 
-	{#if !isMobile}
+	{#if !isMobile.current}
 		<LangSwitcher />
 	{/if}
 
@@ -137,7 +137,7 @@
 			</Button>
 		{/if}
 
-		{#if !isMobile}
+		{#if !isMobile.current}
 			<RunButton />
 		{/if}
 	</div>
