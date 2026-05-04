@@ -8,12 +8,10 @@
 
 <Button
 	onclick={() => {
-		Effect.runPromise(updatePreview())
-			.then(({ didUpdate }) => didUpdate && haptic.confirm())
-			.catch((error) => {
-				console.error(error);
-				toast.error(JSON.stringify(error));
-			});
+		Effect.runPromise(updatePreview()).catch((error) => {
+			console.error(error);
+			toast.error(JSON.stringify(error));
+		});
 	}}
 >
 	<TerminalIcon size={16} />
