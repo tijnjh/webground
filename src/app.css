@@ -111,6 +111,11 @@
 	--color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme {
+	--font-sans: MonoLisaText, system-ui;
+	--font-mono: MonoLisaCode, monospace;
+}
+
 @layer base {
 	* {
 		@apply touch-manipulation border-border outline-ring/50;

@@ -54,7 +54,9 @@
 				fontSize: 13,
 				minimap: { enabled: false },
 				tabSize: 2,
-				readOnly
+				readOnly,
+				fontFamily: 'MonoLisaCode',
+				fontLigatures: true
 			});
 
 			editor.onDidChangeModelContent((e) => {

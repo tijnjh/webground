@@ -1,0 +1,28 @@
+/*!
+* @preserve
+* MonoLisa 3.000
+* This font is subject to a EULA. A user-licence can be acquired at:
+*   https://www.monolisa.dev/license
+* © 2026 FaceType Foundry. All Rights Reserved.
+*/
+
+@font-face {
+  src: url(./woff2/0-MonoLisaText-normal.woff2) format('woff2');
+  font-family: MonoLisaText;
+  font-weight: 1 900;
+  font-style: normal;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  src: url(./woff2/0-MonoLisaCode-normal.woff2) format('woff2');
+  font-family: MonoLisaCode;
+  font-weight: 1 900;
+  font-feature-settings: 'cv01','cv02','cv03','cv04','cv05','cv08','cv09','cv10','cv11','cv12', /* */ 'ss08','ss11','ss14';
+  font-style: normal;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}

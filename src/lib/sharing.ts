@@ -1,6 +1,6 @@
 import type { LinkShareUnion } from './types';
 import { browser } from '$app/environment';
-import { Data, Effect } from 'effect';
+import { Data, Effect, Match } from 'effect';
 import { codeState } from './code-state.svelte';
 import { encode } from './codec';
 
@@ -27,18 +27,12 @@ export const createShareableString = Effect.fn(function* (
 ) {
 	const urlString = url.toString();
 
-	switch (mode) {
-		case 'full':
-			return urlString;
-		case 'markdown':
-			return `[${title}](${urlString})`;
-		case 'html':
-			return `<a href="${urlString}">${title}</a>`;
-		default:
-			return yield* Effect.fail(
-				new CopyLinkError({ message: `copy link type "${mode}" is not supported.` })
-			);
-	}
+	return Match.value(mode).pipe(
+		Match.when('full', () => urlString),
+		Match.when('markdown', () => `[${title}](${urlString})`),
+		Match.when('html', () => `<a href="${urlString}">${title}</a>`),
+		Match.exhaustive
+	);
 });
 
 export const copyLink = Effect.fn(function* ({
