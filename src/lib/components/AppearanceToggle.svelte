@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import MoonIcon from '@lucide/svelte/icons/moon';
 	import SunIcon from '@lucide/svelte/icons/sun';
+	import { hapticTrigger } from 'ios-haptics';
 	import { mode, toggleMode } from 'mode-watcher';
 	import { setTheme } from './Monaco.svelte';
 </script>
@@ -12,6 +13,7 @@
 		if (!mode.current) return;
 		setTheme(`vs-${mode.current}`);
 	}}
+	{@attach hapticTrigger}
 	variant="outline"
 	size="icon"
 >

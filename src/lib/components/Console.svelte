@@ -2,6 +2,7 @@
 	import type { ConsoleAction } from '$lib/types';
 	import { cn } from '$lib/utils';
 	import { CheckIcon, ChevronUp, CircleXIcon, Trash2Icon, TriangleAlertIcon } from '@lucide/svelte';
+	import { hapticTrigger } from 'ios-haptics';
 	import Button from './ui/button/button.svelte';
 
 	let messages: ConsoleAction[] = $state([]);
@@ -74,7 +75,7 @@
 				<Trash2Icon size={16} class="transition-all {cleared && 'scale-0'}" />
 				<span class="sr-only">Clear</span>
 			</Button>
-			<Button size="icon" variant="outline" onclick={toggle}>
+			<Button size="icon" variant="outline" {@attach hapticTrigger} onclick={toggle}>
 				<ChevronUp size={14} class={cn('transition-transform', isCollapsed ? '' : '-rotate-180')} />
 				<span class="sr-only">{isCollapsed ? 'Show' : 'Hide'}</span>
 			</Button>

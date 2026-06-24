@@ -15,6 +15,7 @@
 		Trash2Icon
 	} from '@lucide/svelte';
 	import { Effect } from 'effect';
+	import { hapticTrigger } from 'ios-haptics';
 	import { toast } from 'svelte-sonner';
 	import { copyLink } from '../sharing';
 	import AppearanceToggle from './AppearanceToggle.svelte';
@@ -32,7 +33,7 @@
 		<div class="flex items-center gap-2">
 			<Popover.Root>
 				<Popover.Trigger>
-					<Button size="icon" variant="outline" aria-label="Toggle menu">
+					<Button size="icon" variant="outline" aria-label="Toggle menu" {@attach hapticTrigger}>
 						<EllipsisIcon size={16} />
 						<span class="sr-only">Menu</span>
 					</Button>
@@ -56,7 +57,7 @@
 							<Separator class="my-2" />
 							<Popover.Root>
 								<Popover.Trigger>
-									<Button class="w-full" variant="destructive">
+									<Button class="w-full" variant="destructive" {@attach hapticTrigger}>
 										<Trash2Icon size={16} />
 										Clear all code
 									</Button>
@@ -87,7 +88,7 @@
 
 			<Popover.Root>
 				<Popover.Trigger>
-					<Button variant="outline">
+					<Button variant="outline" {@attach hapticTrigger}>
 						<ShareIcon size={16} />
 						Share
 					</Button>

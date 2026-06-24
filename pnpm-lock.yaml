@@ -23,6 +23,9 @@ importers:
       fflate:
         specifier: ^0.8.3
         version: 0.8.3
+      ios-haptics:
+        specifier: ^3.0.0
+        version: 3.0.0
       mode-watcher:
         specifier: ^1.1.0
         version: 1.1.0(svelte@5.56.3)
@@ -992,6 +995,9 @@ packages:
 
   inline-style-parser@0.2.7:
     resolution: {integrity: sha512-Nb2ctOyNR8DqQoR0OwRG95uNWIC0C1lCgf5Naz5H6Ji72KZ8OcFZLz2P5sNgwlyoJ8Yif11oMuYs5pBQa86csA==}
+
+  ios-haptics@3.0.0:
+    resolution: {integrity: sha512-wmIyzW21jlOOjASntf1gKZ/wBr64nGPRO98bnofxltix4EeP5i3oUfTb14WOo2OnafkBcO2BNIPwuX2qFxfznA==}
 
   is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
@@ -2371,6 +2377,8 @@ snapshots:
   ini@7.0.0: {}
 
   inline-style-parser@0.2.7: {}
+
+  ios-haptics@3.0.0: {}
 
   is-extglob@2.1.1: {}
 
