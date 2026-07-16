@@ -128,7 +128,10 @@
   }
   html,
   body {
-    @apply fixed w-full touch-manipulation overscroll-none;
+    @apply fixed h-full w-full touch-manipulation overscroll-none;
+  }
+  #root {
+    @apply h-full;
   }
   body {
     @apply bg-background text-foreground;
