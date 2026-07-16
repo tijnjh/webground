@@ -1,7 +1,7 @@
 import type { ToasterProps } from 'sonner'
 import type { Code } from '#lib/types'
 import { Effect } from 'effect'
-import { useAtomValue } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { ChevronUpIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
@@ -22,7 +22,7 @@ import { cn, extractCodeParams, localStore, setTabFromHash } from '#lib/utils'
 
 export function App() {
   const { code, setCode } = useCodeStore()
-  const selectedTab = useAtomValue(selectedTabAtom)
+  const setSelectedTab = useSetAtom(selectedTabAtom)
 
   const isMobile = useIsMobile()
   const isShared = useIsShared()
@@ -73,7 +73,7 @@ export function App() {
         }
       }
 
-      setTabFromHash(selectedTab, code)
+      setTabFromHash(setSelectedTab, code)
     }
 
     fn()
@@ -81,7 +81,7 @@ export function App() {
   }, [])
 
   useEventListener('hashchange', () => {
-    setTabFromHash(selectedTab, code)
+    setTabFromHash(setSelectedTab, code)
   })
 
   useEventListener('keydown', async (e) => {

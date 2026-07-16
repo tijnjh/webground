@@ -1,5 +1,5 @@
 import type { ClassValue } from 'clsx'
-import type { Code, LangUnion } from './types'
+import type { Code } from './types'
 import { clsx } from 'clsx'
 import { Effect } from 'effect'
 import { twMerge } from 'tailwind-merge'
@@ -32,10 +32,10 @@ export function extractCodeParams() {
   return { h, c, j }
 }
 
-export function setTabFromHash(currentTab: LangUnion, code: Code) {
+export function setTabFromHash(setSelectedTab: (tab: keyof Code) => void, code: Code) {
   const hash = location.hash.replace('#', '')
 
   if (Object.keys(code).includes(hash)) {
-    currentTab = hash as keyof Code
+    setSelectedTab(hash as keyof Code)
   }
 }
