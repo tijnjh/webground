@@ -1,6 +1,7 @@
 import type { ConsoleAction } from '#lib/types'
 import { CheckIcon, ChevronUpIcon, CircleXIcon, Trash2Icon, TriangleAlertIcon } from 'lucide-react'
 import { Fragment, useState } from 'react'
+import { useEventListener } from 'usehooks-ts'
 
 import { cn } from '#lib/utils'
 import { Button } from './ui/button'
@@ -18,6 +19,21 @@ export function Console() {
   function toggle() {
     setIsCollapsed(prev => !prev)
   }
+
+  useEventListener('message', (event: MessageEvent) => {
+    const data = event.data as ConsoleAction
+
+    if (data.__webground) {
+      setMessages(previous => [data, ...previous])
+    }
+  })
+
+  useEventListener('keydown', (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'j') {
+      event.preventDefault()
+      toggle()
+    }
+  })
 
   const [cleared, setCleared] = useState(false)
 
@@ -82,6 +98,7 @@ export function Console() {
         {messages.map(message => (
           <ConsoleMessage key={message.data[0]} message={message} isCollapsed={isCollapsed} />
         ))}
+        <div className="mt-2" />
       </div>
     </div>
   )
