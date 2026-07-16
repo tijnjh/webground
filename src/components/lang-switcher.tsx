@@ -24,6 +24,7 @@ export function LangSwitcher({ className }: { className?: string }) {
       value={[value]}
       onValueChange={([v]) => setValue(v as LangUnion)}
       className={className}
+      spacing={0}
     >
       <LangTab lang="html" />
       <LangTab lang="css" />
@@ -44,7 +45,7 @@ function LangTab({ lang }: { lang: LangUnion }) {
         }
       }}
       value={lang}
-      className="px-6"
+      className="px-6 font-mono w-16"
     >
       {lang}
     </ToggleGroupItem>

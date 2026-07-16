@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai'
 import { useCodeStore } from '#lib/atoms/code'
 import { selectedTabAtom } from '#lib/atoms/globals'
 import { useIsShared } from '#lib/hooks'
+import { MenuBar } from './menu-bar'
 
 export function Editor() {
   const selectedTab = useAtomValue(selectedTabAtom)
@@ -12,10 +13,12 @@ export function Editor() {
 
   return (
     <div
-      className="width-screen relative grid h-full grid-rows-[min-content_1fr] overflow-hidden dark:bg-[#1e1e1e]"
+      className="relative h-full overflow-hidden dark:bg-[#1e1e1e]"
     >
-      <div className="relative isolate *:absolute *:inset-0 *:h-full *:transition-[filter] *:duration-500">
 
+      <MenuBar />
+
+      <div className="relative isolate h-full *:absolute *:inset-0 *:h-full *:transition-[filter] *:duration-500">
         {[['html'], ['css'], ['js', 'javascript']].map(([lang, language]) =>
           selectedTab === lang && (
             <div key={lang}>
