@@ -1,15 +1,18 @@
 import type {
+  DrawerCloseProps,
   DrawerContentProps,
   DrawerRootProps,
   DrawerTriggerProps,
   PopoverRootProps,
   PopoverTriggerProps,
 } from '@base-ui/react'
-import type { Popover as PopoverPrimitive } from '@base-ui/react/popover'
+import type { PopoverCloseProps, Popover as PopoverPrimitive } from '@base-ui/react/popover'
 import type { ReactNode } from 'react'
-import { createContext, use } from 'react'
+import type { Button } from './ui/button'
+import { PopoverClose } from '@base-ui/react/popover'
+import { createContext, use, useState } from 'react'
 import { useIsMobile } from '#lib/hooks'
-import { Drawer, DrawerContent, DrawerTrigger } from './ui/drawer'
+import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from './ui/drawer'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
 interface AdaptiveProps<TDrawerProps, TPopoverProps> {
@@ -19,6 +22,14 @@ interface AdaptiveProps<TDrawerProps, TPopoverProps> {
 }
 
 const IsMobileContext = createContext(false)
+
+const IsOpenContext = createContext<{
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+}>({
+  isOpen: false,
+  setIsOpen: () => {},
+})
 
 /**
  *  renders either a popover or a drawer depending on the screen width
@@ -30,12 +41,16 @@ export function AdaptivePanel({
 }: AdaptiveProps<DrawerRootProps, PopoverRootProps>) {
   const isMobile = useIsMobile()
 
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
-    <IsMobileContext value={isMobile}>
-      {isMobile
-        ? <Drawer {...drawer}>{children}</Drawer>
-        : <Popover {...popover}>{children}</Popover>}
-    </IsMobileContext>
+    <IsOpenContext value={{ isOpen, setIsOpen }}>
+      <IsMobileContext value={isMobile}>
+        {isMobile
+          ? <Drawer {...drawer}>{children}</Drawer>
+          : <Popover {...popover}>{children}</Popover>}
+      </IsMobileContext>
+    </IsOpenContext>
   )
 }
 
@@ -75,4 +90,19 @@ export function AdaptivePanelContent({
           {children}
         </PopoverContent>
       )
+}
+
+export function AdaptivePanelClose({
+  children: Children,
+  drawer,
+  popover,
+}: AdaptiveProps<DrawerCloseProps, PopoverCloseProps> & {
+  children: typeof Button
+}) {
+  const isMobile = use(IsMobileContext)
+  const { isOpen, setIsOpen } = use(IsOpenContext)
+
+  return <Children onClick={setIsOpen} />
+
+  // return isMobile ? <DrawerClose /> : <PopoverClose />
 }
