@@ -11,6 +11,6 @@ export function useCodeStore() {
   return {
     code: useAtomValue(codeStateAtom),
     setCode,
-    clear: () => setCode(emptyCode()),
+    clearCode: () => setCode(emptyCode()),
   }
 }
