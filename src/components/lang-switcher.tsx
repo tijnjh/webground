@@ -1,5 +1,4 @@
 import type { LangUnion } from '#lib/types'
-import { hapticTrigger } from 'ios-haptics'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import { selectedTabAtom } from '#lib/atoms/globals'
@@ -38,7 +37,6 @@ function LangTab({ lang }: { lang: LangUnion }) {
 
   return (
     <ToggleGroupItem
-      ref={selectedTab !== lang ? hapticTrigger : undefined}
       onClick={(e) => {
         if (selectedTab === lang) {
           e.preventDefault()

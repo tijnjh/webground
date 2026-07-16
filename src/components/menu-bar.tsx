@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import type { LinkShareUnion } from '#lib/types'
 import { Effect } from 'effect'
-import { hapticTrigger } from 'ios-haptics'
 import { CodeIcon, EllipsisIcon, LinkIcon, PencilIcon, ShareIcon, Trash2Icon } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -9,11 +8,11 @@ import { useCodeStore } from '#lib/atoms/code'
 import { useIsMobile, useIsShared } from '#lib/hooks'
 import { copyLink } from '#lib/sharing'
 import { localStore } from '#lib/utils'
+import { AdaptivePanel, AdaptivePanelContent, AdaptivePanelTrigger } from './adaptive-panel'
 import { AppearanceToggle } from './appearance-toggle'
 import { LangSwitcher } from './lang-switcher'
 import { RunButton } from './run-button'
 import { Button } from './ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 import { Separator } from './ui/separator'
 
 export function MenuBar() {
@@ -28,15 +27,15 @@ export function MenuBar() {
     <div className="flex items-center justify-between gap-2 p-4">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
-          <Popover>
-            <PopoverTrigger>
-              <Button size="icon" variant="outline" aria-label="Toggle menu" ref={hapticTrigger}>
+          <AdaptivePanel>
+            <AdaptivePanelTrigger>
+              <Button size="icon" variant="outline" aria-label="Toggle menu">
                 <EllipsisIcon size={16} />
                 <span className="sr-only">Menu</span>
               </Button>
-            </PopoverTrigger>
+            </AdaptivePanelTrigger>
 
-            <PopoverContent align="start">
+            <AdaptivePanelContent popover={{ align: 'start' }}>
               <div className="flex flex-col gap-2">
 
                 <div className="flex items-center justify-between">
@@ -55,14 +54,15 @@ export function MenuBar() {
                   <>
                     <Separator className="my-2" />
 
-                    <Popover>
-                      <PopoverTrigger>
-                        <Button className="w-full" variant="destructive" ref={hapticTrigger}>
+                    <AdaptivePanel>
+                      <AdaptivePanelTrigger>
+                        <Button className="w-full" variant="destructive">
                           <Trash2Icon size={16} />
                           Clear all code
                         </Button>
-                      </PopoverTrigger>
-                      <PopoverContent align="start">
+                      </AdaptivePanelTrigger>
+                      <AdaptivePanelContent popover={{ align: 'start' }}>
+
                         <p>Are you sure you want to your clear your code?</p>
 
                         <Separator />
@@ -78,22 +78,22 @@ export function MenuBar() {
                           Confirm
                         </Button>
 
-                      </PopoverContent>
-                    </Popover>
+                      </AdaptivePanelContent>
+                    </AdaptivePanel>
                   </>
                 )}
               </div>
-            </PopoverContent>
-          </Popover>
+            </AdaptivePanelContent>
+          </AdaptivePanel>
 
-          <Popover>
-            <PopoverTrigger>
-              <Button variant="outline" ref={hapticTrigger}>
+          <AdaptivePanel>
+            <AdaptivePanelTrigger>
+              <Button variant="outline">
                 <ShareIcon size={16} />
                 Share
               </Button>
-            </PopoverTrigger>
-            <PopoverContent align="start">
+            </AdaptivePanelTrigger>
+            <AdaptivePanelContent popover={{ align: 'start' }}>
               <div className="flex flex-col gap-2">
                 <h3>Link sharing</h3>
 
@@ -118,8 +118,8 @@ export function MenuBar() {
                 <ShareButton mode="html" title={title}>HTML</ShareButton>
 
               </div>
-            </PopoverContent>
-          </Popover>
+            </AdaptivePanelContent>
+          </AdaptivePanel>
         </div>
       </div>
 

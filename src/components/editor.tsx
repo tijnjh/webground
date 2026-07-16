@@ -10,13 +10,12 @@ export function Editor() {
   const selectedTab = useAtomValue(selectedTabAtom)
   const isShared = useIsShared()
   const { code } = useCodeStore()
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
 
   return (
     <div
       className="relative h-full overflow-hidden dark:bg-[#1e1e1e]"
     >
-
       <MenuBar />
 
       <div className="relative isolate h-full *:absolute *:inset-0 *:h-full *:transition-[filter] *:duration-500">
@@ -25,11 +24,11 @@ export function Editor() {
             <div key={lang}>
               <Monaco
                 className="absolute inset-0"
+                theme={resolvedTheme === 'dark' ? 'vs-dark' : 'vs'}
                 options={{
                   readOnly: isShared,
                   value: code[lang],
                   language: language ?? lang,
-                  theme: `vs-${theme}`,
                   overviewRulerLanes: 0,
                   overviewRulerBorder: false,
                   automaticLayout: true,

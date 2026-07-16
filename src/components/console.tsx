@@ -1,5 +1,4 @@
 import type { ConsoleAction } from '#lib/types'
-import { hapticTrigger } from 'ios-haptics'
 import { CheckIcon, ChevronUpIcon, CircleXIcon, Trash2Icon, TriangleAlertIcon } from 'lucide-react'
 import { Fragment, useState } from 'react'
 
@@ -67,7 +66,7 @@ export function Console() {
             <span className="sr-only">Clear</span>
           </Button>
 
-          <Button size="icon" variant="outline" ref={hapticTrigger} onClick={toggle}>
+          <Button size="icon" variant="outline" onClick={toggle}>
             <ChevronUpIcon size={14} className={cn('transition-transform', isCollapsed ? '' : '-rotate-180')} />
             <span className="sr-only">{isCollapsed ? 'Show' : 'Hide'}</span>
           </Button>

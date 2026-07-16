@@ -1,5 +1,3 @@
-import { hapticTrigger } from 'ios-haptics'
-
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from './ui/button'
@@ -15,7 +13,6 @@ export function AppearanceToggle() {
   return (
     <Button
       onClick={toggle}
-      ref={hapticTrigger}
       variant="outline"
       size="icon"
     >

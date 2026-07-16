@@ -29,9 +29,6 @@ importers:
       fflate:
         specifier: ^0.8.3
         version: 0.8.3
-      ios-haptics:
-        specifier: ^3.1.1
-        version: 3.1.1
       jotai:
         specifier: ^2.20.2
         version: 2.20.2(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.7)
@@ -2090,9 +2087,6 @@ packages:
   ini@7.0.0:
     resolution: {integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
-
-  ios-haptics@3.1.1:
-    resolution: {integrity: sha512-JGgn6Aa424M6kE5xZSKjww+eOJ9UEHPq9p9ifxeQ8CUsvfDLpj2ZP4lDmycw3xirywYvWZCksyMjGqrV9LXQiw==}
 
   ip-address@10.2.0:
     resolution: {integrity: sha512-/+S6j4E9AHvW9SWMSEY9Xfy66O5PWvVEJ08O0y5JGyEKQpojb0K0GKpz/v5HJ/G0vi3D2sjGK78119oXZeE0qA==}
@@ -5406,8 +5400,6 @@ snapshots:
   inherits@2.0.4: {}
 
   ini@7.0.0: {}
-
-  ios-haptics@3.1.1: {}
 
   ip-address@10.2.0: {}
 

@@ -1,8 +1,9 @@
+import type { ToasterProps } from 'sonner'
 import type { Code } from '#lib/types'
 import { Effect } from 'effect'
-import { hapticTrigger } from 'ios-haptics'
 import { useAtomValue } from 'jotai'
 import { ChevronUpIcon } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { toast, Toaster } from 'sonner'
 import { useEventListener } from 'usehooks-ts'
@@ -27,6 +28,8 @@ export function App() {
   const isShared = useIsShared()
 
   const { updatePreview } = usePreview()
+
+  const { resolvedTheme } = useTheme()
 
   const [showMobilePreview, setShowMobilePreview] = useState(false)
 
@@ -117,7 +120,6 @@ export function App() {
 
         <div className="flex items-center justify-between border-t bg-white p-4 dark:bg-[#1e1e1e]">
           <Button
-            ref={hapticTrigger}
             onClick={() => {
               setShowMobilePreview(prev => !prev)
             }}
@@ -143,7 +145,11 @@ export function App() {
         </div>
       )}
 
-      <Toaster richColors position={isMobile ? 'top-center' : 'bottom-right'} />
+      <Toaster
+        richColors
+        position={isMobile ? 'top-center' : 'bottom-right'}
+        theme={resolvedTheme as ToasterProps['theme']}
+      />
     </>
   )
 }
