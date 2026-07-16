@@ -5,6 +5,7 @@ import { hapticTrigger } from 'ios-haptics'
 import { useAtomValue } from 'jotai'
 import { ChevronUpIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { useEventListener } from 'usehooks-ts'
 import { Console } from '#components/console'
 import { Editor } from '#components/editor'
@@ -46,7 +47,7 @@ export function App() {
         )
 
         if (decoded._tag === 'Failure') {
-          // toast.error(decoded.cause.reasons.map(r => r.toString()).join(', '))
+          toast.error(decoded.cause.reasons.map(r => r.toString()).join(', '))
           console.error(decoded.cause)
           return
         }
@@ -73,7 +74,8 @@ export function App() {
     }
 
     fn()
-  })
+  // eslint-disable-next-line react/exhaustive-deps
+  }, [])
 
   useEventListener('hashchange', () => {
     setTabFromHash(selectedTab, code)

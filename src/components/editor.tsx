@@ -1,11 +1,14 @@
 import Monaco from '@monaco-editor/react'
 import { useAtomValue } from 'jotai'
+import { useCodeStore } from '#lib/atoms/code'
 import { selectedTabAtom } from '#lib/atoms/globals'
 import { useIsShared } from '#lib/hooks'
 
 export function Editor() {
   const selectedTab = useAtomValue(selectedTabAtom)
   const isShared = useIsShared()
+
+  const { code } = useCodeStore()
 
   return (
     <div
@@ -16,7 +19,25 @@ export function Editor() {
         {[['html'], ['css'], ['js', 'javascript']].map(([lang, language]) =>
           selectedTab === lang && (
             <div key={lang}>
-              <Monaco language={language ?? lang} options={{ readOnly: isShared }} />
+              <Monaco
+                className="absolute inset-0"
+                options={{
+                  readOnly: isShared,
+                  value: code[lang],
+                  language: language ?? lang,
+                  // theme: @todo
+                  overviewRulerLanes: 0,
+                  overviewRulerBorder: false,
+                  automaticLayout: true,
+                  cursorBlinking: 'smooth',
+                  smoothScrolling: true,
+                  fontSize: 13,
+                  minimap: { enabled: false },
+                  tabSize: 2,
+                  fontFamily: 'MonoLisaCode',
+                  fontLigatures: true,
+                }}
+              />
             </div>
           ),
         )}
