@@ -1,13 +1,10 @@
-import type { LinkShareUnion } from './types'
+import type { Code, LinkShareUnion } from './types'
 import { Data, Effect, Match } from 'effect'
-import { useCodeStore } from './atoms/code'
 import { encode } from './codec'
 
 export class CopyLinkError extends Data.TaggedError('CopyLinkError')<{ message: string }> {}
 
-export const createShareUrl = Effect.fn(function* () {
-  const { code } = useCodeStore()
-
+export const createShareUrl = Effect.fn(function* (code: Code) {
   const [html, css, js] = yield* Effect.all([encode(code.html), encode(code.css), encode(code.js)])
 
   const url = new URL(location.origin)
@@ -38,13 +35,15 @@ export const createShareableString = Effect.fn(function* (
 })
 
 export const copyLink = Effect.fn(function* ({
+  code,
   mode,
   title,
 }: {
+  code: Code
   mode: LinkShareUnion
   title: string
 }) {
-  const url = yield* createShareUrl()
+  const url = yield* createShareUrl(code)
   const shareableString = yield* createShareableString(url, mode, title)
 
   yield* Effect.tryPromise({

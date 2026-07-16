@@ -1,5 +1,6 @@
 import Monaco from '@monaco-editor/react'
 import { useAtomValue } from 'jotai'
+import { useTheme } from 'next-themes'
 import { useCodeStore } from '#lib/atoms/code'
 import { selectedTabAtom } from '#lib/atoms/globals'
 import { useIsShared } from '#lib/hooks'
@@ -8,8 +9,8 @@ import { MenuBar } from './menu-bar'
 export function Editor() {
   const selectedTab = useAtomValue(selectedTabAtom)
   const isShared = useIsShared()
-
   const { code } = useCodeStore()
+  const { theme } = useTheme()
 
   return (
     <div
@@ -28,7 +29,7 @@ export function Editor() {
                   readOnly: isShared,
                   value: code[lang],
                   language: language ?? lang,
-                  // theme: @todo
+                  theme: `vs-${theme}`,
                   overviewRulerLanes: 0,
                   overviewRulerBorder: false,
                   automaticLayout: true,

@@ -1,11 +1,21 @@
 import { Effect } from 'effect'
-import { useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import { useEffect } from 'react'
 import { useCodeStore } from '#lib/atoms/code'
+import { previewSrcAtom } from '#lib/atoms/globals'
 import { template } from '#lib/preview/template'
 import { cn, localStore } from '#lib/utils'
 
 export function Preview({ className }: { className?: string }) {
   const { src } = usePreview()
+
+  useEffect(() => {
+    return () => {
+      if (src.startsWith('blob:')) {
+        URL.revokeObjectURL(src)
+      }
+    }
+  }, [src])
 
   return (
     <iframe
@@ -19,16 +29,7 @@ export function Preview({ className }: { className?: string }) {
 }
 
 export function usePreview() {
-  const [src, setSrc] = useState('/start.html')
-
-  useEffect(() => {
-    return () => {
-      if (src.startsWith('blob:')) {
-        URL.revokeObjectURL(src)
-      }
-    }
-  }, [src])
-
+  const [src, setSrc] = useAtom(previewSrcAtom)
   const { code } = useCodeStore()
 
   const updatePreview = Effect.fn(function* () {

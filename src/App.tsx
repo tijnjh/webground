@@ -4,7 +4,7 @@ import { hapticTrigger } from 'ios-haptics'
 import { useAtomValue } from 'jotai'
 import { ChevronUpIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
+import { toast, Toaster } from 'sonner'
 import { useEventListener } from 'usehooks-ts'
 import { Console } from '#components/console'
 import { Editor } from '#components/editor'
@@ -142,6 +142,8 @@ export function App() {
           <Console />
         </div>
       )}
+
+      <Toaster richColors position={isMobile ? 'top-center' : 'bottom-right'} />
     </>
   )
 }

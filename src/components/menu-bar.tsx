@@ -9,6 +9,7 @@ import { useCodeStore } from '#lib/atoms/code'
 import { useIsMobile, useIsShared } from '#lib/hooks'
 import { copyLink } from '#lib/sharing'
 import { localStore } from '#lib/utils'
+import { AppearanceToggle } from './appearance-toggle'
 import { LangSwitcher } from './lang-switcher'
 import { RunButton } from './run-button'
 import { Button } from './ui/button'
@@ -40,7 +41,7 @@ export function MenuBar() {
 
                 <div className="flex items-center justify-between">
                   <h1>Webground</h1>
-                  {/* <AppearanceToggle /> */}
+                  <AppearanceToggle />
                 </div>
 
                 <Separator className="my-2" />
@@ -50,7 +51,7 @@ export function MenuBar() {
                   View source
                 </Button>
 
-                {isShared && (
+                {!isShared && (
                   <>
                     <Separator className="my-2" />
 
@@ -62,9 +63,9 @@ export function MenuBar() {
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent align="start">
-                        <p className="mb-2">Are you sure you want to your clear your code?</p>
+                        <p>Are you sure you want to your clear your code?</p>
 
-                        <Separator className="my-4" />
+                        <Separator />
 
                         <Button
                           className="w-full"
@@ -156,10 +157,12 @@ function ShareButton({
   children: ReactNode
   title: string
 }) {
+  const { code } = useCodeStore()
+
   return (
     <Button
       onClick={() => {
-        Effect.runPromise(copyLink({ mode, title }))
+        Effect.runPromise(copyLink({ code, mode, title }))
           .then((res) => {
             toast.success(`Copied link (${mode}) to clipboard`)
 
