@@ -7,6 +7,7 @@ import type {
 } from '@base-ui/react'
 import type { Popover as PopoverPrimitive } from '@base-ui/react/popover'
 import type { ReactNode } from 'react'
+import { createContext, use } from 'react'
 import { useIsMobile } from '#lib/hooks'
 import { Drawer, DrawerContent, DrawerTrigger } from './ui/drawer'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
@@ -16,6 +17,8 @@ interface AdaptiveProps<TDrawerProps, TPopoverProps> {
   popover?: TPopoverProps
   children?: ReactNode
 }
+
+const IsMobileContext = createContext(false)
 
 /**
  *  renders either a popover or a drawer depending on the screen width
@@ -27,9 +30,13 @@ export function AdaptivePanel({
 }: AdaptiveProps<DrawerRootProps, PopoverRootProps>) {
   const isMobile = useIsMobile()
 
-  return isMobile
-    ? <Drawer {...drawer}>{children}</Drawer>
-    : <Popover {...popover}>{children}</Popover>
+  return (
+    <IsMobileContext value={isMobile}>
+      {isMobile
+        ? <Drawer {...drawer}>{children}</Drawer>
+        : <Popover {...popover}>{children}</Popover>}
+    </IsMobileContext>
+  )
 }
 
 export function AdaptivePanelTrigger({
@@ -37,7 +44,7 @@ export function AdaptivePanelTrigger({
   drawer,
   popover,
 }: AdaptiveProps<DrawerTriggerProps, PopoverTriggerProps>) {
-  const isMobile = useIsMobile()
+  const isMobile = use(IsMobileContext)
 
   return isMobile
     ? <DrawerTrigger {...drawer}>{children}</DrawerTrigger>
@@ -53,7 +60,7 @@ export function AdaptivePanelContent({
   PopoverPrimitive.Positioner.Props,
     'align' | 'alignOffset' | 'side' | 'sideOffset'
 >>) {
-  const isMobile = useIsMobile()
+  const isMobile = use(IsMobileContext)
 
   return isMobile
     ? (
