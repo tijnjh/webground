@@ -91,59 +91,60 @@ export function App() {
     }
   })
 
-  if (!isMobile) {
-    return (
-      <ResizablePanelGroup>
-        <ResizablePanel>
-          <Editor />
-        </ResizablePanel>
-
-        <ResizableHandle />
-
-        <ResizablePanel>
-          <div className="flex h-full flex-col">
-            <Preview className="size-full grow" />
-            <Console />
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    )
-  }
-
   return (
     <>
+      {!isMobile
+        ? (
+            <ResizablePanelGroup>
+              <ResizablePanel>
+                <Editor />
+              </ResizablePanel>
 
-      <div className="grid h-dvh grid-rows-[1fr_min-content]">
-        <Editor />
+              <ResizableHandle />
 
-        <LangSwitcher className="fixed bottom-20 left-4 bg-white dark:bg-[#1e1e1e]" />
+              <ResizablePanel>
+                <div className="flex h-full flex-col">
+                  <Preview className="size-full grow" />
+                  <Console />
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          )
+        : (
+            <>
+              <div className="grid h-dvh grid-rows-[1fr_min-content]">
+                <Editor />
 
-        <div className="flex items-center justify-between border-t bg-white p-4 dark:bg-[#1e1e1e]">
-          <Button
-            onClick={() => {
-              setShowMobilePreview(prev => !prev)
-            }}
-          >
-            <div
-              className={cn(
-                'transition-transform',
-                showMobilePreview && 'rotate-x-180',
+                <LangSwitcher className="fixed bottom-20 left-4 bg-white dark:bg-[#1e1e1e]" />
+
+                <div className="flex items-center justify-between border-t bg-white p-4 dark:bg-[#1e1e1e]">
+                  <Button
+                    onClick={() => {
+                      setShowMobilePreview(prev => !prev)
+                    }}
+                  >
+                    <div
+                      className={cn(
+                        'transition-transform',
+                        showMobilePreview && 'rotate-x-180',
+                      )}
+                    >
+                      <ChevronUpIcon />
+                    </div>
+                    Preview
+                  </Button>
+                  <RunButton />
+                </div>
+              </div>
+
+              {showMobilePreview && (
+                <div className="fixed top-17 bottom-17 isolate flex w-full flex-col">
+                  <Preview className="grow" />
+                  <Console />
+                </div>
               )}
-            >
-              <ChevronUpIcon />
-            </div>
-            Preview
-          </Button>
-          <RunButton />
-        </div>
-      </div>
-
-      {showMobilePreview && (
-        <div className="fixed top-17 bottom-17 isolate flex w-full flex-col">
-          <Preview className="grow" />
-          <Console />
-        </div>
-      )}
+            </>
+          )}
 
       <Toaster
         richColors
