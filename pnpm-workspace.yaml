@@ -1,6 +1,0 @@
-packages:
-  - '.'
-allowBuilds:
-  msgpackr-extract: true
-minimumReleaseAgeExclude:
-  - ios-haptics@3.1.0
