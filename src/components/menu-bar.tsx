@@ -63,7 +63,7 @@ export function MenuBar() {
                       </AdaptivePanelTrigger>
                       <AdaptivePanelContent popover={{ align: 'start' }}>
 
-                        <p>Are you sure you want to your clear your code?</p>
+                        <p>Are you sure you want to clear your code?</p>
 
                         <Separator />
 
