@@ -1,14 +1,45 @@
 import type { ConsoleAction } from '#lib/types'
 import { CheckIcon, ChevronUpIcon, CircleXIcon, Trash2Icon, TriangleAlertIcon } from 'lucide-react'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useEventListener } from 'usehooks-ts'
 
 import { cn } from '#lib/utils'
 import { Button } from './ui/button'
 
+interface ConsolePart {
+  key: string
+  value: unknown
+}
+
+interface ConsoleEntry {
+  id: number
+  type: ConsoleAction['type']
+  parts: ConsolePart[]
+}
+
+function isConsoleAction(value: unknown): value is ConsoleAction {
+  if (typeof value !== 'object' || value === null)
+    return false
+
+  const message = value as Partial<ConsoleAction>
+  return message.__webground === true && typeof message.type === 'string' && Array.isArray(message.data)
+}
+
+function formatConsoleValue(value: unknown) {
+  try {
+    return JSON.stringify(value, null, 2) ?? String(value)
+  }
+  catch {
+    return String(value)
+  }
+}
+
 export function Console() {
-  const [messages, setMessages] = useState<ConsoleAction[]>([])
+  const [messages, setMessages] = useState<ConsoleEntry[]>([])
   const [isCollapsed, setIsCollapsed] = useState(true)
+  const [cleared, setCleared] = useState(false)
+  const nextIdRef = useRef(0)
+  const clearedTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const messageCounts = {
     log: messages.filter(m => m.type === 'log').length,
@@ -20,12 +51,39 @@ export function Console() {
     setIsCollapsed(prev => !prev)
   }
 
-  useEventListener('message', (event: MessageEvent) => {
-    const data = event.data as ConsoleAction
+  function clearMessages() {
+    setMessages([])
+  }
 
-    if (data.__webground) {
-      setMessages(previous => [data, ...previous])
+  function markCleared() {
+    setCleared(true)
+    clearTimeout(clearedTimerRef.current)
+    clearedTimerRef.current = setTimeout(setCleared, 2000, false)
+  }
+
+  useEffect(() => {
+    return () => clearTimeout(clearedTimerRef.current)
+  }, [])
+
+  useEventListener('message', (event: MessageEvent) => {
+    if (!isConsoleAction(event.data))
+      return
+
+    if (event.data.type === 'clear') {
+      clearMessages()
+      return
     }
+
+    const id = ++nextIdRef.current
+    const entry: ConsoleEntry = {
+      id,
+      type: event.data.type,
+      parts: event.data.data.map((value, index) => ({
+        key: `${id}-${index}`,
+        value,
+      })),
+    }
+    setMessages(previous => [entry, ...previous])
   })
 
   useEventListener('keydown', (event) => {
@@ -34,8 +92,6 @@ export function Console() {
       toggle()
     }
   })
-
-  const [cleared, setCleared] = useState(false)
 
   return (
     <div className="border-t bg-zinc-100 dark:bg-zinc-900">
@@ -68,9 +124,8 @@ export function Console() {
         <div className="flex items-center gap-2">
           <Button
             onClick={() => {
-              setMessages([])
-              setCleared(true)
-              setTimeout(setCleared, 2000, false)
+              clearMessages()
+              markCleared()
             }}
             size="icon"
             className="relative"
@@ -96,7 +151,7 @@ export function Console() {
         )}
       >
         {messages.map(message => (
-          <ConsoleMessage key={message.data[0]} message={message} isCollapsed={isCollapsed} />
+          <ConsoleMessage key={message.id} message={message} isCollapsed={isCollapsed} />
         ))}
         <div className="mt-2" />
       </div>
@@ -104,12 +159,20 @@ export function Console() {
   )
 }
 
+function isErrorValue(value: unknown): value is { __isError: true, message?: unknown, stack?: unknown } {
+  return typeof value === 'object' && value !== null && '__isError' in value && value.__isError === true
+}
+
+function isTraceValue(value: unknown): value is { __isTrace: true, stack?: unknown } {
+  return typeof value === 'object' && value !== null && '__isTrace' in value && value.__isTrace === true
+}
+
 function ConsoleMessage({
-  message: { data, type },
+  message: { parts, type },
   inHeader = false,
   isCollapsed,
 }: {
-  message: ConsoleAction
+  message: ConsoleEntry
   inHeader?: boolean
   isCollapsed: boolean
 }) {
@@ -134,24 +197,25 @@ function ConsoleMessage({
       </div>
 
       <div className="font-mono whitespace-pre-wrap">
-        {data.map(item => (
-          <Fragment key={item}>
-            {item?.__isError
+        {parts.map((part, index) => (
+          <Fragment key={part.key}>
+            {index > 0 && ' '}
+            {isErrorValue(part.value)
               ? (
                   <>
-                    <span className="font-bold">{item.message.trim()}</span>
+                    <span className="font-bold">{String(part.value.message ?? '').trim()}</span>
                     <span className="text-xs text-zinc-400 dark:text-zinc-600">
-                      {item.stack}
+                      {String(part.value.stack ?? '')}
                     </span>
                   </>
                 )
-              : item?.__isTrace
+              : isTraceValue(part.value)
                 ? (
                     <span className="text-xs text-zinc-400 dark:text-zinc-600">
-                      {item.stack}
+                      {String(part.value.stack ?? '')}
                     </span>
                   )
-                : JSON.stringify(item, null, 2)}
+                : formatConsoleValue(part.value)}
           </Fragment>
         ))}
       </div>
