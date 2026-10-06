@@ -20,6 +20,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "effect": "4.0.0-beta.98",
+    "emmet-monaco-es": "^5.7.0",
     "fflate": "^0.8.3",
     "jotai": "^2.20.2",
     "lucide-react": "^1.24.0",

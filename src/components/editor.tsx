@@ -1,11 +1,25 @@
+import type { Monaco } from '@monaco-editor/react'
 import type { LangUnion } from '#lib/types'
-import Monaco from '@monaco-editor/react'
+import MonacoEditor from '@monaco-editor/react'
+import { emmetCSS, emmetHTML, emmetJSX } from 'emmet-monaco-es'
 import { useAtomValue } from 'jotai'
 import { useTheme } from 'next-themes'
 import { useCodeStore } from '#lib/atoms/code'
 import { selectedTabAtom } from '#lib/atoms/globals'
 import { useIsShared } from '#lib/hooks'
 import { MenuBar } from './menu-bar'
+
+let emmetEnabled = false
+
+function enableEmmet(monaco: Monaco) {
+  if (emmetEnabled)
+    return
+
+  emmetEnabled = true
+  emmetHTML(monaco)
+  emmetCSS(monaco)
+  emmetJSX(monaco)
+}
 
 export function Editor() {
   const selectedTab = useAtomValue(selectedTabAtom)
@@ -54,10 +68,11 @@ export function LangEditor({
   const language = lang === 'js' ? 'javascript' : lang
 
   return (
-    <Monaco
+    <MonacoEditor
       className="absolute inset-0"
       theme={resolvedTheme === 'dark' ? 'vs-dark' : 'vs'}
       path={`file:///${lang}`}
+      beforeMount={enableEmmet}
       onChange={value => value !== undefined && setCodeByLang(value)}
       value={codeByLang}
       language={language}
@@ -71,6 +86,7 @@ export function LangEditor({
         fontSize: 13,
         minimap: { enabled: false },
         tabSize: 2,
+        tabCompletion: 'on',
         fontFamily: 'MonoLisaCode',
         fontLigatures: true,
       }}
