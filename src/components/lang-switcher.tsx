@@ -1,5 +1,5 @@
 import type { LangUnion } from '#lib/types'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import { selectedTabAtom } from '#lib/atoms/globals'
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group'
@@ -21,7 +21,14 @@ export function LangSwitcher({ className }: { className?: string }) {
     <ToggleGroup
       variant="outline"
       value={[value]}
-      onValueChange={([v]) => setValue(v as LangUnion)}
+      onValueChange={([next], details) => {
+        if (next !== 'html' && next !== 'css' && next !== 'js') {
+          details.cancel()
+          return
+        }
+
+        setValue(next)
+      }}
       className={className}
       spacing={0}
     >
@@ -33,15 +40,8 @@ export function LangSwitcher({ className }: { className?: string }) {
 }
 
 function LangTab({ lang }: { lang: LangUnion }) {
-  const selectedTab = useAtomValue(selectedTabAtom)
-
   return (
     <ToggleGroupItem
-      onClick={(e) => {
-        if (selectedTab === lang) {
-          e.preventDefault()
-        }
-      }}
       value={lang}
       className="px-6 font-mono w-16"
     >
